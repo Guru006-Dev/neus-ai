@@ -1,0 +1,52 @@
+{
+    "elements": [
+        {
+            "scene": 1,
+            "start": 0.0,
+            "end": 5.0,
+            "voice_path": "voiceover.mp3",
+            "caption_text": null,
+            "animation_type": "fade"
+        },
+        {
+            "scene": 2,
+            "start": 5.0,
+            "end": 9.0,
+            "voice_path": null,
+            "caption_text": null,
+            "animation_type": "cross_dissolve"
+        },
+        {
+            "scene": 3,
+            "start": 9.0,
+            "end": 13.0,
+            "voice_path": null,
+            "caption_text": null,
+            "animation_type": "cross_dissolve"
+        },
+        {
+            "scene": 4,
+            "start": 13.0,
+            "end": 17.0,
+            "voice_path": null,
+            "caption_text": null,
+            "animation_type": "cross_dissolve"
+        },
+        {
+            "scene": 5,
+            "start": 17.0,
+            "end": 21.0,
+            "voice_path": null,
+            "caption_text": null,
+            "animation_type": "cross_dissolve"
+        },
+        {
+            "scene": 6,
+            "start": 21.0,
+            "end": 26.0,
+            "voice_path": null,
+            "caption_text": null,
+            "animation_type": "fade"
+        }
+    ]
+}
