@@ -1,0 +1,10 @@
+# Exclude generated video/audio assets from git tracking
+*.mp4
+*.webm
+*.mp3
+*.vtt
+*.srt
+temp_rec_*
+gemini_user_data*
+__pycache__/
+*.pyc
