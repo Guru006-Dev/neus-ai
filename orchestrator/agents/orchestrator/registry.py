@@ -387,12 +387,13 @@ class DemoAgent(BaseAgent):
         with open(output_file, "w", encoding="utf-8") as f:
             f.write(html_content)
 
+        formatted_path = output_file.replace('\\', '/')
         print(f"  [Demo] Portugal 3D Motion HTML animation generated at: {output_file}")
         return {
             "demo_output": {
                 "animation_file": output_file,
                 "status": "Rendered & Ready",
-                "preview_url": f"file:///{output_file.replace('\\', '/')}"
+                "preview_url": f"file:///{formatted_path}"
             }
         }
 
