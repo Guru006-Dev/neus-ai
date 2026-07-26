@@ -9,7 +9,14 @@ class DatabaseManager:
     SQLite persistent storage for Workflows, Tasks, and System Queues.
     Guarantees state retention across server restarts and crashes.
     """
-    def __init__(self, db_path: str = "orchestrator_jobs.db"):
+    def __init__(self, db_path: str = None):
+        if not db_path:
+            db_path = os.getenv("DB_PATH")
+        if not db_path:
+            if os.access(".", os.W_OK):
+                db_path = "orchestrator_jobs.db"
+            else:
+                db_path = "/tmp/orchestrator_jobs.db"
         self.db_path = db_path
         self._lock = threading.Lock()
         self._init_db()

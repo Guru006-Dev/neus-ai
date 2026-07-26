@@ -22,7 +22,7 @@ class OrchestratorAgent:
       - Multi-user non-blocking worker pools
       - Continuous Resource & Queue Scheduler
     """
-    def __init__(self, db_path: str = "orchestrator_jobs.db", custom_limits: Dict[str, int] = None):
+    def __init__(self, db_path: str = None, custom_limits: Dict[str, int] = None):
         self.router = RequestRouter()
         self.planner = WorkflowPlanner()
         self.registry = AgentRegistry()

@@ -8,8 +8,8 @@ from agents.orchestrator.agent import OrchestratorAgent
 
 app = FastAPI(title="ADIP Orchestrator API", description="Autonomous Product Intelligence Platform Orchestrator")
 
-# Initialize the robust orchestrator agent
-orchestrator = OrchestratorAgent(db_path="orchestrator_jobs.db")
+# Initialize the robust orchestrator agent (handles writable directory fallback automatically)
+orchestrator = OrchestratorAgent()
 
 class WorkflowRequest(BaseModel):
     goal: str
