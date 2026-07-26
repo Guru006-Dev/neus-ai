@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amazon Prime Air & AWS 3D Keynote Experience</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Outfit:wght@500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --amazon-amber: #FF9900;
@@ -28,7 +26,7 @@
             height: 100vh;
             position: relative;
             overflow: hidden;
-            background: radial-gradient(circle at center, #171E2E 0%, var(--amazon-dark) 100%);
+            background: radial-gradient(circle at center, #141A29 0%, var(--amazon-dark) 100%);
         }
 
         #webgl-canvas {
@@ -92,7 +90,7 @@
 
         .title-hero h2 {
             font-family: 'Outfit', sans-serif;
-            font-size: 36px;
+            font-size: 34px;
             font-weight: 900;
             line-height: 1.1;
             background: linear-gradient(180deg, #FFFFFF 0%, #B0C4DE 100%);
@@ -103,7 +101,7 @@
         }
 
         .title-hero h2 span { background: linear-gradient(90deg, var(--amazon-amber), #FFB800); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .title-hero p { font-size: 14px; color: var(--text-muted); line-height: 1.4; margin-bottom: 14px; }
+        .title-hero p { font-size: 13px; color: var(--text-muted); line-height: 1.4; margin-bottom: 12px; }
 
         .badge-list { display: flex; gap: 8px; flex-wrap: wrap; }
         .feature-pill { background: rgba(0, 168, 225, 0.15); border: 1px solid var(--border-blue); color: var(--amazon-blue); padding: 4px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; }
@@ -168,26 +166,26 @@
             color: #000; font-weight: 900; font-size: 11px; padding: 4px 10px; border-radius: 6px; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap;
         }
 
-        .subtitle-text { font-size: 14px; font-weight: 600; color: #FFFFFF; line-height: 1.4; }
+        .subtitle-text { font-size: 13px; font-weight: 600; color: #FFFFFF; line-height: 1.4; }
 
         .telemetry-card {
             position: absolute;
             right: 30px;
             top: 90px;
-            width: 280px;
+            width: 260px;
             background: var(--surface-glass);
             backdrop-filter: blur(16px);
             border: 1px solid var(--border-blue);
             border-radius: 16px;
-            padding: 18px;
+            padding: 16px;
             pointer-events: auto;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
 
-        .telemetry-card h4 { font-size: 13px; color: var(--text-primary); text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
-        .telemetry-row { display: flex; justify-content: space-between; font-size: 12px; }
+        .telemetry-card h4 { font-size: 12px; color: var(--text-primary); text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 6px; }
+        .telemetry-row { display: flex; justify-content: space-between; font-size: 11px; }
         .telemetry-label { color: var(--text-muted); }
         .telemetry-val { font-family: monospace; font-weight: 700; color: var(--amazon-blue); }
 
@@ -197,7 +195,7 @@
 </head>
 <body>
 
-    <div class="stage-container" id="stage">
+    <div class="stage-container">
         <div class="reel-timeline"><div class="reel-progress" id="reel-progress"></div></div>
         <canvas id="webgl-canvas"></canvas>
 
@@ -209,7 +207,7 @@
                 </div>
                 <div class="hud-stats">
                     <div class="stat-item"><span class="stat-label">System</span><span class="stat-value"><span class="dot"></span> ONLINE</span></div>
-                    <div class="stat-item"><span class="stat-label">AWS Node</span><span class="stat-value" style="color:var(--amazon-blue)">US-EAST</span></div>
+                    <div class="stat-item"><span class="stat-label">AWS Edge Node</span><span class="stat-value" style="color:var(--amazon-blue)">US-EAST-QUANTUM</span></div>
                     <div class="stat-item"><span class="stat-label">FPS</span><span class="stat-value" id="fps-counter" style="color:#FFF">60 FPS</span></div>
                 </div>
             </header>
@@ -226,12 +224,12 @@
 
             <div class="subtitle-banner">
                 <span class="subtitle-badge" id="sub-badge">KEYNOTE CAPTION</span>
-                <div class="subtitle-text" id="sub-text">"Welcome to Amazon Prime Air 2026. Deploying autonomous hexacopter MK-X."</div>
+                <div class="subtitle-text" id="sub-text">"Welcome to Amazon Prime Air 2026. Deploying autonomous hexacopter MK-X with 15-minute aerial fulfillment."</div>
             </div>
 
             <div class="telemetry-card">
                 <h4><span>Telemetry</span><span style="color:var(--accent-green);font-size:10px;">● LIVE</span></h4>
-                <div class="telemetry-row"><span class="telemetry-label">Speed</span><span class="telemetry-val" id="val-speed">64.8 MPH</span></div>
+                <div class="telemetry-row"><span class="telemetry-label">Flight Speed</span><span class="telemetry-val" id="val-speed">64.8 MPH</span></div>
                 <div class="telemetry-row"><span class="telemetry-label">Altitude</span><span class="telemetry-val" id="val-alt">142.5 FT</span></div>
                 <div class="telemetry-row"><span class="telemetry-label">Payload</span><span class="telemetry-val">5.5 LBS SMART BOX</span></div>
                 <div class="telemetry-row"><span class="telemetry-label">Battery</span><span class="telemetry-val" style="color:var(--accent-green)">94%</span></div>
@@ -247,231 +245,200 @@
     </div>
 
     <script>
-        // WEBGL & CANVAS RENDERER
+        // 100% PURE VANILLA CANVAS ANIMATION ENGINE (0 External Dependencies!)
         const canvas = document.getElementById('webgl-canvas');
-        let renderer, scene, camera, droneGroup, boxGroup, echoDevice, mainBox, tape, smile, laserBeam, rotors = [], particles;
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
 
-        function initThree() {
-            if (typeof THREE === 'undefined') {
-                console.log('Three.js fallback to 2D Canvas');
-                initCanvas2D();
-                return;
-            }
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
 
-            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        // 3D Projection Math
+        function project(x, y, z, rx=0, ry=0) {
+            // Apply rotation around Y
+            let cosY = Math.cos(ry), sinY = Math.sin(ry);
+            let x1 = x * cosY - z * sinY;
+            let z1 = x * sinY + z * cosY;
 
-            scene = new THREE.Scene();
-            scene.fog = new THREE.FogExp2(0x0A0D14, 0.015);
+            // Apply rotation around X
+            let cosX = Math.cos(rx), sinX = Math.sin(rx);
+            let y2 = y * cosX - z1 * sinX;
+            let z2 = y * sinX + z1 * cosX;
 
-            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 5, 14);
-
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-            scene.add(ambientLight);
-
-            const amberSpot = new THREE.SpotLight(0xFF9900, 4);
-            amberSpot.position.set(10, 15, 10);
-            scene.add(amberSpot);
-
-            const blueSpot = new THREE.SpotLight(0x00A8E1, 3);
-            blueSpot.position.set(-10, 12, -8);
-            scene.add(blueSpot);
-
-            const gridHelper = new THREE.GridHelper(80, 40, 0xFF9900, 0x00A8E1);
-            gridHelper.position.y = -2;
-            scene.add(gridHelper);
-
-            // BOX
-            boxGroup = new THREE.Group();
-            scene.add(boxGroup);
-
-            const boxGeo = new THREE.BoxGeometry(3, 2.2, 3);
-            const boxMat = new THREE.MeshStandardMaterial({ color: 0xC89656, roughness: 0.5 });
-            mainBox = new THREE.Mesh(boxGeo, boxMat);
-            boxGroup.add(mainBox);
-
-            const tapeGeo = new THREE.BoxGeometry(3.05, 0.1, 0.8);
-            const tapeMat = new THREE.MeshStandardMaterial({ color: 0x111111, emissive: 0xFF9900, emissiveIntensity: 0.6 });
-            tape = new THREE.Mesh(tapeGeo, tapeMat);
-            tape.position.y = 1.11;
-            boxGroup.add(tape);
-
-            const smileGeo = new THREE.TorusGeometry(0.7, 0.05, 16, 32, Math.PI * 0.8);
-            const smileMat = new THREE.MeshBasicMaterial({ color: 0xFF9900 });
-            smile = new THREE.Mesh(smileGeo, smileMat);
-            smile.rotation.x = Math.PI / 2;
-            smile.rotation.z = -Math.PI * 0.4;
-            smile.position.set(0, 1.12, 0);
-            boxGroup.add(smile);
-
-            const echoGeo = new THREE.CylinderGeometry(0.7, 0.8, 1.4, 32);
-            const echoMat = new THREE.MeshStandardMaterial({ color: 0x1A1A24, metalness: 0.8, roughness: 0.2 });
-            echoDevice = new THREE.Mesh(echoGeo, echoMat);
-            echoDevice.position.set(0, 0, 0);
-            echoDevice.scale.set(0.01, 0.01, 0.01);
-            boxGroup.add(echoDevice);
-
-            // DRONE
-            droneGroup = new THREE.Group();
-            droneGroup.position.set(0, 4.2, 0);
-            scene.add(droneGroup);
-
-            const bodyGeo = new THREE.SphereGeometry(1.2, 32, 16);
-            bodyGeo.scale(1, 0.4, 1);
-            const bodyMat = new THREE.MeshStandardMaterial({ color: 0x121722, metalness: 0.9, roughness: 0.1 });
-            const droneBody = new THREE.Mesh(bodyGeo, bodyMat);
-            droneGroup.add(droneBody);
-
-            const coreGeo = new THREE.SphereGeometry(0.5, 16, 16);
-            const coreMat = new THREE.MeshBasicMaterial({ color: 0x00A8E1 });
-            const droneCore = new THREE.Mesh(coreGeo, coreMat);
-            droneGroup.add(droneCore);
-
-            for (let i = 0; i < 4; i++) {
-                const angle = (i * Math.PI) / 2 + Math.PI / 4;
-                const armGeo = new THREE.CylinderGeometry(0.08, 0.08, 2.5);
-                const armMat = new THREE.MeshStandardMaterial({ color: 0x333344 });
-                const arm = new THREE.Mesh(armGeo, armMat);
-                arm.rotation.z = Math.PI / 2;
-                arm.rotation.y = angle;
-                droneGroup.add(arm);
-
-                const bladeGeo = new THREE.TorusGeometry(0.8, 0.03, 8, 24);
-                const bladeMat = new THREE.MeshBasicMaterial({ color: 0xFF9900, transparent: true, opacity: 0.8 });
-                const blade = new THREE.Mesh(bladeGeo, bladeMat);
-                blade.rotation.x = Math.PI / 2;
-                blade.position.set(Math.cos(angle) * 2.2, 0.25, Math.sin(angle) * 2.2);
-                droneGroup.add(blade);
-                rotors.push(blade);
-            }
-
-            const laserGeo = new THREE.ConeGeometry(1.8, 4.5, 32, 1, true);
-            const laserMat = new THREE.MeshBasicMaterial({ color: 0x00A8E1, transparent: true, opacity: 0.25, side: THREE.DoubleSide });
-            laserBeam = new THREE.Mesh(laserGeo, laserMat);
-            laserBeam.position.set(0, -2.25, 0);
-            droneGroup.add(laserBeam);
-
-            // PARTICLES
-            const particleCount = 150;
-            const particleGeo = new THREE.BufferGeometry();
-            const positions = new Float32Array(particleCount * 3);
-            for (let i = 0; i < particleCount * 3; i += 3) {
-                positions[i] = (Math.random() - 0.5) * 35;
-                positions[i + 1] = Math.random() * 15;
-                positions[i + 2] = (Math.random() - 0.5) * 35;
-            }
-            particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            const particleMat = new THREE.PointsMaterial({ color: 0xFF9900, size: 0.2, transparent: true, opacity: 0.7 });
-            particles = new THREE.Points(particleGeo, particleMat);
-            scene.add(particles);
-
-            animateThree();
+            let fov = 450;
+            let dist = 600 + z2;
+            let scale = fov / Math.max(1, dist);
+            return {
+                x: width / 2 + x1 * scale,
+                y: height / 2 + y2 * scale,
+                scale: scale
+            };
         }
 
-        let targetCamPos = { x: 0, y: 5, z: 14 }, currentMode = 'drone', clock = new THREE.Clock();
+        // Particle System
+        const particles = Array.from({ length: 120 }, () => ({
+            x: (Math.random() - 0.5) * 1200,
+            y: (Math.random() - 0.5) * 600,
+            z: (Math.random() - 0.5) * 1200,
+            size: Math.random() * 2 + 1,
+            color: Math.random() > 0.5 ? '#FF9900' : '#00A8E1'
+        }));
 
-        function animateThree() {
-            requestAnimationFrame(animateThree);
-            const time = clock.getElapsedTime();
+        let time = 0;
+        let currentMode = 'drone';
+        let camRy = 0, targetRy = 0;
+        let camRx = 0.2, targetRx = 0.2;
 
-            rotors.forEach((r, i) => r.rotation.z += 0.4 * (i % 2 === 0 ? 1 : -1));
-            droneGroup.position.y = 4.2 + Math.sin(time * 2) * 0.2;
-            boxGroup.rotation.y = time * 0.2;
-
-            if (currentMode === 'unboxing') {
-                mainBox.position.y = THREE.MathUtils.lerp(mainBox.position.y, -1.5, 0.05);
-                echoDevice.scale.lerp(new THREE.Vector3(1.2, 1.2, 1.2), 0.05);
-                echoDevice.position.y = 0.5 + Math.sin(time * 3) * 0.1;
-            } else {
-                mainBox.position.y = THREE.MathUtils.lerp(mainBox.position.y, 0, 0.05);
-                echoDevice.scale.lerp(new THREE.Vector3(0.01, 0.01, 0.01), 0.05);
-            }
-
-            camera.position.x += (targetCamPos.x - camera.position.x) * 0.04;
-            camera.position.y += (targetCamPos.y - camera.position.y) * 0.04;
-            camera.position.z += (targetCamPos.z - camera.position.z) * 0.04;
-            camera.lookAt(0, 1, 0);
-
-            document.getElementById('val-speed').innerText = (64.0 + Math.sin(time * 3) * 2.5).toFixed(1) + ' MPH';
-            document.getElementById('val-alt').innerText = (142.0 + Math.cos(time * 2) * 1.8).toFixed(1) + ' FT';
-
-            renderer.render(scene, camera);
-        }
-
-        const subtitlesMap = {
-            drone: { badge: 'PRIME AIR LOGISTICS', text: 'Welcome to Amazon Prime Air 2026. Deploying autonomous hexacopter MK-X with 15-minute fulfillment.', pos: { x: 0, y: 5, z: 14 } },
-            unboxing: { badge: 'NFC SMART UNBOXING', text: 'Holographic NFC verification unveils the next-generation Amazon Echo Studio with Dolby Atmos.', pos: { x: 0, y: 2.5, z: 6 } },
-            aws: { badge: 'AWS QUANTUM CLOUD', text: 'Synchronizing with AWS Quantum Edge Mesh across 10 million flight routes per second.', pos: { x: -10, y: 12, z: 10 } },
-            alexa: { badge: 'ALEXA SPATIAL ENGINE', text: 'Alexa Spatial Audio Core active. Real-time acoustic soundfield calibration engaged.', pos: { x: 5, y: 3.5, z: 7 } }
+        const scenes = {
+            drone: { badge: 'PRIME AIR LOGISTICS', text: 'Welcome to Amazon Prime Air 2026. Deploying autonomous hexacopter MK-X with 15-minute fulfillment.', rx: 0.2, ry: 0 },
+            unboxing: { badge: 'NFC SMART UNBOXING', text: 'Holographic NFC verification unveils the next-generation Amazon Echo Studio with Dolby Atmos.', rx: 0.4, ry: 0.8 },
+            aws: { badge: 'AWS QUANTUM CLOUD', text: 'Synchronizing with AWS Quantum Edge Mesh across 10 million flight routes per second.', rx: 0.6, ry: -1.2 },
+            alexa: { badge: 'ALEXA SPATIAL ENGINE', text: 'Alexa Spatial Audio Core active. Real-time acoustic soundfield calibration engaged.', rx: 0.1, ry: 1.5 }
         };
 
         function switchScene(mode) {
             currentMode = mode;
             document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
             const btn = document.getElementById(`btn-${mode}`); if (btn) btn.classList.add('active');
-
-            const s = subtitlesMap[mode];
+            const s = scenes[mode];
             if (s) {
                 document.getElementById('sub-badge').innerText = s.badge;
                 document.getElementById('sub-text').innerText = `"${s.text}"`;
-                targetCamPos = s.pos;
+                targetRx = s.rx; targetRy = s.ry;
             }
         }
 
-        // CANVAS 2D FALLBACK IF THREE.JS IS UNAVAILABLE
-        function initCanvas2D() {
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            let angle = 0;
+        function render() {
+            requestAnimationFrame(render);
+            time += 0.02;
 
-            function draw2D() {
-                requestAnimationFrame(draw2D);
-                angle += 0.02;
-                ctx.fillStyle = '#0A0D14';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // Smooth Camera Interpolation
+            camRx += (targetRx - camRx) * 0.05;
+            camRy += (targetRy - camRy) * 0.05;
 
-                const cx = canvas.width / 2, cy = canvas.height / 2;
+            // Clear Background
+            ctx.fillStyle = '#0A0D14';
+            ctx.fillRect(0, 0, width, height);
 
-                // Glowing Grid
-                ctx.strokeStyle = 'rgba(0, 168, 225, 0.2)';
-                ctx.lineWidth = 1;
-                for (let i = -10; i <= 10; i++) {
-                    ctx.beginPath(); ctx.moveTo(cx + i * 40, cy); ctx.lineTo(cx + i * 80, canvas.height); ctx.stroke();
-                }
+            // Draw Cyber Grid Floor
+            ctx.lineWidth = 1;
+            for (let i = -10; i <= 10; i++) {
+                let p1 = project(i * 80, 200, -800, camRx, camRy + time * 0.05);
+                let p2 = project(i * 80, 200, 800, camRx, camRy + time * 0.05);
+                let p3 = project(-800, 200, i * 80, camRx, camRy + time * 0.05);
+                let p4 = project(800, 200, i * 80, camRx, camRy + time * 0.05);
 
-                // Drone 2D Representation
-                ctx.save();
-                ctx.translate(cx, cy - 80 + Math.sin(angle * 2) * 15);
-                ctx.fillStyle = '#121722'; ctx.beginPath(); ctx.arc(0, 0, 45, 0, Math.PI * 2); ctx.fill();
-                ctx.strokeStyle = '#FF9900'; ctx.lineWidth = 3; ctx.stroke();
-
-                ctx.fillStyle = '#00A8E1'; ctx.beginPath(); ctx.arc(0, 0, 15, 0, Math.PI * 2); ctx.fill();
-                ctx.restore();
-
-                // Amazon Box 2D
-                ctx.save();
-                ctx.translate(cx, cy + 80);
-                ctx.fillStyle = '#C89656'; ctx.fillRect(-60, -40, 120, 80);
-                ctx.fillStyle = '#FF9900'; ctx.fillRect(-60, -5, 120, 10);
-                ctx.restore();
+                ctx.strokeStyle = i % 2 === 0 ? 'rgba(255, 153, 0, 0.12)' : 'rgba(0, 168, 225, 0.12)';
+                ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(p3.x, p3.y); ctx.lineTo(p4.x, p4.y); ctx.stroke();
             }
-            draw2D();
+
+            // Draw Floating AWS Particle Network
+            particles.forEach((p, idx) => {
+                p.y += Math.sin(time + idx) * 0.3;
+                let proj = project(p.x, p.y, p.z, camRx, camRy);
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(proj.x, proj.y, p.size * proj.scale, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Draw Network Edges
+                particles.slice(idx + 1, idx + 4).forEach(pNext => {
+                    let proj2 = project(pNext.x, pNext.y, pNext.z, camRx, camRy);
+                    let dist = Math.hypot(proj.x - proj2.x, proj.y - proj2.y);
+                    if (dist < 120) {
+                        ctx.strokeStyle = `rgba(0, 168, 225, ${0.3 * (1 - dist / 120)})`;
+                        ctx.beginPath(); ctx.moveTo(proj.x, proj.y); ctx.lineTo(proj2.x, proj2.y); ctx.stroke();
+                    }
+                });
+            });
+
+            // Draw 3D Hexacopter Drone
+            let droneY = -120 + Math.sin(time * 2) * 15;
+            let droneProj = project(0, droneY, 0, camRx, camRy);
+
+            // Drone Scanning Cone
+            ctx.save();
+            ctx.fillStyle = 'rgba(0, 168, 225, 0.08)';
+            ctx.beginPath();
+            let coneBaseLeft = project(-180, 180, 0, camRx, camRy);
+            let coneBaseRight = project(180, 180, 0, camRx, camRy);
+            ctx.moveTo(droneProj.x, droneProj.y);
+            ctx.lineTo(coneBaseLeft.x, coneBaseLeft.y);
+            ctx.lineTo(coneBaseRight.x, coneBaseRight.y);
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+
+            // Drone Rotors & Arms
+            for (let i = 0; i < 4; i++) {
+                let angle = (i * Math.PI) / 2 + Math.PI / 4 + time * 0.1;
+                let armX = Math.cos(angle) * 160;
+                let armZ = Math.sin(angle) * 160;
+                let armProj = project(armX, droneY, armZ, camRx, camRy);
+
+                ctx.strokeStyle = '#334155'; ctx.lineWidth = 4 * droneProj.scale;
+                ctx.beginPath(); ctx.moveTo(droneProj.x, droneProj.y); ctx.lineTo(armProj.x, armProj.y); ctx.stroke();
+
+                // Spinning Blade Rings
+                ctx.strokeStyle = '#FF9900'; ctx.lineWidth = 2 * armProj.scale;
+                ctx.beginPath();
+                ctx.ellipse(armProj.x, armProj.y, 35 * armProj.scale, 12 * armProj.scale, time * 10, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+
+            // Drone Center Core Body
+            ctx.fillStyle = '#121722';
+            ctx.beginPath();
+            ctx.arc(droneProj.x, droneProj.y, 45 * droneProj.scale, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#00A8E1'; ctx.lineWidth = 3 * droneProj.scale; ctx.stroke();
+
+            ctx.fillStyle = '#00A8E1';
+            ctx.beginPath();
+            ctx.arc(droneProj.x, droneProj.y, 16 * droneProj.scale, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Draw 3D Amazon Package Box
+            let boxY = 80;
+            let boxProj = project(0, boxY, 0, camRx, camRy + time * 0.2);
+
+            ctx.fillStyle = '#C89656';
+            ctx.fillRect(boxProj.x - 65 * boxProj.scale, boxProj.y - 45 * boxProj.scale, 130 * boxProj.scale, 90 * boxProj.scale);
+            ctx.strokeStyle = '#FF9900'; ctx.lineWidth = 2 * boxProj.scale; ctx.strokeRect(boxProj.x - 65 * boxProj.scale, boxProj.y - 45 * boxProj.scale, 130 * boxProj.scale, 90 * boxProj.scale);
+
+            // Amazon Glowing Tape
+            ctx.fillStyle = '#FF9900';
+            ctx.fillRect(boxProj.x - 65 * boxProj.scale, boxProj.y - 6 * boxProj.scale, 130 * boxProj.scale, 12 * boxProj.scale);
+
+            // Amazon Smile Logo Arc
+            ctx.strokeStyle = '#121722'; ctx.lineWidth = 3 * boxProj.scale;
+            ctx.beginPath();
+            ctx.arc(boxProj.x, boxProj.y, 25 * boxProj.scale, 0.2 * Math.PI, 0.8 * Math.PI);
+            ctx.stroke();
+
+            // Unboxing Echo Studio Device Animation
+            if (currentMode === 'unboxing') {
+                let echoY = -20 + Math.sin(time * 3) * 10;
+                let echoProj = project(0, echoY, 0, camRx, camRy);
+                ctx.fillStyle = '#1E293B';
+                ctx.beginPath();
+                ctx.arc(echoProj.x, echoProj.y, 35 * echoProj.scale, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#00A8E1'; ctx.lineWidth = 4 * echoProj.scale; ctx.stroke();
+            }
+
+            // Live Telemetry UI Updates
+            document.getElementById('val-speed').innerText = (64.0 + Math.sin(time * 3) * 2.5).toFixed(1) + ' MPH';
+            document.getElementById('val-alt').innerText = (142.0 + Math.cos(time * 2) * 1.8).toFixed(1) + ' FT';
         }
 
-        window.addEventListener('resize', () => {
-            if (renderer && camera) {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            }
-        });
+        render();
 
-        window.onload = initThree;
-
-        // Auto Reel
+        // Automated 20s Reel Cycle
         const modesSeq = ['drone', 'unboxing', 'aws', 'alexa'];
         let seqIdx = 0, reelTime = 0;
         setInterval(() => {
