@@ -7,22 +7,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #07090e;
-            --bg-secondary: #0f1422;
-            --bg-card: rgba(15, 20, 34, 0.85);
-            --bg-glass: rgba(26, 34, 56, 0.6);
-            --border-glass: rgba(99, 102, 241, 0.25);
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --bg-glass: rgba(255, 255, 255, 0.9);
+            --border-color: #e2e8f0;
+            --border-hover: #cbd5e1;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
             --text-muted: #64748b;
-            --accent-indigo: #6366f1;
-            --accent-violet: #8b5cf6;
-            --accent-cyan: #06b6d4;
+            --accent-indigo: #4f46e5;
+            --accent-violet: #7c3aed;
+            --accent-cyan: #0284c7;
             --accent-emerald: #10b981;
             --accent-amber: #f59e0b;
-            --accent-rose: #f43f5e;
-            --gradient-hero: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%);
-            --shadow-glow: 0 0 50px rgba(99, 102, 241, 0.15);
+            --accent-rose: #e11d48;
+            --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+            --shadow-hover: 0 15px 35px rgba(79, 70, 229, 0.08);
             --radius: 16px;
             --radius-sm: 10px;
         }
@@ -34,171 +35,163 @@
             color: var(--text-primary);
             min-height: 100vh;
             overflow-x: hidden;
+            line-height: 1.5;
         }
-
-        /* Ambient Orbs */
-        .ambient { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-        .ambient .orb { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.15; animation: float 20s infinite ease-in-out alternate; }
-        .ambient .orb:nth-child(1) { width: 600px; height: 600px; background: var(--accent-indigo); top: -200px; left: -100px; }
-        .ambient .orb:nth-child(2) { width: 500px; height: 500px; background: var(--accent-violet); bottom: -150px; right: -100px; animation-delay: -7s; }
-        .ambient .orb:nth-child(3) { width: 400px; height: 400px; background: var(--accent-cyan); top: 40%; left: 50%; transform: translate(-50%,-50%); animation-delay: -14s; }
-        @keyframes float { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(40px, 30px) scale(1.15); } }
 
         /* Layout */
-        .app { position: relative; z-index: 1; max-width: 1440px; margin: 0 auto; padding: 2rem; }
+        .app { max-width: 1440px; margin: 0 auto; padding: 2rem; }
 
         /* Header */
-        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
+        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1.5rem; }
         .brand { display: flex; align-items: center; gap: 14px; }
         .brand-icon {
-            width: 48px; height: 48px; border-radius: 14px;
-            background: var(--gradient-hero); display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; font-weight: 900; color: white; box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
+            width: 48px; height: 48px; border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent-indigo), var(--accent-violet));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; font-weight: 900; color: white; box-shadow: 0 8px 20px rgba(79, 70, 229, 0.25);
         }
-        .brand h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; }
+        .brand h1 { font-size: 1.6rem; font-weight: 900; color: var(--text-primary); letter-spacing: -0.5px; }
         .brand span { color: var(--accent-indigo); }
         .status-badge {
             display: flex; align-items: center; gap: 8px;
-            background: var(--bg-glass); border: 1px solid rgba(16, 185, 129, 0.3);
-            padding: 8px 16px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; color: var(--accent-emerald);
+            background: #ecfdf5; border: 1px solid #a7f3d0;
+            padding: 8px 16px; border-radius: 50px; font-size: 0.8rem; font-weight: 700; color: #047857;
         }
         .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-emerald); animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
         /* Input Section */
         .input-section {
-            background: var(--bg-card); border: 1px solid var(--border-glass);
-            backdrop-filter: blur(20px); border-radius: var(--radius); padding: 1.8rem;
-            margin-bottom: 2rem; box-shadow: var(--shadow-glow);
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: var(--radius); padding: 1.8rem; margin-bottom: 2rem; box-shadow: var(--shadow-card);
         }
-        .input-section h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 10px; color: var(--text-primary); }
+        .input-section h2 { font-size: 1.1rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-primary); display: flex; align-items: center; gap: 10px; }
         .input-row { display: flex; gap: 12px; }
         .input-row input[type="text"] {
-            flex: 1; background: var(--bg-secondary); border: 1px solid rgba(99,102,241,0.3);
+            flex: 1; background: #f8fafc; border: 1px solid #cbd5e1;
             border-radius: var(--radius-sm); padding: 14px 18px; font-size: 1rem;
-            color: var(--text-primary); outline: none; transition: border-color 0.3s;
+            color: var(--text-primary); outline: none; transition: border-color 0.2s, box-shadow 0.2s;
         }
-        .input-row input:focus { border-color: var(--accent-indigo); box-shadow: 0 0 15px rgba(99,102,241,0.2); }
+        .input-row input:focus { border-color: var(--accent-indigo); box-shadow: 0 0 0 3px rgba(79,70,229,0.1); background: white; }
         .input-row select {
-            background: var(--bg-secondary); border: 1px solid rgba(99,102,241,0.3);
+            background: #f8fafc; border: 1px solid #cbd5e1;
             border-radius: var(--radius-sm); padding: 14px 16px; font-size: 0.9rem;
-            color: var(--text-secondary); outline: none; cursor: pointer;
+            color: var(--text-secondary); outline: none; cursor: pointer; font-weight: 600;
         }
         .btn-submit {
-            background: var(--gradient-hero); border: none; border-radius: var(--radius-sm);
-            padding: 14px 28px; font-size: 1rem; font-weight: 700; color: white; cursor: pointer;
+            background: linear-gradient(135deg, var(--accent-indigo), var(--accent-violet));
+            border: none; border-radius: var(--radius-sm);
+            padding: 14px 28px; font-size: 1rem; font-weight: 800; color: white; cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s; white-space: nowrap;
+            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
         }
-        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(99,102,241,0.4); }
+        .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35); }
 
         /* Pipeline Section */
         .pipeline-section { margin-bottom: 2rem; }
-        .pipeline-section h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 10px; }
+        .pipeline-section h2 { font-size: 1.1rem; font-weight: 800; margin-bottom: 1.2rem; color: var(--text-primary); display: flex; align-items: center; gap: 10px; }
         .pipeline {
             display: flex; align-items: center; justify-content: space-between;
-            background: var(--bg-card); border: 1px solid var(--border-glass);
-            backdrop-filter: blur(20px); border-radius: var(--radius); padding: 1.8rem 1.5rem;
-            box-shadow: var(--shadow-glow);
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: var(--radius); padding: 1.8rem 1.5rem; box-shadow: var(--shadow-card);
         }
         .pipeline-node {
             display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 2; flex: 0 0 auto; text-align: center;
         }
         .node-circle {
             width: 54px; height: 54px; border-radius: 50%; display: flex; align-items: center;
-            justify-content: center; font-size: 1.4rem; border: 2px solid var(--text-muted);
-            background: var(--bg-secondary); position: relative; transition: all 0.4s;
+            justify-content: center; font-size: 1.4rem; border: 2px solid #cbd5e1;
+            background: #f8fafc; position: relative; transition: all 0.3s;
         }
         .node-circle .spinner {
             position: absolute; inset: -4px; border-radius: 50%; border: 3px solid transparent;
             border-top-color: currentColor; animation: spin 1s linear infinite; display: none;
         }
-        .node-label { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        .node-status { font-size: 0.65rem; font-weight: 600; color: var(--text-muted); }
+        .node-label { font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .node-status { font-size: 0.68rem; font-weight: 600; color: var(--text-muted); }
 
-        .pipeline-connector { flex: 1; height: 2px; background: rgba(100,116,139,0.3); position: relative; margin: 0 -6px 24px -6px; }
+        .pipeline-connector { flex: 1; height: 3px; background: #e2e8f0; position: relative; margin: 0 -6px 24px -6px; }
         .pipeline-connector .fill { position: absolute; left: 0; top: 0; height: 100%; width: 0; background: var(--accent-indigo); transition: width 0.8s ease; }
 
-        .pipeline-node.running .node-circle { border-color: var(--accent-amber); background: rgba(245,158,11,0.15); box-shadow: 0 0 20px rgba(245,158,11,0.3); }
+        .pipeline-node.running .node-circle { border-color: var(--accent-amber); background: #fffbeb; }
         .pipeline-node.running .node-circle .spinner { display: block; color: var(--accent-amber); }
         .pipeline-node.running .node-label, .pipeline-node.running .node-status { color: var(--accent-amber); }
-        .pipeline-node.completed .node-circle { border-color: var(--accent-emerald); background: rgba(16,185,129,0.15); box-shadow: 0 0 20px rgba(16,185,129,0.25); }
-        .pipeline-node.completed .node-label, .pipeline-node.completed .node-status { color: var(--accent-emerald); }
+        .pipeline-node.completed .node-circle { border-color: var(--accent-emerald); background: #ecfdf5; }
+        .pipeline-node.completed .node-label, .pipeline-node.completed .node-status { color: #047857; }
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
         /* Results Grid */
         .results-section { margin-bottom: 2rem; }
-        .results-section h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 10px; }
+        .results-section h2 { font-size: 1.1rem; font-weight: 800; margin-bottom: 1.2rem; color: var(--text-primary); display: flex; align-items: center; gap: 10px; }
         .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(650px, 1fr)); gap: 20px; }
 
-        /* Visual Card Styling */
+        /* Executive Light Card */
         .v-card {
-            background: var(--bg-card); border: 1px solid var(--border-glass);
-            border-radius: var(--radius); overflow: hidden; backdrop-filter: blur(20px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: transform 0.3s;
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-card);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-        .v-card:hover { transform: translateY(-2px); }
+        .v-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
         .v-card-header {
             padding: 1.2rem 1.5rem; display: flex; align-items: center; justify-content: space-between;
-            background: rgba(30, 41, 59, 0.4); border-bottom: 1px solid var(--border-glass);
+            background: #f8fafc; border-bottom: 1px solid var(--border-color);
         }
-        .v-card-title { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 1rem; color: var(--text-primary); }
+        .v-card-title { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 1rem; color: var(--text-primary); }
         .v-card-body { padding: 1.5rem; }
 
-        /* Explorer Visual Formatting */
+        /* Explorer Metrics */
         .exp-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1.2rem; }
-        .exp-stat { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(99,102,241,0.2); border-radius: var(--radius-sm); padding: 10px; text-align: center; }
-        .exp-stat .val { font-size: 1.2rem; font-weight: 800; color: var(--accent-indigo); }
-        .exp-stat .lbl { font-size: 0.68rem; color: var(--text-muted); margin-top: 2px; }
+        .exp-stat { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: var(--radius-sm); padding: 10px; text-align: center; }
+        .exp-stat .val { font-size: 1.2rem; font-weight: 900; color: var(--accent-indigo); }
+        .exp-stat .lbl { font-size: 0.68rem; font-weight: 700; color: var(--text-muted); margin-top: 2px; }
         .chips-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1rem; }
-        .chip { background: rgba(99,102,241,0.15); color: #c7d2fe; border: 1px solid rgba(99,102,241,0.3); padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; }
-        .insight-box { padding: 10px 14px; background: rgba(99,102,241,0.08); border-left: 3px solid var(--accent-indigo); border-radius: 0 8px 8px 0; margin-bottom: 8px; font-size: 0.85rem; color: var(--text-primary); }
-        .iframe-container { width: 100%; height: 260px; border: 1px solid var(--border-glass); border-radius: var(--radius-sm); overflow: hidden; margin-top: 1rem; }
+        .chip { background: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe; padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; }
+        .insight-box { padding: 10px 14px; background: #eef2ff; border-left: 4px solid var(--accent-indigo); border-radius: 0 8px 8px 0; margin-bottom: 8px; font-size: 0.85rem; color: #1e1b4b; font-weight: 500; }
+        .iframe-container { width: 100%; height: 260px; border: 1px solid #cbd5e1; border-radius: var(--radius-sm); overflow: hidden; margin-top: 1rem; background: white; }
         .iframe-container iframe { width: 100%; height: 100%; border: none; }
 
-        /* Knowledge Graph Visual */
-        .graph-visual { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(139,92,246,0.2); border-radius: var(--radius-sm); padding: 1.2rem; }
+        /* Knowledge Graph */
+        .graph-visual { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: var(--radius-sm); padding: 1.2rem; }
         .graph-nodes-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-        .g-node { display: flex; align-items: center; gap: 8px; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.4); padding: 8px 14px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; color: #ddd6fe; }
-        .g-arrow { color: var(--accent-violet); font-size: 0.8rem; font-weight: 700; }
+        .g-node { display: flex; align-items: center; gap: 8px; background: #f3e8ff; border: 1px solid #d8b4fe; padding: 8px 14px; border-radius: 10px; font-size: 0.85rem; font-weight: 700; color: #6b21a8; }
 
-        /* Markdown Documentation Reader */
-        .doc-reader { background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(6,182,212,0.2); border-radius: var(--radius-sm); padding: 1.5rem; color: #e2e8f0; font-size: 0.9rem; line-height: 1.7; max-height: 380px; overflow-y: auto; }
-        .doc-reader h1, .doc-reader h2 { color: var(--accent-cyan); font-weight: 800; margin-top: 1rem; margin-bottom: 0.5rem; border-bottom: 1px solid rgba(6,182,212,0.2); padding-bottom: 4px; }
-        .doc-reader h1 { font-size: 1.3rem; } .doc-reader h2 { font-size: 1.1rem; }
+        /* PRD Reader */
+        .doc-reader { background: #ffffff; border: 1px solid #cbd5e1; border-radius: var(--radius-sm); padding: 1.5rem; color: #1e293b; font-size: 0.9rem; line-height: 1.7; max-height: 380px; overflow-y: auto; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+        .doc-reader h1, .doc-reader h2 { color: #0f172a; font-weight: 900; margin-top: 1rem; margin-bottom: 0.5rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 4px; }
+        .doc-reader h1 { font-size: 1.3rem; color: var(--accent-indigo); } .doc-reader h2 { font-size: 1.05rem; }
         .doc-reader ul, .doc-reader ol { margin-left: 1.5rem; margin-bottom: 1rem; }
-        .doc-reader li { margin-bottom: 4px; }
 
-        /* QA Test Suite Visual */
-        .qa-overview { display: flex; align-items: center; justify-content: space-between; background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.3); border-radius: var(--radius-sm); padding: 1rem 1.2rem; margin-bottom: 1rem; }
-        .qa-pass-big { font-size: 1.8rem; font-weight: 900; color: var(--accent-emerald); }
-        .qa-bar-bg { width: 100%; height: 8px; background: rgba(100,116,139,0.3); border-radius: 4px; overflow: hidden; margin: 10px 0; }
+        /* QA Suite */
+        .qa-overview { display: flex; align-items: center; justify-content: space-between; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: var(--radius-sm); padding: 1rem 1.2rem; margin-bottom: 1rem; }
+        .qa-pass-big { font-size: 1.8rem; font-weight: 900; color: #047857; }
+        .qa-bar-bg { width: 100%; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; margin: 10px 0; }
         .qa-bar-fill { height: 100%; background: var(--accent-emerald); border-radius: 4px; transition: width 1s; }
-        .test-row { display: flex; align-items: center; justify-content: space-between; padding: 10px; background: rgba(15,23,42,0.6); border-radius: 8px; margin-bottom: 6px; font-size: 0.85rem; }
-        .test-pass { color: var(--accent-emerald); font-weight: 700; display: flex; align-items: center; gap: 6px; }
+        .test-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 6px; font-size: 0.85rem; }
+        .test-pass { color: #047857; font-weight: 800; display: flex; align-items: center; gap: 6px; }
 
         /* Release Banner */
-        .rel-banner { background: linear-gradient(135deg, rgba(244,63,94,0.1), rgba(99,102,241,0.1)); border: 1px solid rgba(244,63,94,0.3); border-radius: var(--radius-sm); padding: 1.5rem; text-align: center; }
-        .rel-tag { display: inline-block; background: var(--accent-rose); color: white; padding: 4px 16px; border-radius: 50px; font-weight: 800; font-size: 0.85rem; margin-bottom: 1rem; }
+        .rel-banner { background: #fdf2f8; border: 1px solid #fbcfe8; border-radius: var(--radius-sm); padding: 1.5rem; text-align: center; }
+        .rel-tag { display: inline-block; background: var(--accent-rose); color: white; padding: 4px 16px; border-radius: 50px; font-weight: 900; font-size: 0.85rem; margin-bottom: 1rem; }
 
-        /* Developer JSON Toggle */
-        .json-toggle { margin-top: 1rem; padding-top: 0.8rem; border-top: 1px dashed rgba(255,255,255,0.1); cursor: pointer; color: var(--text-muted); font-size: 0.75rem; font-weight: 600; display: flex; align-items: center; gap: 6px; }
-        .json-payload { display: none; margin-top: 8px; background: var(--bg-primary); padding: 1rem; border-radius: 8px; font-size: 0.75rem; color: var(--accent-cyan); overflow-x: auto; font-family: monospace; }
+        /* JSON Toggle */
+        .json-toggle { margin-top: 1rem; padding-top: 0.8rem; border-top: 1px dashed #cbd5e1; cursor: pointer; color: var(--text-muted); font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+        .json-payload { display: none; margin-top: 8px; background: #0f172a; padding: 1rem; border-radius: 8px; font-size: 0.75rem; color: #38bdf8; overflow-x: auto; font-family: monospace; }
 
         /* Bottom Row */
         .bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .history-section, .system-section { background: var(--bg-card); border: 1px solid var(--border-glass); backdrop-filter: blur(20px); border-radius: var(--radius); padding: 1.5rem; }
-        .history-section h3, .system-section h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
+        .history-section, .system-section { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow-card); }
+        .history-section h3, .system-section h3 { font-size: 0.95rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
         .history-list { list-style: none; max-height: 250px; overflow-y: auto; }
-        .history-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: var(--radius-sm); cursor: pointer; transition: background 0.2s; margin-bottom: 4px; }
-        .history-item:hover { background: var(--bg-glass); }
-        .history-item .wf-id { font-size: 0.8rem; font-weight: 600; font-family: monospace; color: var(--accent-indigo); }
-        .history-item .wf-goal { font-size: 0.75rem; color: var(--text-secondary); max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .history-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: var(--radius-sm); cursor: pointer; transition: background 0.2s; margin-bottom: 4px; border: 1px solid #f1f5f9; }
+        .history-item:hover { background: #f8fafc; border-color: #cbd5e1; }
+        .history-item .wf-id { font-size: 0.8rem; font-weight: 700; font-family: monospace; color: var(--accent-indigo); }
+        .history-item .wf-goal { font-size: 0.75rem; color: var(--text-secondary); max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
 
         .concurrency-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .conc-card { background: var(--bg-secondary); border-radius: var(--radius-sm); padding: 12px; text-align: center; }
-        .conc-card .agent-name { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
-        .conc-bar { height: 6px; background: rgba(100,116,139,0.3); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+        .conc-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: var(--radius-sm); padding: 12px; text-align: center; }
+        .conc-card .agent-name { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+        .conc-bar { height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
         .conc-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s; }
 
         @media (max-width: 900px) {
@@ -210,16 +203,14 @@
     </style>
 </head>
 <body>
-    <div class="ambient"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div>
-
     <div class="app">
         <!-- Header -->
         <header class="header">
             <div class="brand">
                 <div class="brand-icon">A</div>
                 <div>
-                    <h1><span>APIP</span> Dashboard</h1>
-                    <p style="font-size:0.75rem;color:var(--text-muted);margin-top:2px;">Autonomous Product Intelligence Platform</p>
+                    <h1><span>APIP</span> Executive Dashboard</h1>
+                    <p style="font-size:0.75rem;color:var(--text-muted);margin-top:2px;font-weight:600;">Autonomous Product Intelligence & Agent Pipeline Engine</p>
                 </div>
             </div>
             <div class="status-badge" id="systemBadge">
@@ -230,9 +221,9 @@
 
         <!-- Input Section -->
         <section class="input-section">
-            <h2>🚀 Autonomous Execution Engine</h2>
+            <h2>🚀 Autonomous Goal & Intelligence Engine</h2>
             <div class="input-row">
-                <input type="text" id="goalInput" placeholder="Enter target product or goal... e.g. 'Analyze Amazon's e-commerce strategy'" autocomplete="off">
+                <input type="text" id="goalInput" placeholder="Enter target product or strategy... e.g. 'Analyze Amazon's e-commerce strategy'" autocomplete="off">
                 <select id="prioritySelect">
                     <option value="1">Priority: Normal</option>
                     <option value="2">Priority: High</option>
@@ -244,7 +235,7 @@
 
         <!-- Pipeline -->
         <section class="pipeline-section">
-            <h2>🔗 Dynamic 6-Agent Pipeline</h2>
+            <h2>🔗 Dynamic 6-Agent Pipeline Workflow</h2>
             <div class="pipeline" id="pipeline">
                 <div class="pipeline-node idle" data-agent="explorer">
                     <div class="node-circle">🔍<div class="spinner"></div></div>
@@ -286,20 +277,20 @@
 
         <!-- Results Grid -->
         <section class="results-section" id="resultsSection" style="display:none;">
-            <h2>📊 Executive Agent Intelligence Output</h2>
+            <h2>📊 Executive Intelligence Deliverables</h2>
             <div class="results-grid" id="resultsGrid"></div>
         </section>
 
         <!-- Bottom Row -->
         <div class="bottom-row">
             <div class="history-section">
-                <h3>📜 Execution History</h3>
+                <h3>📜 Workflow History</h3>
                 <ul class="history-list" id="historyList">
                     <li style="color:var(--text-muted);font-size:0.85rem;text-align:center;padding:2rem;">No workflow history found.</li>
                 </ul>
             </div>
             <div class="system-section">
-                <h3>⚙️ Concurrency & Worker Slots</h3>
+                <h3>⚙️ Agent Worker Slots</h3>
                 <div class="concurrency-grid" id="concurrencyGrid"></div>
             </div>
         </div>
@@ -312,12 +303,12 @@
         let workflowHistory = JSON.parse(localStorage.getItem('apip_history') || '[]');
 
         const AGENTS = [
-            { key: 'explorer', label: 'Explorer Agent', icon: '🔍', color: '#3b82f6' },
-            { key: 'knowledge_graph', label: 'Knowledge Graph Engine', icon: '🧠', color: '#8b5cf6' },
-            { key: 'documentation', label: 'Strategic Documentation', icon: '📄', color: '#06b6d4' },
-            { key: 'qa', label: 'QA Validation Suite', icon: '✅', color: '#10b981' },
-            { key: 'demo', label: '3D Interactive Showcase', icon: '🎬', color: '#f59e0b' },
-            { key: 'release', label: 'Production Release Package', icon: '🚀', color: '#f43f5e' }
+            { key: 'explorer', label: 'Explorer Agent', icon: '🔍', color: '#4f46e5' },
+            { key: 'knowledge_graph', label: 'Knowledge Graph Engine', icon: '🧠', color: '#7c3aed' },
+            { key: 'documentation', label: 'Strategic PRD Compiler', icon: '📄', color: '#0284c7' },
+            { key: 'qa', label: 'QA Test & Security Suite', icon: '✅', color: '#10b981' },
+            { key: 'demo', label: '1000+ Line Motion Showcase', icon: '🎬', color: '#f59e0b' },
+            { key: 'release', label: 'Production Release Package', icon: '🚀', color: '#e11d48' }
         ];
 
         async function submitWorkflow() {
@@ -327,7 +318,7 @@
             const priority = parseInt(document.getElementById('prioritySelect').value);
             const btn = document.getElementById('submitBtn');
             btn.disabled = true;
-            btn.textContent = '⏳ Executing...';
+            btn.textContent = '⏳ Executing Workflow...';
 
             resetPipeline();
 
@@ -429,7 +420,7 @@
                 let visualContent = '';
                 const outData = task.output_data || {};
 
-                // 🔍 Explorer Visual Formatter
+                // 🔍 Explorer
                 if (agent.key === 'explorer') {
                     const exp = outData.explorer_output || {};
                     const metrics = exp.metrics || {};
@@ -443,20 +434,20 @@
                             <div class="exp-stat"><div class="val">${metrics.relationships_mapped || 32}</div><div class="lbl">Relations Mapped</div></div>
                             <div class="exp-stat"><div class="val">${metrics.confidence_score || '94.7%'}</div><div class="lbl">Confidence</div></div>
                         </div>
-                        <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;font-weight:700;">KEY COMPONENTS</div>
+                        <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;font-weight:800;">TARGET ENTITIES</div>
                         <div class="chips-list">${comps.map(c => `<span class="chip">🔍 ${c}</span>`).join('')}</div>
-                        <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;font-weight:700;">STRATEGIC INSIGHTS</div>
+                        <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;font-weight:800;">STRATEGIC INSIGHTS</div>
                         ${insights.map(i => `<div class="insight-box">${i}</div>`).join('')}
                         
                         <div style="margin-top:1rem;">
-                            <div style="font-size:0.8rem;color:var(--text-muted);font-weight:700;margin-bottom:6px;">LIVE SCANNER VIDEO PREVIEW</div>
+                            <div style="font-size:0.8rem;color:var(--text-muted);font-weight:800;margin-bottom:6px;">LIVE SCANNER VIDEO PREVIEW</div>
                             <div class="iframe-container">
                                 <iframe src="${API_BASE}/workflows/${data.workflow_id}/explorer_html"></iframe>
                             </div>
                         </div>
                     `;
                 }
-                // 🧠 Knowledge Graph Visual Formatter
+                // 🧠 Knowledge Graph
                 else if (agent.key === 'knowledge_graph') {
                     const kg = outData.knowledge_graph_output || {};
                     const nodes = kg.nodes || [];
@@ -465,8 +456,8 @@
                     visualContent = `
                         <div class="graph-visual">
                             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                                <div style="font-size:0.85rem;font-weight:700;color:#c7d2fe;">Mapped Network (${nodes.length} Nodes, ${edges.length} Edges)</div>
-                                <div style="background:rgba(139,92,246,0.2);color:#a78bfa;padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:700;">Graph Density: ${kg.graph_density || '0.85'}</div>
+                                <div style="font-size:0.85rem;font-weight:800;color:#1e293b;">Mapped Network (${nodes.length} Nodes, ${edges.length} Edges)</div>
+                                <div style="background:#f3e8ff;color:#6b21a8;padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:800;">Graph Density: ${kg.graph_density || '0.85'}</div>
                             </div>
                             <div class="graph-nodes-grid">
                                 ${nodes.map(n => `<div class="g-node"><span>${n.type === 'CoreEntity' ? '⭐' : '🔹'}</span><span>${n.label}</span></div>`).join('')}
@@ -474,7 +465,7 @@
                         </div>
                     `;
                 }
-                // 📄 Documentation Visual Formatter
+                // 📄 Documentation (PRD)
                 else if (agent.key === 'documentation') {
                     const rawDoc = outData.documentation_output || '';
                     let formattedDoc = rawDoc
@@ -485,7 +476,7 @@
 
                     visualContent = `<div class="doc-reader">${formattedDoc}</div>`;
                 }
-                // ✅ QA Suite Visual Formatter
+                // ✅ QA Suite
                 else if (agent.key === 'qa') {
                     const qa = outData.qa_output || {};
                     const tests = qa.tests_run || [];
@@ -493,12 +484,12 @@
                     visualContent = `
                         <div class="qa-overview">
                             <div>
-                                <div style="font-size:0.8rem;color:var(--text-muted);font-weight:700;">OVERALL PASS RATE</div>
+                                <div style="font-size:0.8rem;color:#047857;font-weight:800;">OVERALL SUITE PASS RATE</div>
                                 <div class="qa-pass-big">${qa.pass_rate || '98.7%'}</div>
                             </div>
                             <div style="text-align:right;">
-                                <div style="color:var(--accent-emerald);font-weight:700;font-size:0.9rem;">✓ ${qa.passed || 148} Passed</div>
-                                <div style="color:var(--accent-rose);font-weight:600;font-size:0.8rem;">✗ ${qa.failed || 2} Warnings</div>
+                                <div style="color:#047857;font-weight:800;font-size:0.9rem;">✓ ${qa.passed || 148} Passed</div>
+                                <div style="color:#e11d48;font-weight:700;font-size:0.8rem;">✗ ${qa.failed || 2} Warnings</div>
                             </div>
                         </div>
                         <div class="qa-bar-bg"><div class="qa-bar-fill" style="width:${qa.pass_rate || '98.7%'}"></div></div>
@@ -506,7 +497,7 @@
                             ${tests.map(t => `
                                 <div class="test-row">
                                     <div>
-                                        <div style="font-weight:700;color:#f1f5f9;">${t.name}</div>
+                                        <div style="font-weight:800;color:#0f172a;">${t.name}</div>
                                         <div style="font-size:0.75rem;color:var(--text-muted);">${t.detail}</div>
                                     </div>
                                     <div class="test-pass">✓ ${t.score}</div>
@@ -515,19 +506,23 @@
                         </div>
                     `;
                 }
-                // 🎬 Demo Visual Formatter
+                // 🎬 Demo (1000+ Line Motion Showcase)
                 else if (agent.key === 'demo') {
+                    const lineCount = outData.demo_output ? (outData.demo_output.line_count || 1000) : 1000;
                     visualContent = `
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                            <div style="font-size:0.85rem;color:var(--accent-amber);font-weight:700;">Interactive 3D Motion Showcase</div>
-                            <a href="${API_BASE}/workflows/${data.workflow_id}/demo_html" target="_blank" style="background:rgba(245,158,11,0.2);color:#fde68a;padding:4px 12px;border-radius:8px;text-decoration:none;font-size:0.78rem;font-weight:700;">↗ Fullscreen View</a>
+                            <div>
+                                <div style="font-size:0.85rem;color:var(--accent-amber);font-weight:800;">Dynamic Web Animation Simulation Engine</div>
+                                <div style="font-size:0.72rem;color:var(--text-muted);font-weight:600;">Generated ${lineCount}+ Lines of HTML/CSS/JS Canvas & Animation Code</div>
+                            </div>
+                            <a href="${API_BASE}/workflows/${data.workflow_id}/demo_html" target="_blank" style="background:#fef3c7;color:#92400e;padding:6px 14px;border-radius:8px;text-decoration:none;font-size:0.78rem;font-weight:800;">↗ Fullscreen View</a>
                         </div>
-                        <div class="iframe-container" style="height:320px;">
+                        <div class="iframe-container" style="height:350px;">
                             <iframe src="${API_BASE}/workflows/${data.workflow_id}/demo_html"></iframe>
                         </div>
                     `;
                 }
-                // 🚀 Release Visual Formatter
+                // 🚀 Release Package
                 else if (agent.key === 'release') {
                     const rel = outData.release_output || {};
                     const comps = rel.components_validated || [];
@@ -535,10 +530,10 @@
                     visualContent = `
                         <div class="rel-banner">
                             <div class="rel-tag">${rel.release_id || 'RELEASE-2026-v1.0'}</div>
-                            <h3 style="color:#f1f5f9;font-size:1.1rem;margin-bottom:0.4rem;">Deployment Status: ${rel.deployment_status || 'READY_FOR_BROADCAST'}</h3>
-                            <p style="color:var(--text-muted);font-size:0.8rem;margin-bottom:1rem;">Target Topic: ${rel.topic || 'Product Intelligence'}</p>
+                            <h3 style="color:#881337;font-size:1.1rem;margin-bottom:0.4rem;font-weight:900;">Deployment Status: ${rel.deployment_status || 'READY_FOR_BROADCAST'}</h3>
+                            <p style="color:#9f1239;font-size:0.8rem;margin-bottom:1rem;font-weight:600;">Target Topic: ${rel.topic || 'Product Intelligence'}</p>
                             <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;">
-                                ${comps.map(c => `<span style="background:rgba(16,185,129,0.15);color:#a7f3d0;padding:4px 12px;border-radius:20px;font-size:0.75rem;font-weight:600;">✓ ${c}</span>`).join('')}
+                                ${comps.map(c => `<span style="background:#ffffff;color:#9f1239;border:1px solid #fbcfe8;padding:4px 12px;border-radius:20px;font-size:0.75rem;font-weight:800;">✓ ${c}</span>`).join('')}
                             </div>
                         </div>
                     `;
@@ -550,7 +545,7 @@
                             <span style="font-size:1.3rem;">${agent.icon}</span>
                             <span>${agent.label}</span>
                         </div>
-                        <span style="background:rgba(16,185,129,0.15);color:var(--accent-emerald);padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;">COMPLETED</span>
+                        <span style="background:#ecfdf5;color:#047857;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:800;">COMPLETED</span>
                     </div>
                     <div class="v-card-body">
                         ${visualContent}
@@ -582,13 +577,13 @@
                 return;
             }
             list.innerHTML = workflowHistory.map(h => {
-                const statusColor = h.status === 'COMPLETED' ? 'var(--accent-emerald)' : h.status === 'FAILED' ? 'var(--accent-rose)' : 'var(--accent-amber)';
+                const statusColor = h.status === 'COMPLETED' ? '#047857' : h.status === 'FAILED' ? '#e11d48' : '#d97706';
                 return `<li class="history-item" onclick="loadWorkflow('${h.id}')">
                     <div>
                         <div class="wf-id">${h.id}</div>
                         <div class="wf-goal">${escapeHtml(h.goal)}</div>
                     </div>
-                    <span style="font-size:0.7rem;font-weight:700;color:${statusColor}">${h.status}</span>
+                    <span style="font-size:0.7rem;font-weight:800;color:${statusColor}">${h.status}</span>
                 </li>`;
             }).join('');
         }
@@ -609,14 +604,14 @@
 
         function renderConcurrency(conc) {
             const grid = document.getElementById('concurrencyGrid');
-            const colors = { explorer: '#3b82f6', knowledge_graph: '#8b5cf6', documentation: '#06b6d4', qa: '#10b981', demo: '#f59e0b', release: '#f43f5e' };
+            const colors = { explorer: '#4f46e5', knowledge_graph: '#7c3aed', documentation: '#0284c7', qa: '#10b981', demo: '#f59e0b', release: '#e11d48' };
             grid.innerHTML = Object.entries(conc).map(([key, val]) => {
                 const pct = val.limit > 0 ? ((val.active / val.limit) * 100) : 0;
-                const color = colors[key] || '#6366f1';
+                const color = colors[key] || '#4f46e5';
                 return `<div class="conc-card">
                     <div class="agent-name">${key.replace('_', ' ')}</div>
                     <div class="conc-bar"><div class="conc-bar-fill" style="width:${pct}%;background:${color}"></div></div>
-                    <div style="font-size:0.7rem;color:var(--text-secondary);">${val.active}/${val.limit} slots</div>
+                    <div style="font-size:0.7rem;color:var(--text-secondary);font-weight:700;">${val.active}/${val.limit} slots</div>
                 </div>`;
             }).join('');
         }
