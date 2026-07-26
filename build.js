@@ -23,9 +23,9 @@ try {
 // ─── Step 2: Pre-install Python venv & all packages during BUILD ───
 try {
   console.log("Pre-installing Python 3.11 virtual environment...");
-  const env = { ...process.env, UV_PYTHON_INSTALL_DIR: '/tmp/.uv_python' };
+  const env = { ...process.env, UV_PYTHON_INSTALL_DIR: '/app/.uv_python' };
   
-  execSync('/app/uv venv --python 3.11 /tmp/.venv', { stdio: 'inherit', env });
+  execSync('/app/uv venv --python 3.11 /app/.venv', { stdio: 'inherit', env });
 
   // Discover all requirements.txt across MCP servers
   const reqs = ['orchestrator', 'explorer-mcp', 'documentation-mcp', 'qa-mcp', 'demo-mcp', 'release-mcp', 'knowledge-mcp']
@@ -35,7 +35,7 @@ try {
     .join(' ');
 
   console.log("Installing all python packages...");
-  execSync(`/app/uv pip install --python /tmp/.venv/bin/python ${reqs} fastmcp pydantic mcp`, { stdio: 'inherit', env });
+  execSync(`/app/uv pip install --python /app/.venv/bin/python ${reqs} fastmcp pydantic mcp`, { stdio: 'inherit', env });
   console.log("Python environment ready!");
 } catch (e) {
   console.error("Failed to pre-install Python:", e);
