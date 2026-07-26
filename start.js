@@ -3,11 +3,12 @@ const fs = require('fs');
 
 try {
     console.log("Setting up Python virtual environment via uv...");
-    // We map HOME to a writable directory in case it isn't
-    const env = { ...process.env, UV_PYTHON_INSTALL_DIR: '/app/.uv_python' };
+    // Use /tmp which is universally writable (drwxrwxrwt) 
+    // This bypasses the fact that the /app folder root might be owned by root!
+    const env = { ...process.env, UV_PYTHON_INSTALL_DIR: '/tmp/.uv_python' };
     
     // Create Python 3.11 venv
-    execSync('/app/uv venv --python 3.11 /app/.venv', { stdio: 'inherit', env });
+    execSync('/app/uv venv --python 3.11 /tmp/.venv', { stdio: 'inherit', env });
     
     // Discover all requirements.txt
     const reqs = ['orchestrator', 'explorer-mcp', 'documentation-mcp', 'qa-mcp', 'demo-mcp', 'release-mcp', 'knowledge-mcp']
@@ -17,10 +18,10 @@ try {
         .join(' ');
 
     console.log("Installing python packages...");
-    execSync(`/app/uv pip install --python /app/.venv/bin/python ${reqs} fastmcp pydantic mcp`, { stdio: 'inherit', env });
+    execSync(`/app/uv pip install --python /tmp/.venv/bin/python ${reqs} fastmcp pydantic mcp`, { stdio: 'inherit', env });
 
     console.log("Starting FASTAPI Orchestrator...");
-    const child = spawn('/app/.venv/bin/python', ['orchestrator/main.py'], { stdio: 'inherit', env });
+    const child = spawn('/tmp/.venv/bin/python', ['orchestrator/main.py'], { stdio: 'inherit', env });
     
     child.on('close', (code) => {
         process.exit(code !== null ? code : 1);
