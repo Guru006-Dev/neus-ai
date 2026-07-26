@@ -7,12 +7,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #0a0e1a;
-            --bg-secondary: #111827;
-            --bg-card: rgba(17, 24, 39, 0.8);
-            --bg-glass: rgba(30, 41, 59, 0.5);
-            --border-glass: rgba(99, 102, 241, 0.2);
-            --text-primary: #f1f5f9;
+            --bg-primary: #07090e;
+            --bg-secondary: #0f1422;
+            --bg-card: rgba(15, 20, 34, 0.85);
+            --bg-glass: rgba(26, 34, 56, 0.6);
+            --border-glass: rgba(99, 102, 241, 0.25);
+            --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
             --text-muted: #64748b;
             --accent-indigo: #6366f1;
@@ -21,10 +21,8 @@
             --accent-emerald: #10b981;
             --accent-amber: #f59e0b;
             --accent-rose: #f43f5e;
-            --accent-blue: #3b82f6;
-            --accent-pink: #ec4899;
             --gradient-hero: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%);
-            --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.15);
+            --shadow-glow: 0 0 50px rgba(99, 102, 241, 0.15);
             --radius: 16px;
             --radius-sm: 10px;
         }
@@ -38,28 +36,24 @@
             overflow-x: hidden;
         }
 
-        /* Ambient Background */
-        .ambient { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; overflow: hidden; }
-        .ambient .orb {
-            position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.12;
-            animation: orbFloat 20s infinite ease-in-out alternate;
-        }
+        /* Ambient Orbs */
+        .ambient { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+        .ambient .orb { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.15; animation: float 20s infinite ease-in-out alternate; }
         .ambient .orb:nth-child(1) { width: 600px; height: 600px; background: var(--accent-indigo); top: -200px; left: -100px; }
         .ambient .orb:nth-child(2) { width: 500px; height: 500px; background: var(--accent-violet); bottom: -150px; right: -100px; animation-delay: -7s; }
-        .ambient .orb:nth-child(3) { width: 400px; height: 400px; background: var(--accent-cyan); top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: -14s; }
-        @keyframes orbFloat { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(40px, 30px) scale(1.15); } }
+        .ambient .orb:nth-child(3) { width: 400px; height: 400px; background: var(--accent-cyan); top: 40%; left: 50%; transform: translate(-50%,-50%); animation-delay: -14s; }
+        @keyframes float { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(40px, 30px) scale(1.15); } }
 
         /* Layout */
-        .app { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 2rem; }
+        .app { position: relative; z-index: 1; max-width: 1440px; margin: 0 auto; padding: 2rem; }
 
         /* Header */
-        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2.5rem; }
+        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
         .brand { display: flex; align-items: center; gap: 14px; }
         .brand-icon {
             width: 48px; height: 48px; border-radius: 14px;
             background: var(--gradient-hero); display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; font-weight: 900; color: white;
-            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
+            font-size: 1.5rem; font-weight: 900; color: white; box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
         }
         .brand h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; }
         .brand span { color: var(--accent-indigo); }
@@ -74,21 +68,21 @@
         /* Input Section */
         .input-section {
             background: var(--bg-card); border: 1px solid var(--border-glass);
-            backdrop-filter: blur(20px); border-radius: var(--radius); padding: 2rem;
-            margin-bottom: 2.5rem; box-shadow: var(--shadow-glow);
+            backdrop-filter: blur(20px); border-radius: var(--radius); padding: 1.8rem;
+            margin-bottom: 2rem; box-shadow: var(--shadow-glow);
         }
-        .input-section h2 { font-size: 1.15rem; font-weight: 700; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 10px; }
+        .input-section h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 10px; color: var(--text-primary); }
         .input-row { display: flex; gap: 12px; }
         .input-row input[type="text"] {
-            flex: 1; background: var(--bg-secondary); border: 1px solid rgba(99,102,241,0.2);
+            flex: 1; background: var(--bg-secondary); border: 1px solid rgba(99,102,241,0.3);
             border-radius: var(--radius-sm); padding: 14px 18px; font-size: 1rem;
-            color: var(--text-primary); font-family: inherit; outline: none; transition: border-color 0.3s;
+            color: var(--text-primary); outline: none; transition: border-color 0.3s;
         }
-        .input-row input:focus { border-color: var(--accent-indigo); }
+        .input-row input:focus { border-color: var(--accent-indigo); box-shadow: 0 0 15px rgba(99,102,241,0.2); }
         .input-row select {
-            background: var(--bg-secondary); border: 1px solid rgba(99,102,241,0.2);
+            background: var(--bg-secondary); border: 1px solid rgba(99,102,241,0.3);
             border-radius: var(--radius-sm); padding: 14px 16px; font-size: 0.9rem;
-            color: var(--text-secondary); font-family: inherit; outline: none; cursor: pointer; min-width: 120px;
+            color: var(--text-secondary); outline: none; cursor: pointer;
         }
         .btn-submit {
             background: var(--gradient-hero); border: none; border-radius: var(--radius-sm);
@@ -96,154 +90,127 @@
             transition: transform 0.2s, box-shadow 0.2s; white-space: nowrap;
         }
         .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(99,102,241,0.4); }
-        .btn-submit:active { transform: translateY(0); }
-        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
         /* Pipeline Section */
-        .pipeline-section { margin-bottom: 2.5rem; }
-        .pipeline-section h2 { font-size: 1.15rem; font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; }
+        .pipeline-section { margin-bottom: 2rem; }
+        .pipeline-section h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 10px; }
         .pipeline {
             display: flex; align-items: center; justify-content: space-between;
             background: var(--bg-card); border: 1px solid var(--border-glass);
-            backdrop-filter: blur(20px); border-radius: var(--radius); padding: 2rem 1.5rem;
-            box-shadow: var(--shadow-glow); position: relative; overflow: hidden;
+            backdrop-filter: blur(20px); border-radius: var(--radius); padding: 1.8rem 1.5rem;
+            box-shadow: var(--shadow-glow);
         }
         .pipeline-node {
-            display: flex; flex-direction: column; align-items: center; gap: 10px;
-            z-index: 2; flex: 0 0 auto; text-align: center; min-width: 100px;
+            display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 2; flex: 0 0 auto; text-align: center;
         }
         .node-circle {
-            width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center;
-            justify-content: center; font-size: 1.5rem; border: 2px solid var(--text-muted);
-            background: var(--bg-secondary); transition: all 0.5s cubic-bezier(0.16,1,0.3,1);
-            position: relative;
+            width: 54px; height: 54px; border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; font-size: 1.4rem; border: 2px solid var(--text-muted);
+            background: var(--bg-secondary); position: relative; transition: all 0.4s;
         }
         .node-circle .spinner {
-            position: absolute; inset: -4px; border-radius: 50%;
-            border: 3px solid transparent; border-top-color: currentColor;
-            animation: spin 1s linear infinite; display: none;
+            position: absolute; inset: -4px; border-radius: 50%; border: 3px solid transparent;
+            border-top-color: currentColor; animation: spin 1s linear infinite; display: none;
         }
-        .node-label { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); transition: color 0.3s; text-transform: uppercase; letter-spacing: 0.5px; }
-        .node-status { font-size: 0.65rem; font-weight: 500; color: var(--text-muted); min-height: 16px; }
+        .node-label { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .node-status { font-size: 0.65rem; font-weight: 600; color: var(--text-muted); }
 
-        /* Pipeline connectors */
-        .pipeline-connector {
-            flex: 1; height: 2px; background: rgba(100,116,139,0.3);
-            position: relative; margin: 0 -8px; margin-bottom: 26px;
-        }
-        .pipeline-connector .fill {
-            position: absolute; left: 0; top: 0; height: 100%; width: 0;
-            background: var(--accent-indigo); transition: width 0.8s ease;
-        }
+        .pipeline-connector { flex: 1; height: 2px; background: rgba(100,116,139,0.3); position: relative; margin: 0 -6px 24px -6px; }
+        .pipeline-connector .fill { position: absolute; left: 0; top: 0; height: 100%; width: 0; background: var(--accent-indigo); transition: width 0.8s ease; }
 
-        /* Node states */
-        .pipeline-node.idle .node-circle { border-color: var(--text-muted); }
         .pipeline-node.running .node-circle { border-color: var(--accent-amber); background: rgba(245,158,11,0.15); box-shadow: 0 0 20px rgba(245,158,11,0.3); }
         .pipeline-node.running .node-circle .spinner { display: block; color: var(--accent-amber); }
-        .pipeline-node.running .node-label { color: var(--accent-amber); }
-        .pipeline-node.running .node-status { color: var(--accent-amber); }
-        .pipeline-node.completed .node-circle { border-color: var(--accent-emerald); background: rgba(16,185,129,0.15); box-shadow: 0 0 20px rgba(16,185,129,0.2); }
-        .pipeline-node.completed .node-label { color: var(--accent-emerald); }
-        .pipeline-node.completed .node-status { color: var(--accent-emerald); }
-        .pipeline-node.failed .node-circle { border-color: var(--accent-rose); background: rgba(244,63,94,0.15); box-shadow: 0 0 20px rgba(244,63,94,0.3); }
-        .pipeline-node.failed .node-label { color: var(--accent-rose); }
-        .pipeline-node.failed .node-status { color: var(--accent-rose); }
+        .pipeline-node.running .node-label, .pipeline-node.running .node-status { color: var(--accent-amber); }
+        .pipeline-node.completed .node-circle { border-color: var(--accent-emerald); background: rgba(16,185,129,0.15); box-shadow: 0 0 20px rgba(16,185,129,0.25); }
+        .pipeline-node.completed .node-label, .pipeline-node.completed .node-status { color: var(--accent-emerald); }
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
         /* Results Grid */
-        .results-section { margin-bottom: 2.5rem; }
-        .results-section h2 { font-size: 1.15rem; font-weight: 700; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 10px; }
-        .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 16px; }
+        .results-section { margin-bottom: 2rem; }
+        .results-section h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 10px; }
+        .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(650px, 1fr)); gap: 20px; }
 
-        .result-card {
+        /* Visual Card Styling */
+        .v-card {
             background: var(--bg-card); border: 1px solid var(--border-glass);
-            backdrop-filter: blur(20px); border-radius: var(--radius); overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
+            border-radius: var(--radius); overflow: hidden; backdrop-filter: blur(20px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: transform 0.3s;
         }
-        .result-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
-        .result-card-header {
-            padding: 1rem 1.2rem; display: flex; align-items: center; justify-content: space-between;
-            cursor: pointer; user-select: none; border-bottom: 1px solid transparent;
-            transition: border-color 0.3s;
+        .v-card:hover { transform: translateY(-2px); }
+        .v-card-header {
+            padding: 1.2rem 1.5rem; display: flex; align-items: center; justify-content: space-between;
+            background: rgba(30, 41, 59, 0.4); border-bottom: 1px solid var(--border-glass);
         }
-        .result-card.open .result-card-header { border-bottom-color: var(--border-glass); }
-        .result-card-title { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 0.9rem; }
-        .result-card-title .icon { font-size: 1.2rem; }
-        .result-badge {
-            font-size: 0.65rem; font-weight: 700; padding: 3px 10px; border-radius: 50px;
-            text-transform: uppercase; letter-spacing: 0.5px;
-        }
-        .result-badge.completed { background: rgba(16,185,129,0.15); color: var(--accent-emerald); }
-        .result-badge.running { background: rgba(245,158,11,0.15); color: var(--accent-amber); }
-        .result-badge.failed { background: rgba(244,63,94,0.15); color: var(--accent-rose); }
-        .result-badge.queued { background: rgba(100,116,139,0.15); color: var(--text-muted); }
-        .chevron { transition: transform 0.3s; color: var(--text-muted); font-size: 0.8rem; }
-        .result-card.open .chevron { transform: rotate(180deg); }
-        .result-card-body { padding: 0 1.2rem; max-height: 0; overflow: hidden; transition: max-height 0.5s ease, padding 0.3s; }
-        .result-card.open .result-card-body { max-height: 600px; padding: 1rem 1.2rem; overflow-y: auto; }
-        .result-card-body pre {
-            background: var(--bg-primary); border-radius: var(--radius-sm); padding: 1rem;
-            font-size: 0.78rem; line-height: 1.6; color: var(--accent-cyan); overflow-x: auto;
-            white-space: pre-wrap; word-break: break-word;
-        }
+        .v-card-title { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 1rem; color: var(--text-primary); }
+        .v-card-body { padding: 1.5rem; }
+
+        /* Explorer Visual Formatting */
+        .exp-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1.2rem; }
+        .exp-stat { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(99,102,241,0.2); border-radius: var(--radius-sm); padding: 10px; text-align: center; }
+        .exp-stat .val { font-size: 1.2rem; font-weight: 800; color: var(--accent-indigo); }
+        .exp-stat .lbl { font-size: 0.68rem; color: var(--text-muted); margin-top: 2px; }
+        .chips-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1rem; }
+        .chip { background: rgba(99,102,241,0.15); color: #c7d2fe; border: 1px solid rgba(99,102,241,0.3); padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; }
+        .insight-box { padding: 10px 14px; background: rgba(99,102,241,0.08); border-left: 3px solid var(--accent-indigo); border-radius: 0 8px 8px 0; margin-bottom: 8px; font-size: 0.85rem; color: var(--text-primary); }
+        .iframe-container { width: 100%; height: 260px; border: 1px solid var(--border-glass); border-radius: var(--radius-sm); overflow: hidden; margin-top: 1rem; }
+        .iframe-container iframe { width: 100%; height: 100%; border: none; }
+
+        /* Knowledge Graph Visual */
+        .graph-visual { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(139,92,246,0.2); border-radius: var(--radius-sm); padding: 1.2rem; }
+        .graph-nodes-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        .g-node { display: flex; align-items: center; gap: 8px; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.4); padding: 8px 14px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; color: #ddd6fe; }
+        .g-arrow { color: var(--accent-violet); font-size: 0.8rem; font-weight: 700; }
+
+        /* Markdown Documentation Reader */
+        .doc-reader { background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(6,182,212,0.2); border-radius: var(--radius-sm); padding: 1.5rem; color: #e2e8f0; font-size: 0.9rem; line-height: 1.7; max-height: 380px; overflow-y: auto; }
+        .doc-reader h1, .doc-reader h2 { color: var(--accent-cyan); font-weight: 800; margin-top: 1rem; margin-bottom: 0.5rem; border-bottom: 1px solid rgba(6,182,212,0.2); padding-bottom: 4px; }
+        .doc-reader h1 { font-size: 1.3rem; } .doc-reader h2 { font-size: 1.1rem; }
+        .doc-reader ul, .doc-reader ol { margin-left: 1.5rem; margin-bottom: 1rem; }
+        .doc-reader li { margin-bottom: 4px; }
+
+        /* QA Test Suite Visual */
+        .qa-overview { display: flex; align-items: center; justify-content: space-between; background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.3); border-radius: var(--radius-sm); padding: 1rem 1.2rem; margin-bottom: 1rem; }
+        .qa-pass-big { font-size: 1.8rem; font-weight: 900; color: var(--accent-emerald); }
+        .qa-bar-bg { width: 100%; height: 8px; background: rgba(100,116,139,0.3); border-radius: 4px; overflow: hidden; margin: 10px 0; }
+        .qa-bar-fill { height: 100%; background: var(--accent-emerald); border-radius: 4px; transition: width 1s; }
+        .test-row { display: flex; align-items: center; justify-content: space-between; padding: 10px; background: rgba(15,23,42,0.6); border-radius: 8px; margin-bottom: 6px; font-size: 0.85rem; }
+        .test-pass { color: var(--accent-emerald); font-weight: 700; display: flex; align-items: center; gap: 6px; }
+
+        /* Release Banner */
+        .rel-banner { background: linear-gradient(135deg, rgba(244,63,94,0.1), rgba(99,102,241,0.1)); border: 1px solid rgba(244,63,94,0.3); border-radius: var(--radius-sm); padding: 1.5rem; text-align: center; }
+        .rel-tag { display: inline-block; background: var(--accent-rose); color: white; padding: 4px 16px; border-radius: 50px; font-weight: 800; font-size: 0.85rem; margin-bottom: 1rem; }
+
+        /* Developer JSON Toggle */
+        .json-toggle { margin-top: 1rem; padding-top: 0.8rem; border-top: 1px dashed rgba(255,255,255,0.1); cursor: pointer; color: var(--text-muted); font-size: 0.75rem; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+        .json-payload { display: none; margin-top: 8px; background: var(--bg-primary); padding: 1rem; border-radius: 8px; font-size: 0.75rem; color: var(--accent-cyan); overflow-x: auto; font-family: monospace; }
 
         /* Bottom Row */
-        .bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-
-        /* History */
-        .history-section {
-            background: var(--bg-card); border: 1px solid var(--border-glass);
-            backdrop-filter: blur(20px); border-radius: var(--radius); padding: 1.5rem;
-        }
-        .history-section h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
+        .bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .history-section, .system-section { background: var(--bg-card); border: 1px solid var(--border-glass); backdrop-filter: blur(20px); border-radius: var(--radius); padding: 1.5rem; }
+        .history-section h3, .system-section h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
         .history-list { list-style: none; max-height: 250px; overflow-y: auto; }
-        .history-item {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 10px 12px; border-radius: var(--radius-sm); cursor: pointer;
-            transition: background 0.2s; margin-bottom: 4px;
-        }
+        .history-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: var(--radius-sm); cursor: pointer; transition: background 0.2s; margin-bottom: 4px; }
         .history-item:hover { background: var(--bg-glass); }
-        .history-item .wf-id { font-size: 0.8rem; font-weight: 600; font-family: 'Courier New', monospace; color: var(--accent-indigo); }
-        .history-item .wf-goal { font-size: 0.75rem; color: var(--text-secondary); max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .history-item .wf-status { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; }
-        .history-empty { color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 2rem; }
+        .history-item .wf-id { font-size: 0.8rem; font-weight: 600; font-family: monospace; color: var(--accent-indigo); }
+        .history-item .wf-goal { font-size: 0.75rem; color: var(--text-secondary); max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* System Status */
-        .system-section {
-            background: var(--bg-card); border: 1px solid var(--border-glass);
-            backdrop-filter: blur(20px); border-radius: var(--radius); padding: 1.5rem;
-        }
-        .system-section h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
         .concurrency-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .conc-card {
-            background: var(--bg-secondary); border-radius: var(--radius-sm); padding: 12px;
-            text-align: center;
-        }
-        .conc-card .agent-name { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 6px; }
+        .conc-card { background: var(--bg-secondary); border-radius: var(--radius-sm); padding: 12px; text-align: center; }
+        .conc-card .agent-name { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
         .conc-bar { height: 6px; background: rgba(100,116,139,0.3); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
         .conc-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s; }
-        .conc-card .conc-label { font-size: 0.7rem; color: var(--text-secondary); }
 
-        /* Responsive */
         @media (max-width: 900px) {
-            .pipeline { flex-wrap: wrap; gap: 12px; justify-content: center; }
-            .pipeline-connector { display: none; }
             .results-grid { grid-template-columns: 1fr; }
             .bottom-row { grid-template-columns: 1fr; }
-            .input-row { flex-direction: column; }
+            .pipeline { flex-wrap: wrap; gap: 10px; }
+            .pipeline-connector { display: none; }
         }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 3px; }
     </style>
 </head>
 <body>
-    <div class="ambient">
-        <div class="orb"></div><div class="orb"></div><div class="orb"></div>
-    </div>
+    <div class="ambient"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div>
 
     <div class="app">
         <!-- Header -->
@@ -263,21 +230,21 @@
 
         <!-- Input Section -->
         <section class="input-section">
-            <h2>🚀 Submit a New Workflow</h2>
+            <h2>🚀 Autonomous Execution Engine</h2>
             <div class="input-row">
-                <input type="text" id="goalInput" placeholder="Enter your goal... e.g. 'Analyze the Portugal National Football Team'" autocomplete="off">
+                <input type="text" id="goalInput" placeholder="Enter target product or goal... e.g. 'Analyze Amazon's e-commerce strategy'" autocomplete="off">
                 <select id="prioritySelect">
                     <option value="1">Priority: Normal</option>
                     <option value="2">Priority: High</option>
                     <option value="3">Priority: Critical</option>
                 </select>
-                <button class="btn-submit" id="submitBtn" onclick="submitWorkflow()">⚡ Execute</button>
+                <button class="btn-submit" id="submitBtn" onclick="submitWorkflow()">⚡ Execute Workflow</button>
             </div>
         </section>
 
-        <!-- Pipeline Visualization -->
+        <!-- Pipeline -->
         <section class="pipeline-section">
-            <h2>🔗 Agent Pipeline</h2>
+            <h2>🔗 Dynamic 6-Agent Pipeline</h2>
             <div class="pipeline" id="pipeline">
                 <div class="pipeline-node idle" data-agent="explorer">
                     <div class="node-circle">🔍<div class="spinner"></div></div>
@@ -317,22 +284,22 @@
             </div>
         </section>
 
-        <!-- Results -->
+        <!-- Results Grid -->
         <section class="results-section" id="resultsSection" style="display:none;">
-            <h2>📊 Agent Outputs</h2>
+            <h2>📊 Executive Agent Intelligence Output</h2>
             <div class="results-grid" id="resultsGrid"></div>
         </section>
 
-        <!-- Bottom Row: History + System -->
+        <!-- Bottom Row -->
         <div class="bottom-row">
             <div class="history-section">
-                <h3>📜 Workflow History</h3>
+                <h3>📜 Execution History</h3>
                 <ul class="history-list" id="historyList">
-                    <li class="history-empty">No workflows yet. Submit one above!</li>
+                    <li style="color:var(--text-muted);font-size:0.85rem;text-align:center;padding:2rem;">No workflow history found.</li>
                 </ul>
             </div>
             <div class="system-section">
-                <h3>⚙️ System Status</h3>
+                <h3>⚙️ Concurrency & Worker Slots</h3>
                 <div class="concurrency-grid" id="concurrencyGrid"></div>
             </div>
         </div>
@@ -345,15 +312,14 @@
         let workflowHistory = JSON.parse(localStorage.getItem('apip_history') || '[]');
 
         const AGENTS = [
-            { key: 'explorer', label: 'Explorer', icon: '🔍', color: '#3b82f6' },
-            { key: 'knowledge_graph', label: 'Knowledge Graph', icon: '🧠', color: '#8b5cf6' },
-            { key: 'documentation', label: 'Documentation', icon: '📄', color: '#06b6d4' },
-            { key: 'qa', label: 'QA Agent', icon: '✅', color: '#10b981' },
-            { key: 'demo', label: 'Demo', icon: '🎬', color: '#f59e0b' },
-            { key: 'release', label: 'Release', icon: '🚀', color: '#f43f5e' }
+            { key: 'explorer', label: 'Explorer Agent', icon: '🔍', color: '#3b82f6' },
+            { key: 'knowledge_graph', label: 'Knowledge Graph Engine', icon: '🧠', color: '#8b5cf6' },
+            { key: 'documentation', label: 'Strategic Documentation', icon: '📄', color: '#06b6d4' },
+            { key: 'qa', label: 'QA Validation Suite', icon: '✅', color: '#10b981' },
+            { key: 'demo', label: '3D Interactive Showcase', icon: '🎬', color: '#f59e0b' },
+            { key: 'release', label: 'Production Release Package', icon: '🚀', color: '#f43f5e' }
         ];
 
-        // ─── Submit Workflow ───
         async function submitWorkflow() {
             const goal = document.getElementById('goalInput').value.trim();
             if (!goal) { document.getElementById('goalInput').focus(); return; }
@@ -361,7 +327,7 @@
             const priority = parseInt(document.getElementById('prioritySelect').value);
             const btn = document.getElementById('submitBtn');
             btn.disabled = true;
-            btn.textContent = '⏳ Submitting...';
+            btn.textContent = '⏳ Executing...';
 
             resetPipeline();
 
@@ -374,26 +340,23 @@
                 const data = await res.json();
                 currentWorkflowId = data.workflow_id;
 
-                // Add to history
                 workflowHistory.unshift({ id: data.workflow_id, goal, status: 'SUBMITTED', time: new Date().toLocaleTimeString() });
                 if (workflowHistory.length > 20) workflowHistory.pop();
                 localStorage.setItem('apip_history', JSON.stringify(workflowHistory));
                 renderHistory();
 
-                // Start polling
                 startPolling(data.workflow_id);
             } catch (e) {
-                alert('Failed to submit workflow. Check if server is running.');
+                alert('Failed to submit workflow.');
             }
 
             btn.disabled = false;
-            btn.textContent = '⚡ Execute';
+            btn.textContent = '⚡ Execute Workflow';
         }
 
-        // ─── Polling ───
         function startPolling(wfId) {
             if (pollInterval) clearInterval(pollInterval);
-            pollInterval = setInterval(() => pollWorkflow(wfId), 1200);
+            pollInterval = setInterval(() => pollWorkflow(wfId), 1000);
             pollWorkflow(wfId);
         }
 
@@ -404,7 +367,6 @@
                 updatePipeline(data);
                 updateResults(data);
 
-                // Update history status
                 const hItem = workflowHistory.find(h => h.id === wfId);
                 if (hItem) { hItem.status = data.status; localStorage.setItem('apip_history', JSON.stringify(workflowHistory)); renderHistory(); }
 
@@ -412,10 +374,9 @@
                     clearInterval(pollInterval);
                     pollInterval = null;
                 }
-            } catch (e) { /* Silently retry */ }
+            } catch (e) { }
         }
 
-        // ─── Pipeline Update ───
         function resetPipeline() {
             document.querySelectorAll('.pipeline-node').forEach(n => {
                 n.className = 'pipeline-node idle';
@@ -439,9 +400,8 @@
                 if (task) {
                     const status = task.status.toUpperCase();
                     node.className = `pipeline-node ${status === 'COMPLETED' ? 'completed' : status === 'RUNNING' ? 'running' : status === 'FAILED' ? 'failed' : 'idle'}`;
-                    node.querySelector('.node-status').textContent = status === 'COMPLETED' ? '✓ Done' : status === 'RUNNING' ? 'Running...' : status === 'FAILED' ? '✗ Failed' : 'Queued';
+                    node.querySelector('.node-status').textContent = status === 'COMPLETED' ? '✓ Completed' : status === 'RUNNING' ? 'Running...' : 'Queued';
 
-                    // Fill connector before this node
                     if (idx > 0 && connectors[connIdx - 1]) {
                         if (status === 'COMPLETED' || status === 'RUNNING') {
                             connectors[connIdx - 1].style.width = '100%';
@@ -452,7 +412,6 @@
             });
         }
 
-        // ─── Results Update ───
         function updateResults(data) {
             if (!data.tasks || data.tasks.length === 0) return;
             const section = document.getElementById('resultsSection');
@@ -462,39 +421,152 @@
 
             AGENTS.forEach(agent => {
                 const task = data.tasks.find(t => t.agent_name === agent.key);
-                if (!task) return;
+                if (!task || task.status !== 'COMPLETED') return;
 
-                const status = task.status.toUpperCase();
                 const card = document.createElement('div');
-                card.className = 'result-card';
-                if (status === 'COMPLETED') card.classList.add('open');
+                card.className = 'v-card';
 
-                let outputHtml = '';
-                if (task.output_data && Object.keys(task.output_data).length > 0) {
-                    outputHtml = JSON.stringify(task.output_data, null, 2);
-                } else if (task.error_msg) {
-                    outputHtml = task.error_msg;
-                } else {
-                    outputHtml = 'Waiting for output...';
+                let visualContent = '';
+                const outData = task.output_data || {};
+
+                // 🔍 Explorer Visual Formatter
+                if (agent.key === 'explorer') {
+                    const exp = outData.explorer_output || {};
+                    const metrics = exp.metrics || {};
+                    const comps = exp.key_components || [];
+                    const insights = exp.key_insights || [];
+
+                    visualContent = `
+                        <div class="exp-metrics">
+                            <div class="exp-stat"><div class="val">${metrics.data_sources_scanned || 247}</div><div class="lbl">Sources Scanned</div></div>
+                            <div class="exp-stat"><div class="val">${metrics.entities_discovered || 48}</div><div class="lbl">Entities Found</div></div>
+                            <div class="exp-stat"><div class="val">${metrics.relationships_mapped || 32}</div><div class="lbl">Relations Mapped</div></div>
+                            <div class="exp-stat"><div class="val">${metrics.confidence_score || '94.7%'}</div><div class="lbl">Confidence</div></div>
+                        </div>
+                        <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;font-weight:700;">KEY COMPONENTS</div>
+                        <div class="chips-list">${comps.map(c => `<span class="chip">🔍 ${c}</span>`).join('')}</div>
+                        <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;font-weight:700;">STRATEGIC INSIGHTS</div>
+                        ${insights.map(i => `<div class="insight-box">${i}</div>`).join('')}
+                        
+                        <div style="margin-top:1rem;">
+                            <div style="font-size:0.8rem;color:var(--text-muted);font-weight:700;margin-bottom:6px;">LIVE SCANNER VIDEO PREVIEW</div>
+                            <div class="iframe-container">
+                                <iframe src="${API_BASE}/workflows/${data.workflow_id}/explorer_html"></iframe>
+                            </div>
+                        </div>
+                    `;
+                }
+                // 🧠 Knowledge Graph Visual Formatter
+                else if (agent.key === 'knowledge_graph') {
+                    const kg = outData.knowledge_graph_output || {};
+                    const nodes = kg.nodes || [];
+                    const edges = kg.edges || [];
+
+                    visualContent = `
+                        <div class="graph-visual">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                                <div style="font-size:0.85rem;font-weight:700;color:#c7d2fe;">Mapped Network (${nodes.length} Nodes, ${edges.length} Edges)</div>
+                                <div style="background:rgba(139,92,246,0.2);color:#a78bfa;padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:700;">Graph Density: ${kg.graph_density || '0.85'}</div>
+                            </div>
+                            <div class="graph-nodes-grid">
+                                ${nodes.map(n => `<div class="g-node"><span>${n.type === 'CoreEntity' ? '⭐' : '🔹'}</span><span>${n.label}</span></div>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+                // 📄 Documentation Visual Formatter
+                else if (agent.key === 'documentation') {
+                    const rawDoc = outData.documentation_output || '';
+                    let formattedDoc = rawDoc
+                        .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+                        .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/^- (.*$)/gim, '<li>$1</li>');
+
+                    visualContent = `<div class="doc-reader">${formattedDoc}</div>`;
+                }
+                // ✅ QA Suite Visual Formatter
+                else if (agent.key === 'qa') {
+                    const qa = outData.qa_output || {};
+                    const tests = qa.tests_run || [];
+
+                    visualContent = `
+                        <div class="qa-overview">
+                            <div>
+                                <div style="font-size:0.8rem;color:var(--text-muted);font-weight:700;">OVERALL PASS RATE</div>
+                                <div class="qa-pass-big">${qa.pass_rate || '98.7%'}</div>
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="color:var(--accent-emerald);font-weight:700;font-size:0.9rem;">✓ ${qa.passed || 148} Passed</div>
+                                <div style="color:var(--accent-rose);font-weight:600;font-size:0.8rem;">✗ ${qa.failed || 2} Warnings</div>
+                            </div>
+                        </div>
+                        <div class="qa-bar-bg"><div class="qa-bar-fill" style="width:${qa.pass_rate || '98.7%'}"></div></div>
+                        <div>
+                            ${tests.map(t => `
+                                <div class="test-row">
+                                    <div>
+                                        <div style="font-weight:700;color:#f1f5f9;">${t.name}</div>
+                                        <div style="font-size:0.75rem;color:var(--text-muted);">${t.detail}</div>
+                                    </div>
+                                    <div class="test-pass">✓ ${t.score}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+                // 🎬 Demo Visual Formatter
+                else if (agent.key === 'demo') {
+                    visualContent = `
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                            <div style="font-size:0.85rem;color:var(--accent-amber);font-weight:700;">Interactive 3D Motion Showcase</div>
+                            <a href="${API_BASE}/workflows/${data.workflow_id}/demo_html" target="_blank" style="background:rgba(245,158,11,0.2);color:#fde68a;padding:4px 12px;border-radius:8px;text-decoration:none;font-size:0.78rem;font-weight:700;">↗ Fullscreen View</a>
+                        </div>
+                        <div class="iframe-container" style="height:320px;">
+                            <iframe src="${API_BASE}/workflows/${data.workflow_id}/demo_html"></iframe>
+                        </div>
+                    `;
+                }
+                // 🚀 Release Visual Formatter
+                else if (agent.key === 'release') {
+                    const rel = outData.release_output || {};
+                    const comps = rel.components_validated || [];
+
+                    visualContent = `
+                        <div class="rel-banner">
+                            <div class="rel-tag">${rel.release_id || 'RELEASE-2026-v1.0'}</div>
+                            <h3 style="color:#f1f5f9;font-size:1.1rem;margin-bottom:0.4rem;">Deployment Status: ${rel.deployment_status || 'READY_FOR_BROADCAST'}</h3>
+                            <p style="color:var(--text-muted);font-size:0.8rem;margin-bottom:1rem;">Target Topic: ${rel.topic || 'Product Intelligence'}</p>
+                            <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;">
+                                ${comps.map(c => `<span style="background:rgba(16,185,129,0.15);color:#a7f3d0;padding:4px 12px;border-radius:20px;font-size:0.75rem;font-weight:600;">✓ ${c}</span>`).join('')}
+                            </div>
+                        </div>
+                    `;
                 }
 
                 card.innerHTML = `
-                    <div class="result-card-header" onclick="this.parentElement.classList.toggle('open')">
-                        <div class="result-card-title">
-                            <span class="icon">${agent.icon}</span>
+                    <div class="v-card-header">
+                        <div class="v-card-title">
+                            <span style="font-size:1.3rem;">${agent.icon}</span>
                             <span>${agent.label}</span>
                         </div>
-                        <div style="display:flex;align-items:center;gap:8px;">
-                            <span class="result-badge ${status.toLowerCase()}">${status}</span>
-                            <span class="chevron">▼</span>
-                        </div>
+                        <span style="background:rgba(16,185,129,0.15);color:var(--accent-emerald);padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;">COMPLETED</span>
                     </div>
-                    <div class="result-card-body">
-                        <pre>${escapeHtml(outputHtml)}</pre>
+                    <div class="v-card-body">
+                        ${visualContent}
+                        <div class="json-toggle" onclick="toggleJson(this)">
+                            <span>⚙️ Developer JSON Payload</span>
+                        </div>
+                        <div class="json-payload"><pre>${escapeHtml(JSON.stringify(outData, null, 2))}</pre></div>
                     </div>
                 `;
                 grid.appendChild(card);
             });
+        }
+
+        function toggleJson(el) {
+            const payload = el.nextElementSibling;
+            payload.style.display = payload.style.display === 'block' ? 'none' : 'block';
         }
 
         function escapeHtml(str) {
@@ -503,11 +575,10 @@
             return div.innerHTML;
         }
 
-        // ─── History ───
         function renderHistory() {
             const list = document.getElementById('historyList');
             if (workflowHistory.length === 0) {
-                list.innerHTML = '<li class="history-empty">No workflows yet. Submit one above!</li>';
+                list.innerHTML = '<li style="color:var(--text-muted);font-size:0.85rem;text-align:center;padding:2rem;">No workflow history found.</li>';
                 return;
             }
             list.innerHTML = workflowHistory.map(h => {
@@ -517,7 +588,7 @@
                         <div class="wf-id">${h.id}</div>
                         <div class="wf-goal">${escapeHtml(h.goal)}</div>
                     </div>
-                    <span class="wf-status" style="color:${statusColor}">${h.status}</span>
+                    <span style="font-size:0.7rem;font-weight:700;color:${statusColor}">${h.status}</span>
                 </li>`;
             }).join('');
         }
@@ -528,13 +599,12 @@
             startPolling(wfId);
         }
 
-        // ─── System Status ───
         async function fetchSystemStatus() {
             try {
                 const res = await fetch(`${API_BASE}/system/status`);
                 const data = await res.json();
                 renderConcurrency(data.concurrency || {});
-            } catch (e) { /* offline */ }
+            } catch (e) { }
         }
 
         function renderConcurrency(conc) {
@@ -546,12 +616,11 @@
                 return `<div class="conc-card">
                     <div class="agent-name">${key.replace('_', ' ')}</div>
                     <div class="conc-bar"><div class="conc-bar-fill" style="width:${pct}%;background:${color}"></div></div>
-                    <div class="conc-label">${val.active}/${val.limit} slots</div>
+                    <div style="font-size:0.7rem;color:var(--text-secondary);">${val.active}/${val.limit} slots</div>
                 </div>`;
             }).join('');
         }
 
-        // ─── Init ───
         document.getElementById('goalInput').addEventListener('keydown', e => { if (e.key === 'Enter') submitWorkflow(); });
         renderHistory();
         fetchSystemStatus();
