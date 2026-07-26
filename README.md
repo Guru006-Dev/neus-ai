@@ -511,7 +511,7 @@ Final 1080p MP4 with Narration & Subtitles
 | Guru | [@Guru006-Dev](https://github.com/Guru006-Dev) |
 | Ariya Rithvik | [@Ariya-rithvik](https://github.com/Ariya-rithvik) |
 | Ragul Kiyotoka | [@ragulkiyotoka20-jpg](https://github.com/ragulkiyotoka20-jpg) |
-| UI Contributor | [@8428215330a-ui](https://github.com/8428215330a-ui) |
+| Sundar | [@SundarTharsan31](https://github.com/SundarTharsan31) |
 
 ---
 
