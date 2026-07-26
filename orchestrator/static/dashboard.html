@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APIP — Autonomous Product Intelligence Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-card: rgba(17, 24, 39, 0.8);
+            --bg-glass: rgba(30, 41, 59, 0.5);
+            --border-glass: rgba(99, 102, 241, 0.2);
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-indigo: #6366f1;
+            --accent-violet: #8b5cf6;
+            --accent-cyan: #06b6d4;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-rose: #f43f5e;
+            --accent-blue: #3b82f6;
+            --accent-pink: #ec4899;
+            --gradient-hero: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%);
+            --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.15);
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Background */
+        .ambient { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; overflow: hidden; }
+        .ambient .orb {
+            position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.12;
+            animation: orbFloat 20s infinite ease-in-out alternate;
+        }
+        .ambient .orb:nth-child(1) { width: 600px; height: 600px; background: var(--accent-indigo); top: -200px; left: -100px; }
+        .ambient .orb:nth-child(2) { width: 500px; height: 500px; background: var(--accent-violet); bottom: -150px; right: -100px; animation-delay: -7s; }
+        .ambient .orb:nth-child(3) { width: 400px; height: 400px; background: var(--accent-cyan); top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: -14s; }
+        @keyframes orbFloat { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(40px, 30px) scale(1.15); } }
+
+        /* Layout */
+        .app { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 2rem; }
+
+        /* Header */
+        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2.5rem; }
+        .brand { display: flex; align-items: center; gap: 14px; }
+        .brand-icon {
+            width: 48px; height: 48px; border-radius: 14px;
+            background: var(--gradient-hero); display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; font-weight: 900; color: white;
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
+        }
+        .brand h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; }
+        .brand span { color: var(--accent-indigo); }
+        .status-badge {
+            display: flex; align-items: center; gap: 8px;
+            background: var(--bg-glass); border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 8px 16px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; color: var(--accent-emerald);
+        }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-emerald); animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        /* Input Section */
+        .input-section {
+            background: var(--bg-card); border: 1px solid var(--border-glass);
+            backdrop-filter: blur(20px); border-radius: var(--radius); padding: 2rem;
+            margin-bottom: 2.5rem; box-shadow: var(--shadow-glow);
+        }
+        .input-section h2 { font-size: 1.15rem; font-weight: 700; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 10px; }
+        .input-row { display: flex; gap: 12px; }
+        .input-row input[type="text"] {
+            flex: 1; background: var(--bg-secondary); border: 1px solid rgba(99,102,241,0.2);
+            border-radius: var(--radius-sm); padding: 14px 18px; font-size: 1rem;
+            color: var(--text-primary); font-family: inherit; outline: none; transition: border-color 0.3s;
+        }
+        .input-row input:focus { border-color: var(--accent-indigo); }
+        .input-row select {
+            background: var(--bg-secondary); border: 1px solid rgba(99,102,241,0.2);
+            border-radius: var(--radius-sm); padding: 14px 16px; font-size: 0.9rem;
+            color: var(--text-secondary); font-family: inherit; outline: none; cursor: pointer; min-width: 120px;
+        }
+        .btn-submit {
+            background: var(--gradient-hero); border: none; border-radius: var(--radius-sm);
+            padding: 14px 28px; font-size: 1rem; font-weight: 700; color: white; cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s; white-space: nowrap;
+        }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(99,102,241,0.4); }
+        .btn-submit:active { transform: translateY(0); }
+        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        /* Pipeline Section */
+        .pipeline-section { margin-bottom: 2.5rem; }
+        .pipeline-section h2 { font-size: 1.15rem; font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; }
+        .pipeline {
+            display: flex; align-items: center; justify-content: space-between;
+            background: var(--bg-card); border: 1px solid var(--border-glass);
+            backdrop-filter: blur(20px); border-radius: var(--radius); padding: 2rem 1.5rem;
+            box-shadow: var(--shadow-glow); position: relative; overflow: hidden;
+        }
+        .pipeline-node {
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+            z-index: 2; flex: 0 0 auto; text-align: center; min-width: 100px;
+        }
+        .node-circle {
+            width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; font-size: 1.5rem; border: 2px solid var(--text-muted);
+            background: var(--bg-secondary); transition: all 0.5s cubic-bezier(0.16,1,0.3,1);
+            position: relative;
+        }
+        .node-circle .spinner {
+            position: absolute; inset: -4px; border-radius: 50%;
+            border: 3px solid transparent; border-top-color: currentColor;
+            animation: spin 1s linear infinite; display: none;
+        }
+        .node-label { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); transition: color 0.3s; text-transform: uppercase; letter-spacing: 0.5px; }
+        .node-status { font-size: 0.65rem; font-weight: 500; color: var(--text-muted); min-height: 16px; }
+
+        /* Pipeline connectors */
+        .pipeline-connector {
+            flex: 1; height: 2px; background: rgba(100,116,139,0.3);
+            position: relative; margin: 0 -8px; margin-bottom: 26px;
+        }
+        .pipeline-connector .fill {
+            position: absolute; left: 0; top: 0; height: 100%; width: 0;
+            background: var(--accent-indigo); transition: width 0.8s ease;
+        }
+
+        /* Node states */
+        .pipeline-node.idle .node-circle { border-color: var(--text-muted); }
+        .pipeline-node.running .node-circle { border-color: var(--accent-amber); background: rgba(245,158,11,0.15); box-shadow: 0 0 20px rgba(245,158,11,0.3); }
+        .pipeline-node.running .node-circle .spinner { display: block; color: var(--accent-amber); }
+        .pipeline-node.running .node-label { color: var(--accent-amber); }
+        .pipeline-node.running .node-status { color: var(--accent-amber); }
+        .pipeline-node.completed .node-circle { border-color: var(--accent-emerald); background: rgba(16,185,129,0.15); box-shadow: 0 0 20px rgba(16,185,129,0.2); }
+        .pipeline-node.completed .node-label { color: var(--accent-emerald); }
+        .pipeline-node.completed .node-status { color: var(--accent-emerald); }
+        .pipeline-node.failed .node-circle { border-color: var(--accent-rose); background: rgba(244,63,94,0.15); box-shadow: 0 0 20px rgba(244,63,94,0.3); }
+        .pipeline-node.failed .node-label { color: var(--accent-rose); }
+        .pipeline-node.failed .node-status { color: var(--accent-rose); }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Results Grid */
+        .results-section { margin-bottom: 2.5rem; }
+        .results-section h2 { font-size: 1.15rem; font-weight: 700; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 10px; }
+        .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 16px; }
+
+        .result-card {
+            background: var(--bg-card); border: 1px solid var(--border-glass);
+            backdrop-filter: blur(20px); border-radius: var(--radius); overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .result-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+        .result-card-header {
+            padding: 1rem 1.2rem; display: flex; align-items: center; justify-content: space-between;
+            cursor: pointer; user-select: none; border-bottom: 1px solid transparent;
+            transition: border-color 0.3s;
+        }
+        .result-card.open .result-card-header { border-bottom-color: var(--border-glass); }
+        .result-card-title { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 0.9rem; }
+        .result-card-title .icon { font-size: 1.2rem; }
+        .result-badge {
+            font-size: 0.65rem; font-weight: 700; padding: 3px 10px; border-radius: 50px;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .result-badge.completed { background: rgba(16,185,129,0.15); color: var(--accent-emerald); }
+        .result-badge.running { background: rgba(245,158,11,0.15); color: var(--accent-amber); }
+        .result-badge.failed { background: rgba(244,63,94,0.15); color: var(--accent-rose); }
+        .result-badge.queued { background: rgba(100,116,139,0.15); color: var(--text-muted); }
+        .chevron { transition: transform 0.3s; color: var(--text-muted); font-size: 0.8rem; }
+        .result-card.open .chevron { transform: rotate(180deg); }
+        .result-card-body { padding: 0 1.2rem; max-height: 0; overflow: hidden; transition: max-height 0.5s ease, padding 0.3s; }
+        .result-card.open .result-card-body { max-height: 600px; padding: 1rem 1.2rem; overflow-y: auto; }
+        .result-card-body pre {
+            background: var(--bg-primary); border-radius: var(--radius-sm); padding: 1rem;
+            font-size: 0.78rem; line-height: 1.6; color: var(--accent-cyan); overflow-x: auto;
+            white-space: pre-wrap; word-break: break-word;
+        }
+
+        /* Bottom Row */
+        .bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+        /* History */
+        .history-section {
+            background: var(--bg-card); border: 1px solid var(--border-glass);
+            backdrop-filter: blur(20px); border-radius: var(--radius); padding: 1.5rem;
+        }
+        .history-section h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
+        .history-list { list-style: none; max-height: 250px; overflow-y: auto; }
+        .history-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 12px; border-radius: var(--radius-sm); cursor: pointer;
+            transition: background 0.2s; margin-bottom: 4px;
+        }
+        .history-item:hover { background: var(--bg-glass); }
+        .history-item .wf-id { font-size: 0.8rem; font-weight: 600; font-family: 'Courier New', monospace; color: var(--accent-indigo); }
+        .history-item .wf-goal { font-size: 0.75rem; color: var(--text-secondary); max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .history-item .wf-status { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; }
+        .history-empty { color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 2rem; }
+
+        /* System Status */
+        .system-section {
+            background: var(--bg-card); border: 1px solid var(--border-glass);
+            backdrop-filter: blur(20px); border-radius: var(--radius); padding: 1.5rem;
+        }
+        .system-section h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
+        .concurrency-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .conc-card {
+            background: var(--bg-secondary); border-radius: var(--radius-sm); padding: 12px;
+            text-align: center;
+        }
+        .conc-card .agent-name { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 6px; }
+        .conc-bar { height: 6px; background: rgba(100,116,139,0.3); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+        .conc-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s; }
+        .conc-card .conc-label { font-size: 0.7rem; color: var(--text-secondary); }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .pipeline { flex-wrap: wrap; gap: 12px; justify-content: center; }
+            .pipeline-connector { display: none; }
+            .results-grid { grid-template-columns: 1fr; }
+            .bottom-row { grid-template-columns: 1fr; }
+            .input-row { flex-direction: column; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <div class="ambient">
+        <div class="orb"></div><div class="orb"></div><div class="orb"></div>
+    </div>
+
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="brand">
+                <div class="brand-icon">A</div>
+                <div>
+                    <h1><span>APIP</span> Dashboard</h1>
+                    <p style="font-size:0.75rem;color:var(--text-muted);margin-top:2px;">Autonomous Product Intelligence Platform</p>
+                </div>
+            </div>
+            <div class="status-badge" id="systemBadge">
+                <div class="status-dot"></div>
+                <span>System Online</span>
+            </div>
+        </header>
+
+        <!-- Input Section -->
+        <section class="input-section">
+            <h2>🚀 Submit a New Workflow</h2>
+            <div class="input-row">
+                <input type="text" id="goalInput" placeholder="Enter your goal... e.g. 'Analyze the Portugal National Football Team'" autocomplete="off">
+                <select id="prioritySelect">
+                    <option value="1">Priority: Normal</option>
+                    <option value="2">Priority: High</option>
+                    <option value="3">Priority: Critical</option>
+                </select>
+                <button class="btn-submit" id="submitBtn" onclick="submitWorkflow()">⚡ Execute</button>
+            </div>
+        </section>
+
+        <!-- Pipeline Visualization -->
+        <section class="pipeline-section">
+            <h2>🔗 Agent Pipeline</h2>
+            <div class="pipeline" id="pipeline">
+                <div class="pipeline-node idle" data-agent="explorer">
+                    <div class="node-circle">🔍<div class="spinner"></div></div>
+                    <div class="node-label">Explorer</div>
+                    <div class="node-status">Idle</div>
+                </div>
+                <div class="pipeline-connector"><div class="fill"></div></div>
+                <div class="pipeline-node idle" data-agent="knowledge_graph">
+                    <div class="node-circle">🧠<div class="spinner"></div></div>
+                    <div class="node-label">Knowledge Graph</div>
+                    <div class="node-status">Idle</div>
+                </div>
+                <div class="pipeline-connector"><div class="fill"></div></div>
+                <div class="pipeline-node idle" data-agent="documentation">
+                    <div class="node-circle">📄<div class="spinner"></div></div>
+                    <div class="node-label">Documentation</div>
+                    <div class="node-status">Idle</div>
+                </div>
+                <div class="pipeline-connector"><div class="fill"></div></div>
+                <div class="pipeline-node idle" data-agent="qa">
+                    <div class="node-circle">✅<div class="spinner"></div></div>
+                    <div class="node-label">QA Agent</div>
+                    <div class="node-status">Idle</div>
+                </div>
+                <div class="pipeline-connector"><div class="fill"></div></div>
+                <div class="pipeline-node idle" data-agent="demo">
+                    <div class="node-circle">🎬<div class="spinner"></div></div>
+                    <div class="node-label">Demo</div>
+                    <div class="node-status">Idle</div>
+                </div>
+                <div class="pipeline-connector"><div class="fill"></div></div>
+                <div class="pipeline-node idle" data-agent="release">
+                    <div class="node-circle">🚀<div class="spinner"></div></div>
+                    <div class="node-label">Release</div>
+                    <div class="node-status">Idle</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results -->
+        <section class="results-section" id="resultsSection" style="display:none;">
+            <h2>📊 Agent Outputs</h2>
+            <div class="results-grid" id="resultsGrid"></div>
+        </section>
+
+        <!-- Bottom Row: History + System -->
+        <div class="bottom-row">
+            <div class="history-section">
+                <h3>📜 Workflow History</h3>
+                <ul class="history-list" id="historyList">
+                    <li class="history-empty">No workflows yet. Submit one above!</li>
+                </ul>
+            </div>
+            <div class="system-section">
+                <h3>⚙️ System Status</h3>
+                <div class="concurrency-grid" id="concurrencyGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        let currentWorkflowId = null;
+        let pollInterval = null;
+        let workflowHistory = JSON.parse(localStorage.getItem('apip_history') || '[]');
+
+        const AGENTS = [
+            { key: 'explorer', label: 'Explorer', icon: '🔍', color: '#3b82f6' },
+            { key: 'knowledge_graph', label: 'Knowledge Graph', icon: '🧠', color: '#8b5cf6' },
+            { key: 'documentation', label: 'Documentation', icon: '📄', color: '#06b6d4' },
+            { key: 'qa', label: 'QA Agent', icon: '✅', color: '#10b981' },
+            { key: 'demo', label: 'Demo', icon: '🎬', color: '#f59e0b' },
+            { key: 'release', label: 'Release', icon: '🚀', color: '#f43f5e' }
+        ];
+
+        // ─── Submit Workflow ───
+        async function submitWorkflow() {
+            const goal = document.getElementById('goalInput').value.trim();
+            if (!goal) { document.getElementById('goalInput').focus(); return; }
+
+            const priority = parseInt(document.getElementById('prioritySelect').value);
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ Submitting...';
+
+            resetPipeline();
+
+            try {
+                const res = await fetch(`${API_BASE}/workflows`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ goal, user_id: 'dashboard_user', priority })
+                });
+                const data = await res.json();
+                currentWorkflowId = data.workflow_id;
+
+                // Add to history
+                workflowHistory.unshift({ id: data.workflow_id, goal, status: 'SUBMITTED', time: new Date().toLocaleTimeString() });
+                if (workflowHistory.length > 20) workflowHistory.pop();
+                localStorage.setItem('apip_history', JSON.stringify(workflowHistory));
+                renderHistory();
+
+                // Start polling
+                startPolling(data.workflow_id);
+            } catch (e) {
+                alert('Failed to submit workflow. Check if server is running.');
+            }
+
+            btn.disabled = false;
+            btn.textContent = '⚡ Execute';
+        }
+
+        // ─── Polling ───
+        function startPolling(wfId) {
+            if (pollInterval) clearInterval(pollInterval);
+            pollInterval = setInterval(() => pollWorkflow(wfId), 1200);
+            pollWorkflow(wfId);
+        }
+
+        async function pollWorkflow(wfId) {
+            try {
+                const res = await fetch(`${API_BASE}/workflows/${wfId}`);
+                const data = await res.json();
+                updatePipeline(data);
+                updateResults(data);
+
+                // Update history status
+                const hItem = workflowHistory.find(h => h.id === wfId);
+                if (hItem) { hItem.status = data.status; localStorage.setItem('apip_history', JSON.stringify(workflowHistory)); renderHistory(); }
+
+                if (data.status === 'COMPLETED' || data.status === 'FAILED') {
+                    clearInterval(pollInterval);
+                    pollInterval = null;
+                }
+            } catch (e) { /* Silently retry */ }
+        }
+
+        // ─── Pipeline Update ───
+        function resetPipeline() {
+            document.querySelectorAll('.pipeline-node').forEach(n => {
+                n.className = 'pipeline-node idle';
+                n.querySelector('.node-status').textContent = 'Idle';
+            });
+            document.querySelectorAll('.pipeline-connector .fill').forEach(f => f.style.width = '0');
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('resultsGrid').innerHTML = '';
+        }
+
+        function updatePipeline(data) {
+            if (!data.tasks) return;
+            const connectors = document.querySelectorAll('.pipeline-connector .fill');
+            let connIdx = 0;
+
+            AGENTS.forEach((agent, idx) => {
+                const task = data.tasks.find(t => t.agent_name === agent.key);
+                const node = document.querySelector(`.pipeline-node[data-agent="${agent.key}"]`);
+                if (!node) return;
+
+                if (task) {
+                    const status = task.status.toUpperCase();
+                    node.className = `pipeline-node ${status === 'COMPLETED' ? 'completed' : status === 'RUNNING' ? 'running' : status === 'FAILED' ? 'failed' : 'idle'}`;
+                    node.querySelector('.node-status').textContent = status === 'COMPLETED' ? '✓ Done' : status === 'RUNNING' ? 'Running...' : status === 'FAILED' ? '✗ Failed' : 'Queued';
+
+                    // Fill connector before this node
+                    if (idx > 0 && connectors[connIdx - 1]) {
+                        if (status === 'COMPLETED' || status === 'RUNNING') {
+                            connectors[connIdx - 1].style.width = '100%';
+                        }
+                    }
+                }
+                if (idx < AGENTS.length - 1) connIdx++;
+            });
+        }
+
+        // ─── Results Update ───
+        function updateResults(data) {
+            if (!data.tasks || data.tasks.length === 0) return;
+            const section = document.getElementById('resultsSection');
+            const grid = document.getElementById('resultsGrid');
+            section.style.display = 'block';
+            grid.innerHTML = '';
+
+            AGENTS.forEach(agent => {
+                const task = data.tasks.find(t => t.agent_name === agent.key);
+                if (!task) return;
+
+                const status = task.status.toUpperCase();
+                const card = document.createElement('div');
+                card.className = 'result-card';
+                if (status === 'COMPLETED') card.classList.add('open');
+
+                let outputHtml = '';
+                if (task.output_data && Object.keys(task.output_data).length > 0) {
+                    outputHtml = JSON.stringify(task.output_data, null, 2);
+                } else if (task.error_msg) {
+                    outputHtml = task.error_msg;
+                } else {
+                    outputHtml = 'Waiting for output...';
+                }
+
+                card.innerHTML = `
+                    <div class="result-card-header" onclick="this.parentElement.classList.toggle('open')">
+                        <div class="result-card-title">
+                            <span class="icon">${agent.icon}</span>
+                            <span>${agent.label}</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <span class="result-badge ${status.toLowerCase()}">${status}</span>
+                            <span class="chevron">▼</span>
+                        </div>
+                    </div>
+                    <div class="result-card-body">
+                        <pre>${escapeHtml(outputHtml)}</pre>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // ─── History ───
+        function renderHistory() {
+            const list = document.getElementById('historyList');
+            if (workflowHistory.length === 0) {
+                list.innerHTML = '<li class="history-empty">No workflows yet. Submit one above!</li>';
+                return;
+            }
+            list.innerHTML = workflowHistory.map(h => {
+                const statusColor = h.status === 'COMPLETED' ? 'var(--accent-emerald)' : h.status === 'FAILED' ? 'var(--accent-rose)' : 'var(--accent-amber)';
+                return `<li class="history-item" onclick="loadWorkflow('${h.id}')">
+                    <div>
+                        <div class="wf-id">${h.id}</div>
+                        <div class="wf-goal">${escapeHtml(h.goal)}</div>
+                    </div>
+                    <span class="wf-status" style="color:${statusColor}">${h.status}</span>
+                </li>`;
+            }).join('');
+        }
+
+        function loadWorkflow(wfId) {
+            currentWorkflowId = wfId;
+            resetPipeline();
+            startPolling(wfId);
+        }
+
+        // ─── System Status ───
+        async function fetchSystemStatus() {
+            try {
+                const res = await fetch(`${API_BASE}/system/status`);
+                const data = await res.json();
+                renderConcurrency(data.concurrency || {});
+            } catch (e) { /* offline */ }
+        }
+
+        function renderConcurrency(conc) {
+            const grid = document.getElementById('concurrencyGrid');
+            const colors = { explorer: '#3b82f6', knowledge_graph: '#8b5cf6', documentation: '#06b6d4', qa: '#10b981', demo: '#f59e0b', release: '#f43f5e' };
+            grid.innerHTML = Object.entries(conc).map(([key, val]) => {
+                const pct = val.limit > 0 ? ((val.active / val.limit) * 100) : 0;
+                const color = colors[key] || '#6366f1';
+                return `<div class="conc-card">
+                    <div class="agent-name">${key.replace('_', ' ')}</div>
+                    <div class="conc-bar"><div class="conc-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+                    <div class="conc-label">${val.active}/${val.limit} slots</div>
+                </div>`;
+            }).join('');
+        }
+
+        // ─── Init ───
+        document.getElementById('goalInput').addEventListener('keydown', e => { if (e.key === 'Enter') submitWorkflow(); });
+        renderHistory();
+        fetchSystemStatus();
+        setInterval(fetchSystemStatus, 5000);
+    </script>
+</body>
+</html>
