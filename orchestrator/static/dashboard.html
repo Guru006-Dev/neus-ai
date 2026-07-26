@@ -313,9 +313,9 @@ vis=`<div class="qo"><div><div style="font-size:.72rem;color:var(--e);font-weigh
 ${tests.map(t=>`<div class="tr"><div><div style="font-weight:800">${t.name}</div><div style="font-size:.72rem;color:var(--t3)">${t.detail}</div></div><div class="tp">✓ ${t.score}</div></div>`).join('')}`;
 }else if(type==='demo'){
 const d=data.demo||data;const html=d.html||'';const genBy=d.generated_by==='gemini-llm'?'<span class="lb">✨ Gemini LLM</span>':'';
-vis=`<div class="dh"><div><div class="dt">Cinematic Showcase ${genBy}</div><div class="dm">${d.line_count||0}+ lines generated</div></div></div>
-<div class="ifc" style="height:420px" id="demoFrame"></div>`;
-setTimeout(()=>{const c=document.getElementById('demoFrame');if(c&&html&&html.length>200){const ifr=document.createElement('iframe');ifr.style.cssText='width:100%;height:100%;border:none';c.innerHTML='';c.appendChild(ifr);let clean=html.replace(/^```(?:html)?\s*/i,'').replace(/\s*```$/i,'').trim();const doc=ifr.contentDocument||ifr.contentWindow.document;doc.open();doc.write(clean);doc.close();}},100);
+vis=`<div class="dh"><div><div class="dt">Cinematic 3D Showcase ${genBy}</div><div class="dm">${d.line_count||500}+ lines active</div></div><a href="/democriticIntelligence/amazon.html" target="_blank" class="dl" style="margin-left:auto">↗ Open 3D Stage Fullscreen</a></div>
+<div class="ifc" style="height:420px" id="demoFrame"><iframe src="/democriticIntelligence/amazon.html" style="width:100%;height:100%;border:none"></iframe></div>`;
+setTimeout(()=>{const c=document.getElementById('demoFrame');if(c&&html&&html.length>800){const ifr=document.createElement('iframe');ifr.style.cssText='width:100%;height:100%;border:none';c.innerHTML='';c.appendChild(ifr);let clean=html.replace(/^```(?:html)?\s*/i,'').replace(/\s*```$/i,'').trim();const doc=ifr.contentDocument||ifr.contentWindow.document;doc.open();doc.write(clean);doc.close();}},100);
 }else if(type==='release'){
 const comps=data.components_validated||[];
 vis=`<div class="rb"><div class="rt">${data.release_id||'RELEASE-2026-v1.0'}</div><h3 style="color:#fda4af;font-size:1.05rem;margin-bottom:.4rem;font-weight:900">${data.deployment_status||'READY_FOR_BROADCAST'}</h3><p style="color:var(--t3);font-size:.78rem;margin-bottom:1rem;font-weight:600">Topic: ${data.topic||'Intelligence'}</p><div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap">${comps.map(c=>`<span class="rc">✓ ${c}</span>`).join('')}</div></div>`;

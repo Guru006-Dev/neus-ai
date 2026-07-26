@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon Prime Air & AWS 3D Keynote Experience</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Outfit:wght@500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        :root {
+            --amazon-amber: #FF9900;
+            --amazon-blue: #00A8E1;
+            --amazon-dark: #0A0D14;
+            --surface-glass: rgba(20, 25, 35, 0.85);
+            --border-amber: rgba(255, 153, 0, 0.4);
+            --border-blue: rgba(0, 168, 225, 0.4);
+            --text-primary: #FFFFFF;
+            --text-muted: #94A3B8;
+            --accent-green: #00FF88;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; user-select: none; }
+        html, body { width: 100%; height: 100%; overflow: hidden; background-color: var(--amazon-dark); color: var(--text-primary); }
+
+        .stage-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            background: radial-gradient(circle at center, #171E2E 0%, var(--amazon-dark) 100%);
+        }
+
+        #webgl-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .hud-layer {
+            position: absolute;
+            inset: 0;
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px 30px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            background: var(--surface-glass);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-amber);
+            border-radius: 16px;
+            padding: 12px 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            pointer-events: auto;
+        }
+
+        .brand-block { display: flex; align-items: center; gap: 14px; }
+        .brand-logo { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 26px; color: #FFF; letter-spacing: -1px; }
+        .brand-logo span { color: var(--amazon-amber); }
+        .brand-badge {
+            background: linear-gradient(135deg, var(--amazon-amber), #FF6600);
+            color: #000; font-weight: 800; font-size: 11px; padding: 4px 10px; border-radius: 20px; letter-spacing: 1px; text-transform: uppercase;
+        }
+
+        .hud-stats { display: flex; gap: 20px; align-items: center; }
+        .stat-item { display: flex; flex-direction: column; gap: 2px; }
+        .stat-label { font-size: 10px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; font-family: monospace; }
+        .stat-value { font-size: 13px; font-weight: 700; color: var(--accent-green); font-family: monospace; display: flex; align-items: center; gap: 6px; }
+        .stat-value .dot { width: 6px; height: 6px; background-color: var(--accent-green); border-radius: 50%; box-shadow: 0 0 8px var(--accent-green); animation: pulse 1.5s infinite; }
+
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .title-hero {
+            position: absolute;
+            top: 90px;
+            left: 30px;
+            pointer-events: auto;
+            max-width: 520px;
+            transition: all 0.4s ease;
+        }
+
+        .title-hero h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 36px;
+            font-weight: 900;
+            line-height: 1.1;
+            background: linear-gradient(180deg, #FFFFFF 0%, #B0C4DE 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .title-hero h2 span { background: linear-gradient(90deg, var(--amazon-amber), #FFB800); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .title-hero p { font-size: 14px; color: var(--text-muted); line-height: 1.4; margin-bottom: 14px; }
+
+        .badge-list { display: flex; gap: 8px; flex-wrap: wrap; }
+        .feature-pill { background: rgba(0, 168, 225, 0.15); border: 1px solid var(--border-blue); color: var(--amazon-blue); padding: 4px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; }
+
+        .mode-dock {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--surface-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-amber);
+            padding: 8px 16px;
+            border-radius: 40px;
+            display: flex;
+            gap: 10px;
+            pointer-events: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+        }
+
+        .mode-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, var(--amazon-amber), #FF6600);
+            color: #000;
+            box-shadow: 0 0 20px rgba(255, 153, 0, 0.5);
+        }
+
+        .subtitle-banner {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(850px, 90vw);
+            background: rgba(10, 13, 20, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-amber);
+            border-radius: 14px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            pointer-events: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+        }
+
+        .subtitle-badge {
+            background: linear-gradient(135deg, var(--amazon-amber), #FF6600);
+            color: #000; font-weight: 900; font-size: 11px; padding: 4px 10px; border-radius: 6px; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap;
+        }
+
+        .subtitle-text { font-size: 14px; font-weight: 600; color: #FFFFFF; line-height: 1.4; }
+
+        .telemetry-card {
+            position: absolute;
+            right: 30px;
+            top: 90px;
+            width: 280px;
+            background: var(--surface-glass);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-blue);
+            border-radius: 16px;
+            padding: 18px;
+            pointer-events: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .telemetry-card h4 { font-size: 13px; color: var(--text-primary); text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
+        .telemetry-row { display: flex; justify-content: space-between; font-size: 12px; }
+        .telemetry-label { color: var(--text-muted); }
+        .telemetry-val { font-family: monospace; font-weight: 700; color: var(--amazon-blue); }
+
+        .reel-timeline { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: rgba(255,255,255,0.1); z-index: 100; }
+        .reel-progress { height: 100%; width: 0%; background: linear-gradient(90deg, var(--amazon-amber), var(--amazon-blue)); transition: width 0.1s linear; }
+    </style>
+</head>
+<body>
+
+    <div class="stage-container" id="stage">
+        <div class="reel-timeline"><div class="reel-progress" id="reel-progress"></div></div>
+        <canvas id="webgl-canvas"></canvas>
+
+        <div class="hud-layer">
+            <header>
+                <div class="brand-block">
+                    <div class="brand-logo">amazon<span>.com</span></div>
+                    <span class="brand-badge">PRIME AIR 2026</span>
+                </div>
+                <div class="hud-stats">
+                    <div class="stat-item"><span class="stat-label">System</span><span class="stat-value"><span class="dot"></span> ONLINE</span></div>
+                    <div class="stat-item"><span class="stat-label">AWS Node</span><span class="stat-value" style="color:var(--amazon-blue)">US-EAST</span></div>
+                    <div class="stat-item"><span class="stat-label">FPS</span><span class="stat-value" id="fps-counter" style="color:#FFF">60 FPS</span></div>
+                </div>
+            </header>
+
+            <div class="title-hero" id="hero-text">
+                <h2>Next-Gen <span>Autonomous</span> Prime Delivery</h2>
+                <p>15-minute aerial fulfillment powered by AWS Neural Flight Mesh and Echo Spatial Intelligence.</p>
+                <div class="badge-list">
+                    <div class="feature-pill">⚡ 15-Min Delivery</div>
+                    <div class="feature-pill">🛸 Hexacopter MK-X</div>
+                    <div class="feature-pill">☁️ AWS Cloud Core</div>
+                </div>
+            </div>
+
+            <div class="subtitle-banner">
+                <span class="subtitle-badge" id="sub-badge">KEYNOTE CAPTION</span>
+                <div class="subtitle-text" id="sub-text">"Welcome to Amazon Prime Air 2026. Deploying autonomous hexacopter MK-X."</div>
+            </div>
+
+            <div class="telemetry-card">
+                <h4><span>Telemetry</span><span style="color:var(--accent-green);font-size:10px;">● LIVE</span></h4>
+                <div class="telemetry-row"><span class="telemetry-label">Speed</span><span class="telemetry-val" id="val-speed">64.8 MPH</span></div>
+                <div class="telemetry-row"><span class="telemetry-label">Altitude</span><span class="telemetry-val" id="val-alt">142.5 FT</span></div>
+                <div class="telemetry-row"><span class="telemetry-label">Payload</span><span class="telemetry-val">5.5 LBS SMART BOX</span></div>
+                <div class="telemetry-row"><span class="telemetry-label">Battery</span><span class="telemetry-val" style="color:var(--accent-green)">94%</span></div>
+            </div>
+
+            <div class="mode-dock">
+                <button class="mode-btn active" id="btn-drone" onclick="switchScene('drone')">🛸 Drone Delivery</button>
+                <button class="mode-btn" id="btn-unboxing" onclick="switchScene('unboxing')">📦 Smart Box Unbox</button>
+                <button class="mode-btn" id="btn-aws" onclick="switchScene('aws')">☁️ AWS Mesh</button>
+                <button class="mode-btn" id="btn-alexa" onclick="switchScene('alexa')">🔊 Echo Spatial</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // WEBGL & CANVAS RENDERER
+        const canvas = document.getElementById('webgl-canvas');
+        let renderer, scene, camera, droneGroup, boxGroup, echoDevice, mainBox, tape, smile, laserBeam, rotors = [], particles;
+
+        function initThree() {
+            if (typeof THREE === 'undefined') {
+                console.log('Three.js fallback to 2D Canvas');
+                initCanvas2D();
+                return;
+            }
+
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x0A0D14, 0.015);
+
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 5, 14);
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+            scene.add(ambientLight);
+
+            const amberSpot = new THREE.SpotLight(0xFF9900, 4);
+            amberSpot.position.set(10, 15, 10);
+            scene.add(amberSpot);
+
+            const blueSpot = new THREE.SpotLight(0x00A8E1, 3);
+            blueSpot.position.set(-10, 12, -8);
+            scene.add(blueSpot);
+
+            const gridHelper = new THREE.GridHelper(80, 40, 0xFF9900, 0x00A8E1);
+            gridHelper.position.y = -2;
+            scene.add(gridHelper);
+
+            // BOX
+            boxGroup = new THREE.Group();
+            scene.add(boxGroup);
+
+            const boxGeo = new THREE.BoxGeometry(3, 2.2, 3);
+            const boxMat = new THREE.MeshStandardMaterial({ color: 0xC89656, roughness: 0.5 });
+            mainBox = new THREE.Mesh(boxGeo, boxMat);
+            boxGroup.add(mainBox);
+
+            const tapeGeo = new THREE.BoxGeometry(3.05, 0.1, 0.8);
+            const tapeMat = new THREE.MeshStandardMaterial({ color: 0x111111, emissive: 0xFF9900, emissiveIntensity: 0.6 });
+            tape = new THREE.Mesh(tapeGeo, tapeMat);
+            tape.position.y = 1.11;
+            boxGroup.add(tape);
+
+            const smileGeo = new THREE.TorusGeometry(0.7, 0.05, 16, 32, Math.PI * 0.8);
+            const smileMat = new THREE.MeshBasicMaterial({ color: 0xFF9900 });
+            smile = new THREE.Mesh(smileGeo, smileMat);
+            smile.rotation.x = Math.PI / 2;
+            smile.rotation.z = -Math.PI * 0.4;
+            smile.position.set(0, 1.12, 0);
+            boxGroup.add(smile);
+
+            const echoGeo = new THREE.CylinderGeometry(0.7, 0.8, 1.4, 32);
+            const echoMat = new THREE.MeshStandardMaterial({ color: 0x1A1A24, metalness: 0.8, roughness: 0.2 });
+            echoDevice = new THREE.Mesh(echoGeo, echoMat);
+            echoDevice.position.set(0, 0, 0);
+            echoDevice.scale.set(0.01, 0.01, 0.01);
+            boxGroup.add(echoDevice);
+
+            // DRONE
+            droneGroup = new THREE.Group();
+            droneGroup.position.set(0, 4.2, 0);
+            scene.add(droneGroup);
+
+            const bodyGeo = new THREE.SphereGeometry(1.2, 32, 16);
+            bodyGeo.scale(1, 0.4, 1);
+            const bodyMat = new THREE.MeshStandardMaterial({ color: 0x121722, metalness: 0.9, roughness: 0.1 });
+            const droneBody = new THREE.Mesh(bodyGeo, bodyMat);
+            droneGroup.add(droneBody);
+
+            const coreGeo = new THREE.SphereGeometry(0.5, 16, 16);
+            const coreMat = new THREE.MeshBasicMaterial({ color: 0x00A8E1 });
+            const droneCore = new THREE.Mesh(coreGeo, coreMat);
+            droneGroup.add(droneCore);
+
+            for (let i = 0; i < 4; i++) {
+                const angle = (i * Math.PI) / 2 + Math.PI / 4;
+                const armGeo = new THREE.CylinderGeometry(0.08, 0.08, 2.5);
+                const armMat = new THREE.MeshStandardMaterial({ color: 0x333344 });
+                const arm = new THREE.Mesh(armGeo, armMat);
+                arm.rotation.z = Math.PI / 2;
+                arm.rotation.y = angle;
+                droneGroup.add(arm);
+
+                const bladeGeo = new THREE.TorusGeometry(0.8, 0.03, 8, 24);
+                const bladeMat = new THREE.MeshBasicMaterial({ color: 0xFF9900, transparent: true, opacity: 0.8 });
+                const blade = new THREE.Mesh(bladeGeo, bladeMat);
+                blade.rotation.x = Math.PI / 2;
+                blade.position.set(Math.cos(angle) * 2.2, 0.25, Math.sin(angle) * 2.2);
+                droneGroup.add(blade);
+                rotors.push(blade);
+            }
+
+            const laserGeo = new THREE.ConeGeometry(1.8, 4.5, 32, 1, true);
+            const laserMat = new THREE.MeshBasicMaterial({ color: 0x00A8E1, transparent: true, opacity: 0.25, side: THREE.DoubleSide });
+            laserBeam = new THREE.Mesh(laserGeo, laserMat);
+            laserBeam.position.set(0, -2.25, 0);
+            droneGroup.add(laserBeam);
+
+            // PARTICLES
+            const particleCount = 150;
+            const particleGeo = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            for (let i = 0; i < particleCount * 3; i += 3) {
+                positions[i] = (Math.random() - 0.5) * 35;
+                positions[i + 1] = Math.random() * 15;
+                positions[i + 2] = (Math.random() - 0.5) * 35;
+            }
+            particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            const particleMat = new THREE.PointsMaterial({ color: 0xFF9900, size: 0.2, transparent: true, opacity: 0.7 });
+            particles = new THREE.Points(particleGeo, particleMat);
+            scene.add(particles);
+
+            animateThree();
+        }
+
+        let targetCamPos = { x: 0, y: 5, z: 14 }, currentMode = 'drone', clock = new THREE.Clock();
+
+        function animateThree() {
+            requestAnimationFrame(animateThree);
+            const time = clock.getElapsedTime();
+
+            rotors.forEach((r, i) => r.rotation.z += 0.4 * (i % 2 === 0 ? 1 : -1));
+            droneGroup.position.y = 4.2 + Math.sin(time * 2) * 0.2;
+            boxGroup.rotation.y = time * 0.2;
+
+            if (currentMode === 'unboxing') {
+                mainBox.position.y = THREE.MathUtils.lerp(mainBox.position.y, -1.5, 0.05);
+                echoDevice.scale.lerp(new THREE.Vector3(1.2, 1.2, 1.2), 0.05);
+                echoDevice.position.y = 0.5 + Math.sin(time * 3) * 0.1;
+            } else {
+                mainBox.position.y = THREE.MathUtils.lerp(mainBox.position.y, 0, 0.05);
+                echoDevice.scale.lerp(new THREE.Vector3(0.01, 0.01, 0.01), 0.05);
+            }
+
+            camera.position.x += (targetCamPos.x - camera.position.x) * 0.04;
+            camera.position.y += (targetCamPos.y - camera.position.y) * 0.04;
+            camera.position.z += (targetCamPos.z - camera.position.z) * 0.04;
+            camera.lookAt(0, 1, 0);
+
+            document.getElementById('val-speed').innerText = (64.0 + Math.sin(time * 3) * 2.5).toFixed(1) + ' MPH';
+            document.getElementById('val-alt').innerText = (142.0 + Math.cos(time * 2) * 1.8).toFixed(1) + ' FT';
+
+            renderer.render(scene, camera);
+        }
+
+        const subtitlesMap = {
+            drone: { badge: 'PRIME AIR LOGISTICS', text: 'Welcome to Amazon Prime Air 2026. Deploying autonomous hexacopter MK-X with 15-minute fulfillment.', pos: { x: 0, y: 5, z: 14 } },
+            unboxing: { badge: 'NFC SMART UNBOXING', text: 'Holographic NFC verification unveils the next-generation Amazon Echo Studio with Dolby Atmos.', pos: { x: 0, y: 2.5, z: 6 } },
+            aws: { badge: 'AWS QUANTUM CLOUD', text: 'Synchronizing with AWS Quantum Edge Mesh across 10 million flight routes per second.', pos: { x: -10, y: 12, z: 10 } },
+            alexa: { badge: 'ALEXA SPATIAL ENGINE', text: 'Alexa Spatial Audio Core active. Real-time acoustic soundfield calibration engaged.', pos: { x: 5, y: 3.5, z: 7 } }
+        };
+
+        function switchScene(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            const btn = document.getElementById(`btn-${mode}`); if (btn) btn.classList.add('active');
+
+            const s = subtitlesMap[mode];
+            if (s) {
+                document.getElementById('sub-badge').innerText = s.badge;
+                document.getElementById('sub-text').innerText = `"${s.text}"`;
+                targetCamPos = s.pos;
+            }
+        }
+
+        // CANVAS 2D FALLBACK IF THREE.JS IS UNAVAILABLE
+        function initCanvas2D() {
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            let angle = 0;
+
+            function draw2D() {
+                requestAnimationFrame(draw2D);
+                angle += 0.02;
+                ctx.fillStyle = '#0A0D14';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                const cx = canvas.width / 2, cy = canvas.height / 2;
+
+                // Glowing Grid
+                ctx.strokeStyle = 'rgba(0, 168, 225, 0.2)';
+                ctx.lineWidth = 1;
+                for (let i = -10; i <= 10; i++) {
+                    ctx.beginPath(); ctx.moveTo(cx + i * 40, cy); ctx.lineTo(cx + i * 80, canvas.height); ctx.stroke();
+                }
+
+                // Drone 2D Representation
+                ctx.save();
+                ctx.translate(cx, cy - 80 + Math.sin(angle * 2) * 15);
+                ctx.fillStyle = '#121722'; ctx.beginPath(); ctx.arc(0, 0, 45, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = '#FF9900'; ctx.lineWidth = 3; ctx.stroke();
+
+                ctx.fillStyle = '#00A8E1'; ctx.beginPath(); ctx.arc(0, 0, 15, 0, Math.PI * 2); ctx.fill();
+                ctx.restore();
+
+                // Amazon Box 2D
+                ctx.save();
+                ctx.translate(cx, cy + 80);
+                ctx.fillStyle = '#C89656'; ctx.fillRect(-60, -40, 120, 80);
+                ctx.fillStyle = '#FF9900'; ctx.fillRect(-60, -5, 120, 10);
+                ctx.restore();
+            }
+            draw2D();
+        }
+
+        window.addEventListener('resize', () => {
+            if (renderer && camera) {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+        });
+
+        window.onload = initThree;
+
+        // Auto Reel
+        const modesSeq = ['drone', 'unboxing', 'aws', 'alexa'];
+        let seqIdx = 0, reelTime = 0;
+        setInterval(() => {
+            reelTime += 0.1;
+            document.getElementById('reel-progress').style.width = ((reelTime % 20) / 20 * 100) + '%';
+            const curSeq = Math.floor((reelTime % 20) / 5);
+            if (curSeq !== seqIdx) { seqIdx = curSeq; switchScene(modesSeq[seqIdx]); }
+        }, 100);
+    </script>
+</body>
+</html>
