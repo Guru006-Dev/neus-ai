@@ -16,6 +16,15 @@ class WorkflowRequest(BaseModel):
     user_id: str = "anonymous"
     priority: int = 1
 
+@app.get("/")
+def read_root():
+    return {
+        "message": "Welcome to the ADIP APIP Platform Orchestrator",
+        "status": "Online and Ready",
+        "docs_url": "/docs",
+        "system_status_url": "/system/status"
+    }
+
 @app.post("/workflows")
 def submit_workflow(req: WorkflowRequest):
     wf_id = orchestrator.submit_workflow({"goal": req.goal}, user_id=req.user_id, priority=req.priority)
