@@ -95,7 +95,7 @@ class Scheduler:
                     break
                 if self.concurrency.acquire(agent_name):
                     wf = self.job_manager.get_workflow(task.workflow_id)
-                    ctx = wf.context if wf else {}
+                    ctx = {"goal": wf.goal, **(wf.context if wf else {})} if wf else task.input_data
                     self.worker_pool.execute_task_async(
                         task=task,
                         context=ctx,
