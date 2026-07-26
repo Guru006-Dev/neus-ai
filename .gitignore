@@ -1,10 +1,22 @@
-Agent/
-applications/
-*.mp4
-*.webm
-*.mp3
+# Python / System
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
 *.db
+*.sqlite3
+
+# Node / JS
+node_modules/
+dist/
+build/
+.next/
+
+# Anti-Gravity / IDE temp files
+.tempmediaStorage/
 *.zip
-temp*
-wt_*
-motion_frames/
+*.log
+
+# Environment & Secrets
+.env
+.env.local
