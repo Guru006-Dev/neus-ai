@@ -1,6 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 import sys
 import os
@@ -10,11 +9,15 @@ from agents.orchestrator.agent import OrchestratorAgent
 
 app = FastAPI(title="ADIP Orchestrator API", description="Autonomous Product Intelligence Platform Orchestrator")
 
-# Serve static files (dashboard)
-static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
-app.mount("/static", StaticFiles(directory=static_dir), name="static")
+# Load dashboard HTML at startup (avoids file-serving issues in read-only containers)
+_dashboard_html = ""
+_static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
+_dashboard_path = os.path.join(_static_dir, "dashboard.html")
+if os.path.exists(_dashboard_path):
+    with open(_dashboard_path, "r", encoding="utf-8") as f:
+        _dashboard_html = f.read()
 
-# Initialize the robust orchestrator agent (handles writable directory fallback automatically)
+# Initialize the robust orchestrator agent
 orchestrator = OrchestratorAgent()
 
 class WorkflowRequest(BaseModel):
@@ -22,10 +25,10 @@ class WorkflowRequest(BaseModel):
     user_id: str = "anonymous"
     priority: int = 1
 
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
 def read_root():
     """Serve the APIP Dashboard"""
-    return FileResponse(os.path.join(static_dir, "dashboard.html"))
+    return HTMLResponse(content=_dashboard_html, status_code=200)
 
 @app.post("/workflows")
 def submit_workflow(req: WorkflowRequest):
