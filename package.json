@@ -4,10 +4,8 @@
   "description": "ADIP Multi-Agent System MCP Architecture",
   "main": "orchestrator/main.py",
   "scripts": {
-    "preinstall": "pip install -r orchestrator/requirements.txt fastmcp pydantic mcp || pip3 install -r orchestrator/requirements.txt fastmcp pydantic mcp",
-    "install": "npm install --prefix knowledge-mcp/agent || echo 'NPM install passed'",
-    "build": "echo 'Building ADIP MCP Architecture...'",
-    "start": "python orchestrator/main.py || python3 orchestrator/main.py"
+    "build": "node build.js",
+    "start": "node start.js"
   },
   "engines": {
     "node": ">=18.0.0"
