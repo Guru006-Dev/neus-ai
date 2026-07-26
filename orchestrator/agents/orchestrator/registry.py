@@ -1,7 +1,7 @@
 import time
 import os
 import json
-
+import tempfile
 class BaseAgent:
     def __init__(self, name: str, execution_time: float = 0.1):
         self.name = name
@@ -115,7 +115,7 @@ class DemoAgent(BaseAgent):
         print("  [Demo] Generating Portugal 3D Motion Animation Showcase...")
         time.sleep(self.execution_time)
         
-        output_file = os.path.abspath("portugal_3d_showcase.html")
+        output_file = os.path.join(tempfile.gettempdir(), "portugal_3d_showcase.html")
         
         html_content = """<!DOCTYPE html>
 <html lang="en">
