@@ -1,6 +1,9 @@
 const { execSync } = require('child_process');
+const fs = require('fs');
+
 console.log("Starting ADIP build logic (overriding NitroStack default)...");
 
+// ─── Step 1: Download uv binary ───
 try {
   const archMap = { 'arm64': 'aarch64', 'x64': 'x86_64' };
   const arch = archMap[process.arch] || 'x86_64';
@@ -17,11 +20,36 @@ try {
   process.exit(1);
 }
 
+// ─── Step 2: Pre-install Python venv & all packages during BUILD ───
+try {
+  console.log("Pre-installing Python 3.11 virtual environment...");
+  const env = { ...process.env, UV_PYTHON_INSTALL_DIR: '/tmp/.uv_python' };
+  
+  execSync('/app/uv venv --python 3.11 /tmp/.venv', { stdio: 'inherit', env });
+
+  // Discover all requirements.txt across MCP servers
+  const reqs = ['orchestrator', 'explorer-mcp', 'documentation-mcp', 'qa-mcp', 'demo-mcp', 'release-mcp', 'knowledge-mcp']
+    .map(f => `${f}/requirements.txt`)
+    .filter(f => fs.existsSync(f))
+    .map(f => `-r ${f}`)
+    .join(' ');
+
+  console.log("Installing all python packages...");
+  execSync(`/app/uv pip install --python /tmp/.venv/bin/python ${reqs} fastmcp pydantic mcp`, { stdio: 'inherit', env });
+  console.log("Python environment ready!");
+} catch (e) {
+  console.error("Failed to pre-install Python:", e);
+  process.exit(1);
+}
+
+// ─── Step 3: JS dependencies ───
 try {
   console.log("Installing JS dependencies if present...");
-  if (require('fs').existsSync('knowledge-mcp/agent/package.json')) {
+  if (fs.existsSync('knowledge-mcp/agent/package.json')) {
     execSync('npm install', { cwd: 'knowledge-mcp/agent', stdio: 'inherit' });
   }
 } catch (e) {
   console.warn("JS dependencies install failed but continuing.");
 }
+
+console.log("Build completed successfully! Python is pre-installed for instant startup.");
