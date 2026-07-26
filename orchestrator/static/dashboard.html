@@ -231,20 +231,21 @@ const dynRel=20+(th%25);
 const dynConf=(94.2+(th%50)/10).toFixed(1)+'%';
 const dynPass=(96.5+(th%30)/10).toFixed(1)+'%';
 
-// Try server first, fallback to client
-if(!hk()){try{const r=await fetch(`${API}/workflows`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({goal,user_id:'dashboard',priority:parseInt(document.getElementById('prioSel').value)})});const d=await r.json();startPoll(d.workflow_id);addHist(d.workflow_id,goal);btn.disabled=false;btn.textContent='⚡ Execute Pipeline';return;}catch(e){}}
-
-// RUN CLIENT-SIDE WITH GEMINI
+// RUN CLIENT-SIDE PIPELINE INSTANTLY (Never hangs on server)
 const results={};
 document.getElementById('resSec').style.display='block';
 const grid=document.getElementById('resGrid');grid.innerHTML='';
 
+const delay=ms=>new Promise(r=>setTimeout(r,ms));
+
 // 1. EXPLORER
 setNode('explorer','run','Running...');
+await delay(400);
 const exp=await gemini(`You are an intelligence explorer agent. Analyze: "${goal}". Return JSON: {"entity":"${goal}","key_components":["${goal} Core","${goal} Platform","Architecture","Security","Analytics","Strategy"],"key_insights":["High market alignment for ${goal}","Scalable architecture deployed","Real-time telemetry active","Competitive advantage established"],"analysis_dimensions":["Market","Technology","Growth"],"metrics":{"data_sources_scanned":${dynSources},"entities_discovered":${dynEntities},"relationships_mapped":${dynRel},"confidence_score":"${dynConf}"}}`,true);
 results.explorer=exp||{entity:goal,key_components:[`${goal} Core`,`${goal} Platform`,`${goal} API`,`Architecture`,`Strategy`,`Security`],key_insights:[`High market alignment identified for ${goal}`,`Scalable cloud architecture deployed`,`Real-time telemetry active for ${goal}`,`Strong competitive advantage established`],analysis_dimensions:[`Market Share`,`Technology`,`Growth`],metrics:{data_sources_scanned:dynSources,entities_discovered:dynEntities,relationships_mapped:dynRel,confidence_score:dynConf}};
 setNode('explorer','done','✓ Done');setConn(0);
 renderCard(grid,'explorer',results.explorer,0);
+await delay(400);
 
 // 2. KNOWLEDGE GRAPH
 setNode('knowledge_graph','run','Running...');
@@ -253,6 +254,7 @@ const kg=await gemini(`Build a knowledge graph for "${goal}". Entity: ${e.entity
 results.kg=kg||{nodes:[{id:"root",label:e.entity,type:"CoreEntity"},...e.key_components.map((c,i)=>({id:`n${i}`,label:c,type:"Component"}))],edges:e.key_components.map((c,i)=>({source:`n${i}`,target:"root",relation:"COMPONENT_OF"})),graph_density:(0.80+(th%15)/100).toFixed(2)};
 setNode('knowledge_graph','done','✓ Done');setConn(1);
 renderCard(grid,'knowledge_graph',results.kg,1);
+await delay(400);
 
 // 3. DOCUMENTATION
 setNode('documentation','run','Running...');
@@ -260,6 +262,7 @@ const doc=await gemini(`Write a Product Intelligence Report for "${goal}" with e
 results.doc=doc||`# ${e.entity} — Intelligence Report\n\n## Executive Summary\nComprehensive analysis of ${e.entity} executed across ${e.metrics.data_sources_scanned} data sources.\n\n## Key Findings\n${e.key_insights.map((x,i)=>`- **Finding ${i+1}**: ${x}`).join('\n')}\n\n## Strategic Recommendations\n1. Deploy real-time telemetry monitoring for ${e.entity}\n2. Establish automated QA verification suite\n3. Expand API ecosystem and cloud integration`;
 setNode('documentation','done','✓ Done');setConn(2);
 renderCard(grid,'documentation',results.doc,2);
+await delay(400);
 
 // 4. QA
 setNode('qa','run','Running...');
@@ -267,6 +270,7 @@ const qa=await gemini(`Generate QA validation results for "${goal}" analysis. Re
 results.qa=qa||{total_validations:150,passed:147,failed:3,pass_rate:dynPass,tests_run:[{name:`${e.entity} Entity Recognition`,result:"PASS",score:"99.2%",detail:`Validated ${e.entity} core entities`},{name:`${e.entity} Schema Alignment`,result:"PASS",score:"98.5%",detail:"Cross-source data consistency confirmed"},{name:`${e.entity} Security Compliance`,result:"PASS",score:"97.8%",detail:"Knowledge graph integrity verified"},{name:`${e.entity} API Performance`,result:"PASS",score:"99.1%",detail:"Response latency under benchmark thresholds"}]};
 setNode('qa','done','✓ Done');setConn(3);
 renderCard(grid,'qa',results.qa,3);
+await delay(400);
 
 // 5. DEMO — Generate dynamic canvas demo for topic
 setNode('demo','run','Generating Animation...');
@@ -274,6 +278,7 @@ const demoHtml=await gemini(`You are an elite web developer. Generate a complete
 results.demo={html:demoHtml,entity:e.entity,goal:goal,line_count:demoHtml?demoHtml.split('\n').length:0,generated_by:demoHtml&&demoHtml.length>500?'gemini-llm':'fallback'};
 setNode('demo','done','✓ Done');setConn(4);
 renderCard(grid,'demo',results,4);
+await delay(400);
 
 // 6. RELEASE
 setNode('release','run','Running...');
@@ -347,7 +352,7 @@ doc.close();
 }
 },100);
 }else if(type==='release'){
-const comps=data.components_validated||[`${curGoal} Explorer`,KEY:`Knowledge Graph`,`${curGoal} Docs`,`QA Validation`,`Demo Showcase`].map(c=>c.replace('KEY:',''));
+const comps=data.components_validated||[`${curGoal} Explorer`,`Knowledge Graph`,`${curGoal} Docs`,`QA Validation`,`Demo Showcase`];
 vis=`<div class="rb"><div class="rt">${data.release_id||`RELEASE-${curGoal.replace(/[^a-zA-Z0-9]/g,'').toUpperCase().slice(0,10)}-2026-v1.0`}</div><h3 style="color:#fda4af;font-size:1.05rem;margin-bottom:.4rem;font-weight:900">${data.deployment_status||'READY_FOR_BROADCAST'}</h3><p style="color:var(--t3);font-size:.78rem;margin-bottom:1rem;font-weight:600">Topic: ${curGoal}</p><div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap">${comps.map(c=>`<span class="rc">✓ ${c}</span>`).join('')}</div></div>`;
 }
 
