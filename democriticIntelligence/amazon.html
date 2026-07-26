@@ -19,7 +19,7 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; user-select: none; }
-        html, body { width: 100%; height: 100%; overflow: hidden; background-color: var(--amazon-dark); color: var(--text-primary); }
+        html, body { width: 100%; height: 100%; overflow: hidden; background-color: var(--amazon-dark); color: var(--text-primary); transition: background 0.5s ease; }
 
         .stage-container {
             width: 100vw;
@@ -27,6 +27,7 @@
             position: relative;
             overflow: hidden;
             background: radial-gradient(circle at center, #141A29 0%, var(--amazon-dark) 100%);
+            transition: background 0.5s ease;
         }
 
         #webgl-canvas {
@@ -61,13 +62,14 @@
             padding: 12px 24px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             pointer-events: auto;
+            transition: border-color 0.4s ease;
         }
 
         .brand-block { display: flex; align-items: center; gap: 14px; }
         .brand-logo { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 24px; color: #FFF; letter-spacing: -0.5px; text-transform: uppercase; }
         .brand-logo span { color: var(--amazon-amber); }
         .brand-badge {
-            background: linear-gradient(135deg, var(--amazon-amber), #FF6600);
+            background: linear-gradient(135deg, var(--amazon-amber), var(--amazon-blue));
             color: #000; font-weight: 800; font-size: 11px; padding: 4px 10px; border-radius: 20px; letter-spacing: 1px; text-transform: uppercase;
         }
 
@@ -100,7 +102,7 @@
             margin-bottom: 8px;
         }
 
-        .title-hero h2 span { background: linear-gradient(90deg, var(--amazon-amber), #FFB800); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .title-hero h2 span { background: linear-gradient(90deg, var(--amazon-amber), var(--amazon-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .title-hero p { font-size: 13px; color: var(--text-muted); line-height: 1.4; margin-bottom: 12px; }
 
         .badge-list { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -138,9 +140,9 @@
         }
 
         .mode-btn.active {
-            background: linear-gradient(135deg, var(--amazon-amber), #FF6600);
+            background: linear-gradient(135deg, var(--amazon-amber), var(--amazon-blue));
             color: #000;
-            box-shadow: 0 0 20px rgba(255, 153, 0, 0.5);
+            box-shadow: 0 0 20px var(--border-amber);
         }
 
         .subtitle-banner {
@@ -162,7 +164,7 @@
         }
 
         .subtitle-badge {
-            background: linear-gradient(135deg, var(--amazon-amber), #FF6600);
+            background: linear-gradient(135deg, var(--amazon-amber), var(--amazon-blue));
             color: #000; font-weight: 900; font-size: 11px; padding: 4px 10px; border-radius: 6px; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap;
         }
 
@@ -195,7 +197,7 @@
 </head>
 <body>
 
-    <div class="stage-container">
+    <div class="stage-container" id="stage-box">
         <div class="reel-timeline"><div class="reel-progress" id="reel-progress"></div></div>
         <canvas id="webgl-canvas"></canvas>
 
@@ -207,7 +209,7 @@
                 </div>
                 <div class="hud-stats">
                     <div class="stat-item"><span class="stat-label">System</span><span class="stat-value"><span class="dot"></span> ONLINE</span></div>
-                    <div class="stat-item"><span class="stat-label">Edge Mesh</span><span class="stat-value" id="node-val" style="color:var(--amazon-blue)">US-EAST-QUANTUM</span></div>
+                    <div class="stat-item"><span class="stat-label">Theme Mode</span><span class="stat-value" id="theme-tag" style="color:var(--amazon-amber)">CYBERPUNK</span></div>
                     <div class="stat-item"><span class="stat-label">FPS</span><span class="stat-value" id="fps-counter" style="color:#FFF">60 FPS</span></div>
                 </div>
             </header>
@@ -249,24 +251,48 @@
         const urlParams = new URLSearchParams(window.location.search);
         const rawTopic = urlParams.get('topic') || urlParams.get('goal') || 'Amazon';
         const topic = rawTopic.trim();
-        const isAmazon = topic.toLowerCase().includes('amazon');
+        const tLower = topic.toLowerCase();
+
+        // DETERMINE VISUAL THEME BASED ON BRAND / TOPIC
+        let themeName = 'CYBERPUNK NEON';
+        let themeColors = { amber: '#00f3ff', blue: '#bc13fe', dark: '#080216', bgRad: 'radial-gradient(circle at center, #1b0a3a 0%, #080216 100%)', geometry: 'cyber_matrix' };
+
+        if (tLower.includes('stripe') || tLower.includes('pay') || tLower.includes('bank') || tLower.includes('crypto') || tLower.includes('finance') || tLower.includes('shopify')) {
+            themeName = 'EMERALD LEDGER';
+            themeColors = { amber: '#f59e0b', blue: '#10b981', dark: '#041a14', bgRad: 'radial-gradient(circle at center, #064e3b 0%, #041a14 100%)', geometry: 'emerald_prism' };
+        } else if (tLower.includes('tesla') || tLower.includes('uber') || tLower.includes('space') || tLower.includes('nike') || tLower.includes('energy') || tLower.includes('apple')) {
+            themeName = 'CARBON REACTOR';
+            themeColors = { amber: '#ef4444', blue: '#f97316', dark: '#090d16', bgRad: 'radial-gradient(circle at center, #1e1b4b 0%, #090d16 100%)', geometry: 'carbon_reactor' };
+        } else if (tLower.includes('amazon') || tLower.includes('prime') || tLower.includes('logistic') || tLower.includes('box')) {
+            themeName = 'PRIME LOGISTICS';
+            themeColors = { amber: '#FF9900', blue: '#00A8E1', dark: '#0A0D14', bgRad: 'radial-gradient(circle at center, #141A29 0%, #0A0D14 100%)', geometry: 'amazon_drone' };
+        }
+
+        // APPLY CSS THEME VARIABLES
+        document.documentElement.style.setProperty('--amazon-amber', themeColors.amber);
+        document.documentElement.style.setProperty('--amazon-blue', themeColors.blue);
+        document.documentElement.style.setProperty('--amazon-dark', themeColors.dark);
+        document.documentElement.style.setProperty('--border-amber', themeColors.amber + '66');
+        document.documentElement.style.setProperty('--border-blue', themeColors.blue + '66');
+        document.getElementById('stage-box').style.background = themeColors.bgRad;
+        document.getElementById('theme-tag').innerText = themeName;
 
         // UPDATE HEADERS & HERO TEXT DYNAMICALLY
         document.getElementById('brand-logo').innerHTML = `${topic.toUpperCase()}<span>.AI</span>`;
-        document.getElementById('brand-badge').innerText = `${topic.toUpperCase()} 2026`;
-        document.title = `${topic} — 3D Keynote Experience`;
+        document.getElementById('brand-badge').innerText = `${themeName}`;
+        document.title = `${topic} — 3D ${themeName} Keynote`;
 
         document.getElementById('hero-title').innerHTML = `NEXT-GEN <span>AUTONOMOUS ${topic.toUpperCase()} ECOSYSTEM</span>`;
         document.getElementById('hero-desc').innerText = `15-minute real-time intelligence telemetry powered by ${topic} Neural Mesh & Spatial AI.`;
         document.getElementById('badge-list').innerHTML = `
-            <div class="feature-pill">⚡ ${topic} Analytics</div>
-            <div class="feature-pill">🛸 ${topic} Mesh</div>
-            <div class="feature-pill">☁️ ${topic} Core</div>
+            <div class="feature-pill">⚡ ${topic} Telemetry</div>
+            <div class="feature-pill">🛸 ${themeName} Mesh</div>
+            <div class="feature-pill">☁️ ${topic} Spatial Core</div>
         `;
 
         // DYNAMIC SCENES & KEYNOTE REEL CAPTIONS
         const scenes = {
-            drone: { badge: `${topic.toUpperCase()} CORE MESH`, text: `Welcome to ${topic} 2026 Keynote. Deploying autonomous spatial intelligence mesh across core nodes.`, rx: 0.2, ry: 0 },
+            drone: { badge: `${topic.toUpperCase()} CORE MESH`, text: `Welcome to ${topic} 2026 Keynote (${themeName}). Deploying autonomous spatial intelligence mesh.`, rx: 0.2, ry: 0 },
             unboxing: { badge: `${topic.toUpperCase()} NEURAL ENGINE`, text: `Holographic verification unveils the next-generation ${topic} AI Engine with low-latency telemetry.`, rx: 0.4, ry: 0.8 },
             aws: { badge: `${topic.toUpperCase()} QUANTUM CLOUD`, text: `Synchronizing with ${topic} Quantum Edge Mesh across 10 million telemetry signals per second.`, rx: 0.6, ry: -1.2 },
             alexa: { badge: `${topic.toUpperCase()} SPATIAL AI`, text: `Interactive spatial AI core active for ${topic} workflow automation and predictive models.`, rx: 0.1, ry: 1.5 }
@@ -305,7 +331,7 @@
             y: (Math.random() - 0.5) * 600,
             z: (Math.random() - 0.5) * 1200,
             size: Math.random() * 2 + 1,
-            color: Math.random() > 0.5 ? '#FF9900' : '#00A8E1'
+            color: Math.random() > 0.5 ? themeColors.amber : themeColors.blue
         }));
 
         let time = 0;
@@ -333,7 +359,7 @@
             camRx += (targetRx - camRx) * 0.05;
             camRy += (targetRy - camRy) * 0.05;
 
-            ctx.fillStyle = '#0A0D14';
+            ctx.fillStyle = themeColors.dark;
             ctx.fillRect(0, 0, width, height);
 
             // Cyber Grid Floor
@@ -344,7 +370,7 @@
                 let p3 = project(-800, 200, i * 80, camRx, camRy + time * 0.05);
                 let p4 = project(800, 200, i * 80, camRx, camRy + time * 0.05);
 
-                ctx.strokeStyle = i % 2 === 0 ? 'rgba(255, 153, 0, 0.12)' : 'rgba(0, 168, 225, 0.12)';
+                ctx.strokeStyle = i % 2 === 0 ? themeColors.amber + '33' : themeColors.blue + '33';
                 ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
                 ctx.beginPath(); ctx.moveTo(p3.x, p3.y); ctx.lineTo(p4.x, p4.y); ctx.stroke();
             }
@@ -360,69 +386,95 @@
                     let proj2 = project(pNext.x, pNext.y, pNext.z, camRx, camRy);
                     let dist = Math.hypot(proj.x - proj2.x, proj.y - proj2.y);
                     if (dist < 120) {
-                        ctx.strokeStyle = `rgba(0, 168, 225, ${0.3 * (1 - dist / 120)})`;
+                        ctx.strokeStyle = themeColors.blue + '44';
                         ctx.beginPath(); ctx.moveTo(proj.x, proj.y); ctx.lineTo(proj2.x, proj2.y); ctx.stroke();
                     }
                 });
             });
 
-            // 3D CORE MODEL (Amazon Drone vs Universal Holographic Spatial Core)
-            if (isAmazon) {
-                // Render Amazon Hexacopter Drone & Box
+            // RENDER 3D MODEL ACCORDING TO THEME GEOMETRY
+            if (themeColors.geometry === 'amazon_drone') {
+                // Drone & Box
                 let droneY = -120 + Math.sin(time * 2) * 15;
                 let droneProj = project(0, droneY, 0, camRx, camRy);
-
-                ctx.save();
-                ctx.fillStyle = 'rgba(0, 168, 225, 0.08)';
-                ctx.beginPath();
-                let coneLeft = project(-180, 180, 0, camRx, camRy);
-                let coneRight = project(180, 180, 0, camRx, camRy);
-                ctx.moveTo(droneProj.x, droneProj.y); ctx.lineTo(coneLeft.x, coneLeft.y); ctx.lineTo(coneRight.x, coneRight.y); ctx.closePath(); ctx.fill();
-                ctx.restore();
 
                 for (let i = 0; i < 4; i++) {
                     let angle = (i * Math.PI) / 2 + Math.PI / 4 + time * 0.1;
                     let armProj = project(Math.cos(angle) * 160, droneY, Math.sin(angle) * 160, camRx, camRy);
                     ctx.strokeStyle = '#334155'; ctx.lineWidth = 4 * droneProj.scale;
                     ctx.beginPath(); ctx.moveTo(droneProj.x, droneProj.y); ctx.lineTo(armProj.x, armProj.y); ctx.stroke();
-                    ctx.strokeStyle = '#FF9900'; ctx.lineWidth = 2 * armProj.scale;
+                    ctx.strokeStyle = themeColors.amber; ctx.lineWidth = 2 * armProj.scale;
                     ctx.beginPath(); ctx.ellipse(armProj.x, armProj.y, 35 * armProj.scale, 12 * armProj.scale, time * 10, 0, Math.PI * 2); ctx.stroke();
                 }
 
                 ctx.fillStyle = '#121722'; ctx.beginPath(); ctx.arc(droneProj.x, droneProj.y, 45 * droneProj.scale, 0, Math.PI * 2); ctx.fill();
-                ctx.strokeStyle = '#00A8E1'; ctx.lineWidth = 3 * droneProj.scale; ctx.stroke();
-                ctx.fillStyle = '#00A8E1'; ctx.beginPath(); ctx.arc(droneProj.x, droneProj.y, 16 * droneProj.scale, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = themeColors.blue; ctx.lineWidth = 3 * droneProj.scale; ctx.stroke();
 
                 let boxProj = project(0, 80, 0, camRx, camRy + time * 0.2);
                 ctx.fillStyle = '#C89656'; ctx.fillRect(boxProj.x - 65 * boxProj.scale, boxProj.y - 45 * boxProj.scale, 130 * boxProj.scale, 90 * boxProj.scale);
-                ctx.strokeStyle = '#FF9900'; ctx.lineWidth = 2 * boxProj.scale; ctx.strokeRect(boxProj.x - 65 * boxProj.scale, boxProj.y - 45 * boxProj.scale, 130 * boxProj.scale, 90 * boxProj.scale);
-                ctx.fillStyle = '#FF9900'; ctx.fillRect(boxProj.x - 65 * boxProj.scale, boxProj.y - 6 * boxProj.scale, 130 * boxProj.scale, 12 * boxProj.scale);
-            } else {
-                // RENDER UNIVERSAL TOPIC HOLOGRAPHIC SPATIAL CORE
-                let coreY = -20 + Math.sin(time * 2) * 12;
-                let coreProj = project(0, coreY, 0, camRx, camRy);
+                ctx.strokeStyle = themeColors.amber; ctx.lineWidth = 2 * boxProj.scale; ctx.strokeRect(boxProj.x - 65 * boxProj.scale, boxProj.y - 45 * boxProj.scale, 130 * boxProj.scale, 90 * boxProj.scale);
 
-                // Rotating Energy Rings
+            } else if (themeColors.geometry === 'emerald_prism') {
+                // Floating Emerald Data Prism & Gold Rings
+                let prismY = -10 + Math.sin(time * 2) * 10;
+                let prismProj = project(0, prismY, 0, camRx, camRy + time * 0.4);
+
+                // Rotating Gold Ledger Rings
+                ctx.strokeStyle = themeColors.amber; ctx.lineWidth = 3 * prismProj.scale;
+                ctx.beginPath(); ctx.ellipse(prismProj.x, prismProj.y, 110 * prismProj.scale, 35 * prismProj.scale, time * 2, 0, Math.PI * 2); ctx.stroke();
+                ctx.strokeStyle = themeColors.blue; ctx.lineWidth = 2 * prismProj.scale;
+                ctx.beginPath(); ctx.ellipse(prismProj.x, prismProj.y, 140 * prismProj.scale, 45 * prismProj.scale, -time * 1.5, 0, Math.PI * 2); ctx.stroke();
+
+                // Emerald Diamond Prism
+                ctx.fillStyle = 'rgba(16, 185, 129, 0.4)';
+                ctx.beginPath();
+                ctx.moveTo(prismProj.x, prismProj.y - 70 * prismProj.scale);
+                ctx.lineTo(prismProj.x + 50 * prismProj.scale, prismProj.y);
+                ctx.lineTo(prismProj.x, prismProj.y + 70 * prismProj.scale);
+                ctx.lineTo(prismProj.x - 50 * prismProj.scale, prismProj.y);
+                ctx.closePath(); ctx.fill();
+                ctx.strokeStyle = '#10b981'; ctx.lineWidth = 3 * prismProj.scale; ctx.stroke();
+
+                ctx.font = `bold ${Math.floor(16 * prismProj.scale)}px Outfit, sans-serif`;
+                ctx.fillStyle = '#FFFFFF'; ctx.textAlign = 'center'; ctx.fillText(topic.toUpperCase(), prismProj.x, prismProj.y);
+
+            } else if (themeColors.geometry === 'carbon_reactor') {
+                // High-Speed Carbon Reactor Core
+                let coreProj = project(0, -10, 0, camRx, camRy);
+
+                // Reactor Blades
+                for (let b = 0; b < 6; b++) {
+                    let bAngle = (b * Math.PI) / 3 + time * 3;
+                    let bx = Math.cos(bAngle) * 90 * coreProj.scale;
+                    let by = Math.sin(bAngle) * 90 * coreProj.scale;
+                    ctx.strokeStyle = themeColors.amber; ctx.lineWidth = 4 * coreProj.scale;
+                    ctx.beginPath(); ctx.moveTo(coreProj.x, coreProj.y); ctx.lineTo(coreProj.x + bx, coreProj.y + by); ctx.stroke();
+                }
+
+                ctx.fillStyle = 'rgba(239, 68, 68, 0.3)'; ctx.beginPath(); ctx.arc(coreProj.x, coreProj.y, 65 * coreProj.scale, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = themeColors.blue; ctx.lineWidth = 3 * coreProj.scale; ctx.stroke();
+
+                ctx.font = `bold ${Math.floor(16 * coreProj.scale)}px Outfit, sans-serif`;
+                ctx.fillStyle = '#FFFFFF'; ctx.textAlign = 'center'; ctx.fillText(topic.toUpperCase(), coreProj.x, coreProj.y);
+
+            } else {
+                // Cyberpunk Quantum Icosahedron / Hologram Matrix
+                let matrixProj = project(0, -10, 0, camRx, camRy + time);
+
+                // Multi-Axis Quantum Orbit Rings
                 for (let r = 1; r <= 3; r++) {
-                    ctx.strokeStyle = r === 1 ? '#FF9900' : r === 2 ? '#00A8E1' : '#A855F7';
-                    ctx.lineWidth = (4 - r) * coreProj.scale;
+                    ctx.strokeStyle = r === 1 ? themeColors.amber : themeColors.blue;
+                    ctx.lineWidth = (4 - r) * matrixProj.scale;
                     ctx.beginPath();
-                    ctx.ellipse(coreProj.x, coreProj.y, (80 + r * 30) * coreProj.scale, (25 + r * 10) * coreProj.scale, time * (r % 2 === 0 ? 2 : -2), 0, Math.PI * 2);
+                    ctx.ellipse(matrixProj.x, matrixProj.y, (85 + r * 30) * matrixProj.scale, (25 + r * 12) * matrixProj.scale, time * (r % 2 === 0 ? 2 : -2), 0, Math.PI * 2);
                     ctx.stroke();
                 }
 
-                // Central Glowing Orb
-                ctx.fillStyle = 'rgba(0, 168, 225, 0.2)';
-                ctx.beginPath(); ctx.arc(coreProj.x, coreProj.y, 65 * coreProj.scale, 0, Math.PI * 2); ctx.fill();
-                ctx.fillStyle = '#121722'; ctx.beginPath(); ctx.arc(coreProj.x, coreProj.y, 50 * coreProj.scale, 0, Math.PI * 2); ctx.fill();
-                ctx.strokeStyle = '#FF9900'; ctx.lineWidth = 3 * coreProj.scale; ctx.stroke();
+                ctx.fillStyle = 'rgba(0, 243, 255, 0.25)'; ctx.beginPath(); ctx.arc(matrixProj.x, matrixProj.y, 55 * matrixProj.scale, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = themeColors.blue; ctx.lineWidth = 3 * matrixProj.scale; ctx.stroke();
 
-                // Topic Center Text
-                ctx.font = `bold ${Math.floor(18 * coreProj.scale)}px Outfit, sans-serif`;
-                ctx.fillStyle = '#FFFFFF';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(topic.toUpperCase(), coreProj.x, coreProj.y);
+                ctx.font = `bold ${Math.floor(16 * matrixProj.scale)}px Outfit, sans-serif`;
+                ctx.fillStyle = '#FFFFFF'; ctx.textAlign = 'center'; ctx.fillText(topic.toUpperCase(), matrixProj.x, matrixProj.y);
             }
 
             // Live Telemetry UI Updates
