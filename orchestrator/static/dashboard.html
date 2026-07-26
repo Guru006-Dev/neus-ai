@@ -323,34 +323,9 @@ vis=`<div class="qo"><div><div style="font-size:.72rem;color:var(--e);font-weigh
 ${tests.map(t=>`<div class="tr"><div><div style="font-weight:800">${t.name}</div><div style="font-size:.72rem;color:var(--t3)">${t.detail}</div></div><div class="tp">✓ ${t.score}</div></div>`).join('')}`;
 }else if(type==='demo'){
 const d=data.demo||data;const html=d.html||'';const genBy=d.generated_by==='gemini-llm'?'<span class="lb">✨ Gemini LLM</span>':'';
-vis=`<div class="dh"><div><div class="dt">Cinematic 3D Showcase ${genBy}</div><div class="dm">${d.line_count||500}+ lines active</div></div><a href="amazon.html" target="_blank" class="dl" style="margin-left:auto">↗ Open 3D Stage Fullscreen</a></div>
-<div class="ifc" style="height:420px" id="demoFrame"><iframe src="amazon.html" style="width:100%;height:100%;border:none"></iframe></div>`;
-setTimeout(()=>{
-const c=document.getElementById('demoFrame');
-if(c){
-if(html&&html.length>500){
-const ifr=document.createElement('iframe');ifr.style.cssText='width:100%;height:100%;border:none';c.innerHTML='';c.appendChild(ifr);let clean=html.replace(/^```(?:html)?\s*/i,'').replace(/\s*```$/i,'').trim();const doc=ifr.contentDocument||ifr.contentWindow.document;doc.open();doc.write(clean);doc.close();
-}else{
-// Dynamic Canvas Generator for target topic
-const ifr=document.createElement('iframe');ifr.style.cssText='width:100%;height:100%;border:none';c.innerHTML='';c.appendChild(ifr);
-const doc=ifr.contentDocument||ifr.contentWindow.document;
-doc.open();
-doc.write(`<!DOCTYPE html><html><head><style>*{margin:0;padding:0;box-sizing:border-box}body{background:#0a0d14;color:#fff;font-family:sans-serif;overflow:hidden;width:100vw;height:100vh}canvas{display:block;width:100%;height:100%}</style></head><body><canvas id="c"></canvas><script>
-const cv=document.getElementById('c'),x=cv.getContext('2d');let w=cv.width=window.innerWidth,h=cv.height=window.innerHeight;
-window.onresize=()=>{w=cv.width=window.innerWidth;h=cv.height=window.innerHeight;};
-const pts=Array.from({length:100},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*2,vy:(Math.random()-.5)*2}));
-let t=0;
-function draw(){requestAnimationFrame(draw);t+=0.02;x.fillStyle='#0a0d14';x.fillRect(0,0,w,h);
-pts.forEach((p,i)=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1;x.fillStyle='#06b6d4';x.beginPath();x.arc(p.x,p.y,3,0,Math.PI*2);x.fill();
-pts.slice(i+1,i+4).forEach(p2=>{let d=Math.hypot(p.x-p2.x,p.y-p2.y);if(d<120){x.strokeStyle='rgba(139,92,246,'+(1-d/120)+')';x.beginPath();x.moveTo(p.x,p.y);x.lineTo(p2.x,p2.y);x.stroke();}});});
-x.font='bold 28px sans-serif';x.fillStyle='#f59e0b';x.textAlign='center';x.fillText('${curGoal.toUpperCase()} SHOWCASE',w/2,60);
-x.font='14px monospace';x.fillStyle='#94a3b8';x.fillText('3D Autonomous Intelligence Pipeline — 60 FPS',w/2,90);
-}draw();
-<\/script></body></html>`);
-doc.close();
-}
-}
-},100);
+const tUrl=`amazon.html?topic=${encodeURIComponent(curGoal)}`;
+vis=`<div class="dh"><div><div class="dt">Cinematic 3D Showcase ${genBy}</div><div class="dm">${d.line_count||500}+ lines active</div></div><a href="${tUrl}" target="_blank" class="dl" style="margin-left:auto">↗ Open 3D Stage Fullscreen</a></div>
+<div class="ifc" style="height:420px" id="demoFrame"><iframe src="${tUrl}" style="width:100%;height:100%;border:none"></iframe></div>`;
 }else if(type==='release'){
 const comps=data.components_validated||[`${curGoal} Explorer`,`Knowledge Graph`,`${curGoal} Docs`,`QA Validation`,`Demo Showcase`];
 vis=`<div class="rb"><div class="rt">${data.release_id||`RELEASE-${curGoal.replace(/[^a-zA-Z0-9]/g,'').toUpperCase().slice(0,10)}-2026-v1.0`}</div><h3 style="color:#fda4af;font-size:1.05rem;margin-bottom:.4rem;font-weight:900">${data.deployment_status||'READY_FOR_BROADCAST'}</h3><p style="color:var(--t3);font-size:.78rem;margin-bottom:1rem;font-weight:600">Topic: ${curGoal}</p><div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap">${comps.map(c=>`<span class="rc">✓ ${c}</span>`).join('')}</div></div>`;

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amazon Prime Air & AWS 3D Keynote Experience</title>
+    <title>3D Autonomous Product Intelligence Keynote</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -64,7 +64,7 @@
         }
 
         .brand-block { display: flex; align-items: center; gap: 14px; }
-        .brand-logo { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 26px; color: #FFF; letter-spacing: -1px; }
+        .brand-logo { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 24px; color: #FFF; letter-spacing: -0.5px; text-transform: uppercase; }
         .brand-logo span { color: var(--amazon-amber); }
         .brand-badge {
             background: linear-gradient(135deg, var(--amazon-amber), #FF6600);
@@ -84,13 +84,13 @@
             top: 90px;
             left: 30px;
             pointer-events: auto;
-            max-width: 520px;
+            max-width: 540px;
             transition: all 0.4s ease;
         }
 
         .title-hero h2 {
             font-family: 'Outfit', sans-serif;
-            font-size: 34px;
+            font-size: 32px;
             font-weight: 900;
             line-height: 1.1;
             background: linear-gradient(180deg, #FFFFFF 0%, #B0C4DE 100%);
@@ -202,49 +202,76 @@
         <div class="hud-layer">
             <header>
                 <div class="brand-block">
-                    <div class="brand-logo">amazon<span>.com</span></div>
-                    <span class="brand-badge">PRIME AIR 2026</span>
+                    <div class="brand-logo" id="brand-logo">TARGET<span>.AI</span></div>
+                    <span class="brand-badge" id="brand-badge">2026 KEYNOTE</span>
                 </div>
                 <div class="hud-stats">
                     <div class="stat-item"><span class="stat-label">System</span><span class="stat-value"><span class="dot"></span> ONLINE</span></div>
-                    <div class="stat-item"><span class="stat-label">AWS Edge Node</span><span class="stat-value" style="color:var(--amazon-blue)">US-EAST-QUANTUM</span></div>
+                    <div class="stat-item"><span class="stat-label">Edge Mesh</span><span class="stat-value" id="node-val" style="color:var(--amazon-blue)">US-EAST-QUANTUM</span></div>
                     <div class="stat-item"><span class="stat-label">FPS</span><span class="stat-value" id="fps-counter" style="color:#FFF">60 FPS</span></div>
                 </div>
             </header>
 
             <div class="title-hero" id="hero-text">
-                <h2>Next-Gen <span>Autonomous</span> Prime Delivery</h2>
-                <p>15-minute aerial fulfillment powered by AWS Neural Flight Mesh and Echo Spatial Intelligence.</p>
-                <div class="badge-list">
-                    <div class="feature-pill">⚡ 15-Min Delivery</div>
-                    <div class="feature-pill">🛸 Hexacopter MK-X</div>
-                    <div class="feature-pill">☁️ AWS Cloud Core</div>
+                <h2 id="hero-title">NEXT-GEN <span>AUTONOMOUS ECOSYSTEM</span></h2>
+                <p id="hero-desc">Real-time 3D intelligence platform powered by Neural Mesh & Spatial AI.</p>
+                <div class="badge-list" id="badge-list">
+                    <div class="feature-pill">⚡ Real-Time Analytics</div>
+                    <div class="feature-pill">🛸 Spatial Mesh</div>
+                    <div class="feature-pill">☁️ Cloud Core</div>
                 </div>
             </div>
 
             <div class="subtitle-banner">
                 <span class="subtitle-badge" id="sub-badge">KEYNOTE CAPTION</span>
-                <div class="subtitle-text" id="sub-text">"Welcome to Amazon Prime Air 2026. Deploying autonomous hexacopter MK-X with 15-minute aerial fulfillment."</div>
+                <div class="subtitle-text" id="sub-text">"Initializing autonomous 3D intelligence keynote stage..."</div>
             </div>
 
             <div class="telemetry-card">
                 <h4><span>Telemetry</span><span style="color:var(--accent-green);font-size:10px;">● LIVE</span></h4>
-                <div class="telemetry-row"><span class="telemetry-label">Flight Speed</span><span class="telemetry-val" id="val-speed">64.8 MPH</span></div>
-                <div class="telemetry-row"><span class="telemetry-label">Altitude</span><span class="telemetry-val" id="val-alt">142.5 FT</span></div>
-                <div class="telemetry-row"><span class="telemetry-label">Payload</span><span class="telemetry-val">5.5 LBS SMART BOX</span></div>
-                <div class="telemetry-row"><span class="telemetry-label">Battery</span><span class="telemetry-val" style="color:var(--accent-green)">94%</span></div>
+                <div class="telemetry-row"><span class="telemetry-label" id="lbl-t1">Throughput</span><span class="telemetry-val" id="val-speed">64.8 K/s</span></div>
+                <div class="telemetry-row"><span class="telemetry-label" id="lbl-t2">Mesh Density</span><span class="telemetry-val" id="val-alt">142.5 Nodes</span></div>
+                <div class="telemetry-row"><span class="telemetry-label">Status</span><span class="telemetry-val">ACTIVE METRICS</span></div>
+                <div class="telemetry-row"><span class="telemetry-label">Efficiency</span><span class="telemetry-val" style="color:var(--accent-green)">98.7%</span></div>
             </div>
 
-            <div class="mode-dock">
-                <button class="mode-btn active" id="btn-drone" onclick="switchScene('drone')">🛸 Drone Delivery</button>
-                <button class="mode-btn" id="btn-unboxing" onclick="switchScene('unboxing')">📦 Smart Box Unbox</button>
-                <button class="mode-btn" id="btn-aws" onclick="switchScene('aws')">☁️ AWS Mesh</button>
-                <button class="mode-btn" id="btn-alexa" onclick="switchScene('alexa')">🔊 Echo Spatial</button>
+            <div class="mode-dock" id="mode-dock">
+                <button class="mode-btn active" id="btn-drone" onclick="switchScene('drone')">🛸 Core Mesh</button>
+                <button class="mode-btn" id="btn-unboxing" onclick="switchScene('unboxing')">📦 Neural Engine</button>
+                <button class="mode-btn" id="btn-aws" onclick="switchScene('aws')">☁️ Cloud Grid</button>
+                <button class="mode-btn" id="btn-alexa" onclick="switchScene('alexa')">🔊 Spatial AI</button>
             </div>
         </div>
     </div>
 
     <script>
+        // PARSE DYNAMIC TOPIC FROM URL QUERY (?topic=Facebook or ?goal=Tesla)
+        const urlParams = new URLSearchParams(window.location.search);
+        const rawTopic = urlParams.get('topic') || urlParams.get('goal') || 'Amazon';
+        const topic = rawTopic.trim();
+        const isAmazon = topic.toLowerCase().includes('amazon');
+
+        // UPDATE HEADERS & HERO TEXT DYNAMICALLY
+        document.getElementById('brand-logo').innerHTML = `${topic.toUpperCase()}<span>.AI</span>`;
+        document.getElementById('brand-badge').innerText = `${topic.toUpperCase()} 2026`;
+        document.title = `${topic} — 3D Keynote Experience`;
+
+        document.getElementById('hero-title').innerHTML = `NEXT-GEN <span>AUTONOMOUS ${topic.toUpperCase()} ECOSYSTEM</span>`;
+        document.getElementById('hero-desc').innerText = `15-minute real-time intelligence telemetry powered by ${topic} Neural Mesh & Spatial AI.`;
+        document.getElementById('badge-list').innerHTML = `
+            <div class="feature-pill">⚡ ${topic} Analytics</div>
+            <div class="feature-pill">🛸 ${topic} Mesh</div>
+            <div class="feature-pill">☁️ ${topic} Core</div>
+        `;
+
+        // DYNAMIC SCENES & KEYNOTE REEL CAPTIONS
+        const scenes = {
+            drone: { badge: `${topic.toUpperCase()} CORE MESH`, text: `Welcome to ${topic} 2026 Keynote. Deploying autonomous spatial intelligence mesh across core nodes.`, rx: 0.2, ry: 0 },
+            unboxing: { badge: `${topic.toUpperCase()} NEURAL ENGINE`, text: `Holographic verification unveils the next-generation ${topic} AI Engine with low-latency telemetry.`, rx: 0.4, ry: 0.8 },
+            aws: { badge: `${topic.toUpperCase()} QUANTUM CLOUD`, text: `Synchronizing with ${topic} Quantum Edge Mesh across 10 million telemetry signals per second.`, rx: 0.6, ry: -1.2 },
+            alexa: { badge: `${topic.toUpperCase()} SPATIAL AI`, text: `Interactive spatial AI core active for ${topic} workflow automation and predictive models.`, rx: 0.1, ry: 1.5 }
+        };
+
         // 100% PURE VANILLA CANVAS ANIMATION ENGINE (0 External Dependencies!)
         const canvas = document.getElementById('webgl-canvas');
         const ctx = canvas.getContext('2d');
@@ -258,12 +285,10 @@
 
         // 3D Projection Math
         function project(x, y, z, rx=0, ry=0) {
-            // Apply rotation around Y
             let cosY = Math.cos(ry), sinY = Math.sin(ry);
             let x1 = x * cosY - z * sinY;
             let z1 = x * sinY + z * cosY;
 
-            // Apply rotation around X
             let cosX = Math.cos(rx), sinX = Math.sin(rx);
             let y2 = y * cosX - z1 * sinX;
             let z2 = y * sinX + z1 * cosX;
@@ -271,11 +296,7 @@
             let fov = 450;
             let dist = 600 + z2;
             let scale = fov / Math.max(1, dist);
-            return {
-                x: width / 2 + x1 * scale,
-                y: height / 2 + y2 * scale,
-                scale: scale
-            };
+            return { x: width / 2 + x1 * scale, y: height / 2 + y2 * scale, scale: scale };
         }
 
         // Particle System
@@ -292,13 +313,6 @@
         let camRy = 0, targetRy = 0;
         let camRx = 0.2, targetRx = 0.2;
 
-        const scenes = {
-            drone: { badge: 'PRIME AIR LOGISTICS', text: 'Welcome to Amazon Prime Air 2026. Deploying autonomous hexacopter MK-X with 15-minute fulfillment.', rx: 0.2, ry: 0 },
-            unboxing: { badge: 'NFC SMART UNBOXING', text: 'Holographic NFC verification unveils the next-generation Amazon Echo Studio with Dolby Atmos.', rx: 0.4, ry: 0.8 },
-            aws: { badge: 'AWS QUANTUM CLOUD', text: 'Synchronizing with AWS Quantum Edge Mesh across 10 million flight routes per second.', rx: 0.6, ry: -1.2 },
-            alexa: { badge: 'ALEXA SPATIAL ENGINE', text: 'Alexa Spatial Audio Core active. Real-time acoustic soundfield calibration engaged.', rx: 0.1, ry: 1.5 }
-        };
-
         function switchScene(mode) {
             currentMode = mode;
             document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
@@ -310,20 +324,19 @@
                 targetRx = s.rx; targetRy = s.ry;
             }
         }
+        switchScene('drone');
 
         function render() {
             requestAnimationFrame(render);
             time += 0.02;
 
-            // Smooth Camera Interpolation
             camRx += (targetRx - camRx) * 0.05;
             camRy += (targetRy - camRy) * 0.05;
 
-            // Clear Background
             ctx.fillStyle = '#0A0D14';
             ctx.fillRect(0, 0, width, height);
 
-            // Draw Cyber Grid Floor
+            // Cyber Grid Floor
             ctx.lineWidth = 1;
             for (let i = -10; i <= 10; i++) {
                 let p1 = project(i * 80, 200, -800, camRx, camRy + time * 0.05);
@@ -336,16 +349,13 @@
                 ctx.beginPath(); ctx.moveTo(p3.x, p3.y); ctx.lineTo(p4.x, p4.y); ctx.stroke();
             }
 
-            // Draw Floating AWS Particle Network
+            // Particles & Connections
             particles.forEach((p, idx) => {
                 p.y += Math.sin(time + idx) * 0.3;
                 let proj = project(p.x, p.y, p.z, camRx, camRy);
                 ctx.fillStyle = p.color;
-                ctx.beginPath();
-                ctx.arc(proj.x, proj.y, p.size * proj.scale, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.beginPath(); ctx.arc(proj.x, proj.y, p.size * proj.scale, 0, Math.PI * 2); ctx.fill();
 
-                // Draw Network Edges
                 particles.slice(idx + 1, idx + 4).forEach(pNext => {
                     let proj2 = project(pNext.x, pNext.y, pNext.z, camRx, camRy);
                     let dist = Math.hypot(proj.x - proj2.x, proj.y - proj2.y);
@@ -356,84 +366,68 @@
                 });
             });
 
-            // Draw 3D Hexacopter Drone
-            let droneY = -120 + Math.sin(time * 2) * 15;
-            let droneProj = project(0, droneY, 0, camRx, camRy);
+            // 3D CORE MODEL (Amazon Drone vs Universal Holographic Spatial Core)
+            if (isAmazon) {
+                // Render Amazon Hexacopter Drone & Box
+                let droneY = -120 + Math.sin(time * 2) * 15;
+                let droneProj = project(0, droneY, 0, camRx, camRy);
 
-            // Drone Scanning Cone
-            ctx.save();
-            ctx.fillStyle = 'rgba(0, 168, 225, 0.08)';
-            ctx.beginPath();
-            let coneBaseLeft = project(-180, 180, 0, camRx, camRy);
-            let coneBaseRight = project(180, 180, 0, camRx, camRy);
-            ctx.moveTo(droneProj.x, droneProj.y);
-            ctx.lineTo(coneBaseLeft.x, coneBaseLeft.y);
-            ctx.lineTo(coneBaseRight.x, coneBaseRight.y);
-            ctx.closePath();
-            ctx.fill();
-            ctx.restore();
-
-            // Drone Rotors & Arms
-            for (let i = 0; i < 4; i++) {
-                let angle = (i * Math.PI) / 2 + Math.PI / 4 + time * 0.1;
-                let armX = Math.cos(angle) * 160;
-                let armZ = Math.sin(angle) * 160;
-                let armProj = project(armX, droneY, armZ, camRx, camRy);
-
-                ctx.strokeStyle = '#334155'; ctx.lineWidth = 4 * droneProj.scale;
-                ctx.beginPath(); ctx.moveTo(droneProj.x, droneProj.y); ctx.lineTo(armProj.x, armProj.y); ctx.stroke();
-
-                // Spinning Blade Rings
-                ctx.strokeStyle = '#FF9900'; ctx.lineWidth = 2 * armProj.scale;
+                ctx.save();
+                ctx.fillStyle = 'rgba(0, 168, 225, 0.08)';
                 ctx.beginPath();
-                ctx.ellipse(armProj.x, armProj.y, 35 * armProj.scale, 12 * armProj.scale, time * 10, 0, Math.PI * 2);
-                ctx.stroke();
-            }
+                let coneLeft = project(-180, 180, 0, camRx, camRy);
+                let coneRight = project(180, 180, 0, camRx, camRy);
+                ctx.moveTo(droneProj.x, droneProj.y); ctx.lineTo(coneLeft.x, coneLeft.y); ctx.lineTo(coneRight.x, coneRight.y); ctx.closePath(); ctx.fill();
+                ctx.restore();
 
-            // Drone Center Core Body
-            ctx.fillStyle = '#121722';
-            ctx.beginPath();
-            ctx.arc(droneProj.x, droneProj.y, 45 * droneProj.scale, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.strokeStyle = '#00A8E1'; ctx.lineWidth = 3 * droneProj.scale; ctx.stroke();
+                for (let i = 0; i < 4; i++) {
+                    let angle = (i * Math.PI) / 2 + Math.PI / 4 + time * 0.1;
+                    let armProj = project(Math.cos(angle) * 160, droneY, Math.sin(angle) * 160, camRx, camRy);
+                    ctx.strokeStyle = '#334155'; ctx.lineWidth = 4 * droneProj.scale;
+                    ctx.beginPath(); ctx.moveTo(droneProj.x, droneProj.y); ctx.lineTo(armProj.x, armProj.y); ctx.stroke();
+                    ctx.strokeStyle = '#FF9900'; ctx.lineWidth = 2 * armProj.scale;
+                    ctx.beginPath(); ctx.ellipse(armProj.x, armProj.y, 35 * armProj.scale, 12 * armProj.scale, time * 10, 0, Math.PI * 2); ctx.stroke();
+                }
 
-            ctx.fillStyle = '#00A8E1';
-            ctx.beginPath();
-            ctx.arc(droneProj.x, droneProj.y, 16 * droneProj.scale, 0, Math.PI * 2);
-            ctx.fill();
+                ctx.fillStyle = '#121722'; ctx.beginPath(); ctx.arc(droneProj.x, droneProj.y, 45 * droneProj.scale, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = '#00A8E1'; ctx.lineWidth = 3 * droneProj.scale; ctx.stroke();
+                ctx.fillStyle = '#00A8E1'; ctx.beginPath(); ctx.arc(droneProj.x, droneProj.y, 16 * droneProj.scale, 0, Math.PI * 2); ctx.fill();
 
-            // Draw 3D Amazon Package Box
-            let boxY = 80;
-            let boxProj = project(0, boxY, 0, camRx, camRy + time * 0.2);
+                let boxProj = project(0, 80, 0, camRx, camRy + time * 0.2);
+                ctx.fillStyle = '#C89656'; ctx.fillRect(boxProj.x - 65 * boxProj.scale, boxProj.y - 45 * boxProj.scale, 130 * boxProj.scale, 90 * boxProj.scale);
+                ctx.strokeStyle = '#FF9900'; ctx.lineWidth = 2 * boxProj.scale; ctx.strokeRect(boxProj.x - 65 * boxProj.scale, boxProj.y - 45 * boxProj.scale, 130 * boxProj.scale, 90 * boxProj.scale);
+                ctx.fillStyle = '#FF9900'; ctx.fillRect(boxProj.x - 65 * boxProj.scale, boxProj.y - 6 * boxProj.scale, 130 * boxProj.scale, 12 * boxProj.scale);
+            } else {
+                // RENDER UNIVERSAL TOPIC HOLOGRAPHIC SPATIAL CORE
+                let coreY = -20 + Math.sin(time * 2) * 12;
+                let coreProj = project(0, coreY, 0, camRx, camRy);
 
-            ctx.fillStyle = '#C89656';
-            ctx.fillRect(boxProj.x - 65 * boxProj.scale, boxProj.y - 45 * boxProj.scale, 130 * boxProj.scale, 90 * boxProj.scale);
-            ctx.strokeStyle = '#FF9900'; ctx.lineWidth = 2 * boxProj.scale; ctx.strokeRect(boxProj.x - 65 * boxProj.scale, boxProj.y - 45 * boxProj.scale, 130 * boxProj.scale, 90 * boxProj.scale);
+                // Rotating Energy Rings
+                for (let r = 1; r <= 3; r++) {
+                    ctx.strokeStyle = r === 1 ? '#FF9900' : r === 2 ? '#00A8E1' : '#A855F7';
+                    ctx.lineWidth = (4 - r) * coreProj.scale;
+                    ctx.beginPath();
+                    ctx.ellipse(coreProj.x, coreProj.y, (80 + r * 30) * coreProj.scale, (25 + r * 10) * coreProj.scale, time * (r % 2 === 0 ? 2 : -2), 0, Math.PI * 2);
+                    ctx.stroke();
+                }
 
-            // Amazon Glowing Tape
-            ctx.fillStyle = '#FF9900';
-            ctx.fillRect(boxProj.x - 65 * boxProj.scale, boxProj.y - 6 * boxProj.scale, 130 * boxProj.scale, 12 * boxProj.scale);
+                // Central Glowing Orb
+                ctx.fillStyle = 'rgba(0, 168, 225, 0.2)';
+                ctx.beginPath(); ctx.arc(coreProj.x, coreProj.y, 65 * coreProj.scale, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = '#121722'; ctx.beginPath(); ctx.arc(coreProj.x, coreProj.y, 50 * coreProj.scale, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = '#FF9900'; ctx.lineWidth = 3 * coreProj.scale; ctx.stroke();
 
-            // Amazon Smile Logo Arc
-            ctx.strokeStyle = '#121722'; ctx.lineWidth = 3 * boxProj.scale;
-            ctx.beginPath();
-            ctx.arc(boxProj.x, boxProj.y, 25 * boxProj.scale, 0.2 * Math.PI, 0.8 * Math.PI);
-            ctx.stroke();
-
-            // Unboxing Echo Studio Device Animation
-            if (currentMode === 'unboxing') {
-                let echoY = -20 + Math.sin(time * 3) * 10;
-                let echoProj = project(0, echoY, 0, camRx, camRy);
-                ctx.fillStyle = '#1E293B';
-                ctx.beginPath();
-                ctx.arc(echoProj.x, echoProj.y, 35 * echoProj.scale, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.strokeStyle = '#00A8E1'; ctx.lineWidth = 4 * echoProj.scale; ctx.stroke();
+                // Topic Center Text
+                ctx.font = `bold ${Math.floor(18 * coreProj.scale)}px Outfit, sans-serif`;
+                ctx.fillStyle = '#FFFFFF';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(topic.toUpperCase(), coreProj.x, coreProj.y);
             }
 
             // Live Telemetry UI Updates
-            document.getElementById('val-speed').innerText = (64.0 + Math.sin(time * 3) * 2.5).toFixed(1) + ' MPH';
-            document.getElementById('val-alt').innerText = (142.0 + Math.cos(time * 2) * 1.8).toFixed(1) + ' FT';
+            document.getElementById('val-speed').innerText = (64.0 + Math.sin(time * 3) * 2.5).toFixed(1) + ' K/s';
+            document.getElementById('val-alt').innerText = (142.0 + Math.cos(time * 2) * 1.8).toFixed(1) + ' Nodes';
         }
 
         render();
