@@ -1,37 +1,38 @@
-@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Archivo+Narrow:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
 @import "tailwindcss";
 
 @theme {
-  --color-background: #07080B;
-  --color-foreground: #F3F3F3;
-  --color-muted-foreground: rgba(243, 243, 243, 0.5);
-  --color-border: rgba(243, 243, 243, 0.1);
-  --color-primary: #0E76FF;
-  --color-primary-foreground: #F3F3F3;
-  --color-accent: rgba(14, 118, 255, 0.14);
-  --color-accent-foreground: #F3F3F3;
-  --font-family-display: 'Archivo', sans-serif;
-  --font-family-body: 'Archivo', sans-serif;
-  --font-family-label: 'Archivo Narrow', sans-serif;
+  --color-background: #FFFFFF;
+  --color-foreground: #232323;
+  --color-muted-foreground: rgba(35, 35, 35, 0.5);
+  --color-border: #E0E0E0;
+  --color-primary: #232323;
+  --color-primary-foreground: #232323;
+  --color-accent: #A1FFCB;
+  --color-accent-foreground: #232323;
+  --font-family-display: 'Inter', sans-serif;
+  --font-family-body: 'Inter', sans-serif;
+  --font-family-label: 'IBM Plex Mono', monospace;
 }
 
 :root {
-  --color-bg: #07080B;
-  --color-surface: rgba(243, 243, 243, 0.035);
-  --color-surface-strong: rgba(243, 243, 243, 0.07);
-  --color-surface-border: rgba(243, 243, 243, 0.1);
-  --color-ink: #F3F3F3;
-  --color-ink-dim: rgba(243, 243, 243, 0.55);
-  --color-ink-faint: rgba(243, 243, 243, 0.28);
-  --color-accent: #0E76FF;
-  --color-accent-dim: rgba(14, 118, 255, 0.14);
-  --color-success: #4ADE80;
-  --color-error: #F87171;
-  --color-warning: #FBBF24;
-  --font-display: 'Archivo', sans-serif;
-  --font-body: 'Archivo', sans-serif;
-  --font-label: 'Archivo Narrow', sans-serif;
+  --color-bg: #FFFFFF;
+  --color-surface: #FFFFFF;
+  --color-surface-strong: #F4F4F4;
+  --color-surface-border: #E0E0E0;
+  --color-ink: #232323;
+  --color-ink-dim: rgba(35, 35, 35, 0.62);
+  --color-ink-faint: rgba(35, 35, 35, 0.38);
+  --color-accent: #A1FFCB;
+  --color-accent-dim: rgba(161, 255, 203, 0.35);
+  --color-accent-ink: #232323;
+  --color-success: #16A34A;
+  --color-error: #DC2626;
+  --color-warning: #B45309;
+  --font-display: 'Inter', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-label: 'IBM Plex Mono', monospace;
 }
 
 * {

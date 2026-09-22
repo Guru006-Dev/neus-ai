@@ -161,7 +161,7 @@ export default function DashboardPage() {
               width: 34, height: 34,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               background: activeTab === tab ? 'var(--color-accent-dim)' : 'transparent',
-              color: activeTab === tab ? 'var(--color-accent)' : 'var(--color-ink-faint)',
+              color: activeTab === tab ? 'var(--color-ink)' : 'var(--color-ink-faint)',
               cursor: 'pointer', transition: 'background .2s, color .2s',
             }}>{icon}</div>
           ))}
@@ -181,7 +181,7 @@ export default function DashboardPage() {
             </div>
             <DropdownNavigation navItems={dashNavItems} activeItem={activeTab} onItemClick={setActiveTab} />
             <div style={{ display: 'flex', alignItems: 'center', gap: 7, border: '1px solid var(--color-surface-border)', padding: '3px 10px 3px 3px' }}>
-              <div style={{ width: 22, height: 22, background: 'var(--color-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: '#fff' }}>G</div>
+              <div style={{ width: 22, height: 22, background: 'var(--color-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: 'var(--color-accent-ink)' }}>G</div>
               <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--color-ink-dim)' }}>Guru</span>
             </div>
           </div>
@@ -202,7 +202,7 @@ export default function DashboardPage() {
                   <div style={{ fontFamily: 'var(--font-family-label)', fontSize: 11, fontWeight: 600, color: 'var(--color-ink-faint)', marginBottom: 12, letterSpacing: '.08em', textTransform: 'uppercase' }}>Quick Start</div>
                   <div style={{ display: 'flex', gap: 8 }}>
                     <input type="text" value={goal} onChange={e => setGoal(e.target.value)} onKeyDown={e => e.key === 'Enter' && startRun()} placeholder="Enter product URL…" style={{ flex: 1, background: 'var(--color-surface)', border: '1px solid var(--color-surface-border)', padding: '8px 12px', fontSize: 12, color: 'var(--color-ink-dim)', outline: 'none', fontFamily: 'var(--font-family-body)' }} />
-                    <button onClick={startRun} disabled={!goal.trim() || run.status === 'running'} className="btn-sharp" style={{ padding: '8px 20px', fontSize: 11, background: goal.trim() ? 'var(--color-accent)' : 'var(--color-surface-strong)', color: goal.trim() ? '#fff' : 'var(--color-ink-faint)', border: 'none' }}>
+                    <button onClick={startRun} disabled={!goal.trim() || run.status === 'running'} className="btn-sharp" style={{ padding: '8px 20px', fontSize: 11, background: goal.trim() ? 'var(--color-accent)' : 'var(--color-surface-strong)', color: goal.trim() ? 'var(--color-accent-ink)' : 'var(--color-ink-faint)', border: 'none' }}>
                       {run.status === 'running' ? 'Running…' : 'Analyze →'}
                     </button>
                   </div>
@@ -269,13 +269,13 @@ export default function DashboardPage() {
                   <input type="text" value={goal} onChange={e => setGoal(e.target.value)} onKeyDown={e => e.key === 'Enter' && run.status !== 'running' && startRun()} placeholder="Enter product URL or name  (e.g. amazon.com/dp/B09B93ZDG4)" style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', fontSize: 13, color: 'var(--color-ink-dim)', fontFamily: 'var(--font-family-body)' }} />
                   {run.status === 'running'
                     ? <button onClick={cancelRun} className="btn-sharp" style={{ padding: '6px 16px', fontSize: 11, background: 'rgba(248,113,113,.14)', color: 'var(--color-error)', border: '1px solid rgba(248,113,113,.3)' }}>Cancel</button>
-                    : <button onClick={startRun} disabled={!goal.trim()} className="btn-sharp" style={{ padding: '6px 18px', fontSize: 11, background: goal.trim() ? 'var(--color-accent)' : 'var(--color-surface-strong)', color: goal.trim() ? '#fff' : 'var(--color-ink-faint)', border: 'none' }}>Analyze →</button>
+                    : <button onClick={startRun} disabled={!goal.trim()} className="btn-sharp" style={{ padding: '6px 18px', fontSize: 11, background: goal.trim() ? 'var(--color-accent)' : 'var(--color-surface-strong)', color: goal.trim() ? 'var(--color-accent-ink)' : 'var(--color-ink-faint)', border: 'none' }}>Analyze →</button>
                   }
                 </div>
 
                 <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', alignItems: 'center' }}>
                   {['All', ...AGENTS].map(f => (
-                    <button key={f} onClick={() => setActiveFilter(f)} className="btn-sharp" style={{ padding: '4px 13px', fontSize: 11, fontWeight: 500, background: activeFilter === f ? 'var(--color-accent)' : 'transparent', color: activeFilter === f ? '#fff' : 'var(--color-ink-faint)', border: `1px solid ${activeFilter === f ? 'transparent' : 'var(--color-surface-border)'}`, textTransform: 'none', letterSpacing: 'normal' }}>{f}</button>
+                    <button key={f} onClick={() => setActiveFilter(f)} className="btn-sharp" style={{ padding: '4px 13px', fontSize: 11, fontWeight: 500, background: activeFilter === f ? 'var(--color-accent)' : 'transparent', color: activeFilter === f ? 'var(--color-accent-ink)' : 'var(--color-ink-faint)', border: `1px solid ${activeFilter === f ? 'transparent' : 'var(--color-surface-border)'}`, textTransform: 'none', letterSpacing: 'normal' }}>{f}</button>
                   ))}
                 </div>
 
@@ -335,7 +335,7 @@ export default function DashboardPage() {
                       </div>
                       <div style={{ display: 'flex', gap: 5, marginTop: 10 }}>
                         <button onClick={cancelRun} disabled={run.status !== 'running'} className="btn-sharp" style={{ flex: 1, padding: '5px 0', fontSize: 10, background: 'var(--color-surface)', color: 'var(--color-ink-faint)', border: '1px solid var(--color-surface-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}><X size={10} strokeWidth={2} /> Cancel</button>
-                        <button onClick={startRun} disabled={!goal.trim() || run.status === 'running'} className="btn-sharp" style={{ flex: 1, padding: '5px 0', fontSize: 10, background: 'var(--color-accent)', color: '#fff', border: 'none', opacity: (!goal.trim() || run.status === 'running') ? 0.5 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}><Play size={10} strokeWidth={2} fill="#fff" /> Run</button>
+                        <button onClick={startRun} disabled={!goal.trim() || run.status === 'running'} className="btn-sharp" style={{ flex: 1, padding: '5px 0', fontSize: 10, background: 'var(--color-accent)', color: 'var(--color-accent-ink)', border: 'none', opacity: (!goal.trim() || run.status === 'running') ? 0.5 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}><Play size={10} strokeWidth={2} fill="var(--color-accent-ink)" /> Run</button>
                       </div>
                     </div>
                     <div className="surface-panel" style={{ padding: 12 }}>
@@ -368,7 +368,7 @@ export default function DashboardPage() {
                   {sectionHeader('Reports', 'Full agent outputs from completed runs.')}
                   {history.length > 1 && (
                     <select value={selectedHistoryId || ''} onChange={e => setSelectedHistoryId(e.target.value)} style={{ background: 'var(--color-surface)', border: '1px solid var(--color-surface-border)', padding: '6px 10px', fontSize: 11, color: 'var(--color-ink-dim)', outline: 'none', cursor: 'pointer' }}>
-                      {history.map(h => <option key={h.id} value={h.id} style={{ background: '#07080B' }}>{h.goal.slice(0, 50)} — {fmtDate(h.timestamp)}</option>)}
+                      {history.map(h => <option key={h.id} value={h.id} style={{ background: '#FFFFFF' }}>{h.goal.slice(0, 50)} — {fmtDate(h.timestamp)}</option>)}
                     </select>
                   )}
                 </div>
@@ -402,7 +402,7 @@ export default function DashboardPage() {
                     <div style={{ width: 44, height: 44, background: 'var(--color-surface-strong)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: 'var(--color-ink-faint)' }}><BarChart2 size={20} strokeWidth={1.5} /></div>
                     <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--color-ink-dim)', marginBottom: 8 }}>No reports yet</div>
                     <div style={{ fontSize: 12, color: 'var(--color-ink-faint)' }}>Run a pipeline analysis to generate your first report.</div>
-                    <button onClick={() => setActiveTab('Pipeline')} className="btn-sharp" style={{ marginTop: 16, padding: '8px 20px', fontSize: 11, background: 'var(--color-accent)', color: '#fff', border: 'none' }}>Go to Pipeline →</button>
+                    <button onClick={() => setActiveTab('Pipeline')} className="btn-sharp" style={{ marginTop: 16, padding: '8px 20px', fontSize: 11, background: 'var(--color-accent)', color: 'var(--color-accent-ink)', border: 'none' }}>Go to Pipeline →</button>
                   </div>
                 )}
               </div>
@@ -459,7 +459,7 @@ export default function DashboardPage() {
                   </div>
                   <div style={{ display: 'flex', gap: 8 }}>
                     <input type="password" value={apiKeyInput} onChange={e => setApiKeyInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && apiKeyInput && saveApiKey()} placeholder={apiKey ? 'Enter new key to replace…' : 'AIza…'} style={{ flex: 1, background: 'var(--color-surface)', border: '1px solid var(--color-surface-border)', padding: '9px 12px', fontSize: 12, color: 'var(--color-ink-dim)', outline: 'none', fontFamily: 'var(--font-family-body)' }} />
-                    <button onClick={saveApiKey} disabled={!apiKeyInput.trim()} className="btn-sharp" style={{ padding: '9px 20px', fontSize: 11, background: apiKeyInput.trim() ? 'var(--color-accent)' : 'var(--color-surface-strong)', color: apiKeyInput.trim() ? '#fff' : 'var(--color-ink-faint)', border: 'none' }}>Save</button>
+                    <button onClick={saveApiKey} disabled={!apiKeyInput.trim()} className="btn-sharp" style={{ padding: '9px 20px', fontSize: 11, background: apiKeyInput.trim() ? 'var(--color-accent)' : 'var(--color-surface-strong)', color: apiKeyInput.trim() ? 'var(--color-accent-ink)' : 'var(--color-ink-faint)', border: 'none' }}>Save</button>
                   </div>
                   {apiKey && <button onClick={() => { localStorage.removeItem('nexus_api_key'); setApiKey(''); }} style={{ marginTop: 12, fontSize: 11, color: 'var(--color-error)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>Remove saved key</button>}
                 </div>
