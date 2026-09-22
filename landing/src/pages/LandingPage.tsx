@@ -50,17 +50,41 @@ const ABOUT_SENTENCES = [
   'Six agents, one run, structured intelligence at every stage.',
 ];
 
-/** Live clock, matching Aspen's "05:52 AM NYC" nav detail. */
+const STATS = [
+  { value: '6', label: 'Specialized agents', tone: 'ink' },
+  { value: '<5 min', label: 'Avg. pipeline run', tone: 'accent' },
+  { value: '100%', label: 'Structured output', tone: 'faint' },
+  { value: '24/7', label: 'API availability', tone: 'ink' },
+];
+
+const BENEFITS = [
+  { title: 'Built for speed', desc: 'A full six-agent run completes in under five minutes — no manual research queue.' },
+  { title: 'Structured by default', desc: 'Every output is typed and consistent — no scraping free-form text out of a chat log.' },
+  { title: 'Auditable end to end', desc: 'Every agent’s output is stored and reviewable, not just the final summary.' },
+];
+
+/** Live clock cycling real timezones, matching Aspen's "05:52 AM NYC" → "02:52 AM LA" nav detail. */
+const CLOCK_ZONES: { tz: string; label: string }[] = [
+  { tz: 'America/New_York', label: 'NYC' },
+  { tz: 'America/Los_Angeles', label: 'LA' },
+  { tz: 'Europe/London', label: 'LDN' },
+];
+
 function LiveClock() {
   const [now, setNow] = useState(() => new Date());
+  const [zoneIdx, setZoneIdx] = useState(0);
+
   useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(id);
+    const tick = setInterval(() => setNow(new Date()), 1000);
+    const cycle = setInterval(() => setZoneIdx(i => (i + 1) % CLOCK_ZONES.length), 4000);
+    return () => { clearInterval(tick); clearInterval(cycle); };
   }, []);
-  const time = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+
+  const zone = CLOCK_ZONES[zoneIdx];
+  const time = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: zone.tz });
   return (
     <span style={{ fontFamily: 'var(--font-family-label)', fontSize: 11, letterSpacing: '.02em', color: 'var(--color-ink-dim)' }}>
-      {time} UTC
+      {time} {zone.label}
     </span>
   );
 }
@@ -185,6 +209,8 @@ export default function LandingPage() {
           .landing-nav-cta-short { display: inline; }
         }
         @media (max-width: 780px) { .agent-grid { grid-template-columns: 1fr !important; } }
+        @media (max-width: 680px) { .stats-grid { grid-template-columns: 1fr 1fr !important; } }
+        @media (max-width: 680px) { .benefits-grid { grid-template-columns: 1fr !important; gap: 28px !important; } }
         @media (max-width: 680px) { .footer-grid { grid-template-columns: 1fr !important; gap: 28px !important; } }
         @media (max-width: 680px) {
           .hero-grid { grid-template-columns: 1fr !important; grid-template-rows: 180px 140px 140px auto !important; }
@@ -197,8 +223,8 @@ export default function LandingPage() {
       {/* ── Hero — 2x2 grid: wordmark, halftone texture, halftone texture, black/mint split ─ */}
       <section style={{ paddingTop: 56 }}>
         <div className="hero-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '260px 260px', borderBottom: '1px solid var(--color-surface-border)' }}>
-          <div style={{ borderRight: '1px solid var(--color-surface-border)', borderBottom: '1px solid var(--color-surface-border)', padding: '40px 32px', display: 'flex', alignItems: 'flex-end' }}>
-            <h1 style={{ fontFamily: 'var(--font-family-display)', fontWeight: 700, fontSize: 'clamp(52px,8vw,104px)', lineHeight: 0.9, letterSpacing: '-0.03em', margin: 0 }}>Nexus</h1>
+          <div style={{ borderRight: '1px solid var(--color-surface-border)', borderBottom: '1px solid var(--color-surface-border)', padding: 20, display: 'flex', alignItems: 'flex-end' }}>
+            <h1 style={{ fontFamily: 'var(--font-family-display)', fontWeight: 700, fontSize: 'clamp(56px,12.5vw,180px)', lineHeight: 0.9, letterSpacing: '-0.04em', margin: 0 }}>Nexus</h1>
           </div>
           <div style={{ borderBottom: '1px solid var(--color-surface-border)', overflow: 'hidden', opacity: 0.5 }}>
             <HalftoneMark />
@@ -207,7 +233,7 @@ export default function LandingPage() {
             <HalftoneMark flip />
           </div>
           <div className="hero-split" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
-            <div style={{ background: 'var(--color-ink)', color: 'var(--color-bg)', padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div style={{ background: 'var(--color-ink)', color: 'var(--color-bg)', padding: 20, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
               <p style={{ fontFamily: 'var(--font-family-display)', fontWeight: 700, fontSize: 'clamp(15px,1.6vw,19px)', lineHeight: 1.35, letterSpacing: '-0.01em', margin: 0 }}>
                 Structured intelligence from any product brief — research, docs, QA and release signals, every run.
               </p>
@@ -215,7 +241,7 @@ export default function LandingPage() {
                 Start a Pipeline Run <ArrowRight size={11} strokeWidth={2} />
               </button>
             </div>
-            <div style={{ background: 'var(--color-accent)', padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div style={{ background: 'var(--color-accent)', padding: 20, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
               <p style={{ fontSize: 12, lineHeight: 1.6, color: 'var(--color-ink)', margin: 0 }}>
                 We don&apos;t move tickets. We move product briefs into shippable intelligence.
               </p>
@@ -246,6 +272,48 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
+      </section>
+
+      {/* ── Stats grid — matching Aspen's "Connecting top-tier talent" cell grid ─ */}
+      <section style={{ borderBottom: '1px solid var(--color-surface-border)' }}>
+        <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }}>
+          {STATS.map(({ value, label, tone }) => (
+            <div key={label} style={{
+              padding: 20, minHeight: 180, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
+              border: '1px solid var(--color-surface-border)', marginLeft: -1, marginTop: -1,
+              background: tone === 'ink' ? 'var(--color-ink)' : tone === 'accent' ? 'var(--color-accent)' : 'var(--color-surface-strong)',
+              color: tone === 'ink' ? 'var(--color-bg)' : 'var(--color-ink)',
+            }}>
+              <div style={{ fontFamily: 'var(--font-family-display)', fontWeight: 700, fontSize: 'clamp(28px,4vw,52px)', letterSpacing: '-0.03em', lineHeight: 1 }}>{value}</div>
+              <div style={{ fontSize: 12, marginTop: 8, opacity: 0.75 }}>{label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Benefits — replaces Aspen's Testimonials with honest product claims, not fabricated quotes ─ */}
+      <section style={{ padding: '96px 32px', borderBottom: '1px solid var(--color-surface-border)' }}>
+        <div style={{ maxWidth: 1240, margin: '0 auto' }}>
+          <span style={{ fontFamily: 'var(--font-family-label)', fontSize: 10, letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--color-ink-faint)', display: 'block', marginBottom: 32 }}>Why Nexus</span>
+          <div className="benefits-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 40 }}>
+            {BENEFITS.map(({ title, desc }) => (
+              <div key={title}>
+                <div style={{ fontFamily: 'var(--font-family-display)', fontSize: 18, fontWeight: 700, color: 'var(--color-ink)', marginBottom: 10 }}>{title}</div>
+                <p style={{ fontSize: 13, lineHeight: 1.6, color: 'var(--color-ink-dim)', margin: 0 }}>{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Final CTA — matching Aspen's "Let's Start a Conversation" band ─ */}
+      <section style={{ background: 'var(--color-ink)', color: 'var(--color-bg)', padding: '80px 32px', textAlign: 'center' }}>
+        <p style={{ fontFamily: 'var(--font-family-display)', fontWeight: 700, fontSize: 'clamp(28px,4.5vw,52px)', letterSpacing: '-0.02em', margin: '0 0 28px' }}>
+          Ready to run your first analysis?
+        </p>
+        <button onClick={launchDashboard} className="btn-sharp" style={{ padding: '13px 28px', fontSize: 12, background: 'var(--color-accent)', color: 'var(--color-accent-ink)', border: 'none', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+          Explore the Dashboard <ArrowRight size={13} strokeWidth={2} />
+        </button>
       </section>
 
       {/* ── About — scroll-revealed paragraph, matching Aspen's about section ─ */}
