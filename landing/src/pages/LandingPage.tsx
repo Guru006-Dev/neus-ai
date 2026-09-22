@@ -43,18 +43,21 @@ const AGENT_CARDS = [
 function Nav({ onLaunch }: { onLaunch: () => void }) {
   return (
     <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, borderBottom: '1px solid var(--color-surface-border)', background: 'rgba(7,8,11,0.82)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)' }}>
-      <nav style={{ maxWidth: 1240, margin: '0 auto', padding: '14px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+      <nav className="landing-nav" style={{ maxWidth: 1240, margin: '0 auto', padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 9, flexShrink: 0 }}>
           <div style={{ width: 16, height: 16, background: 'var(--color-accent)' }} />
           <span style={{ fontFamily: 'var(--font-family-label)', fontWeight: 700, fontSize: 13, letterSpacing: '.12em', color: 'var(--color-ink)' }}>NEXUS</span>
         </div>
-        <DropdownNavigation navItems={LANDING_NAV_ITEMS} />
+        <div className="landing-nav-items" style={{ minWidth: 0, overflow: 'hidden' }}>
+          <DropdownNavigation navItems={LANDING_NAV_ITEMS} />
+        </div>
         <button
           onClick={onLaunch}
-          className="btn-sharp"
-          style={{ padding: '9px 20px', fontSize: 11, background: 'var(--color-accent)', color: '#fff', border: 'none' }}
+          className="btn-sharp landing-nav-cta"
+          style={{ padding: '9px 20px', fontSize: 11, background: 'var(--color-accent)', color: '#fff', border: 'none', flexShrink: 0, whiteSpace: 'nowrap' }}
         >
-          Explore the Dashboard →
+          <span className="landing-nav-cta-full">Explore the Dashboard →</span>
+          <span className="landing-nav-cta-short">Dashboard →</span>
         </button>
       </nav>
     </div>
@@ -71,7 +74,7 @@ function Footer() {
   return (
     <footer style={{ position: 'relative', borderTop: '1px solid var(--color-surface-border)', overflow: 'hidden', padding: '64px 32px 32px' }}>
       <div style={{ maxWidth: 1240, margin: '0 auto', position: 'relative', zIndex: 1 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 1fr 1fr', gap: 32, marginBottom: 40 }}>
+        <div className="footer-grid" style={{ display: 'grid', gridTemplateColumns: '1.3fr 1fr 1fr', gap: 32, marginBottom: 40 }}>
           <div>
             <div style={{ fontFamily: 'var(--font-family-label)', fontSize: 11, fontWeight: 600, letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--color-ink-faint)', marginBottom: 14 }}>Sign up to stay sharp</div>
             <div style={{ display: 'flex', border: '1px solid var(--color-surface-border)', maxWidth: 320 }}>
@@ -150,6 +153,21 @@ export default function LandingPage() {
           animation-delay: calc(var(--d,0ms) + var(--i,0) * 90ms);
         }
         @media (prefers-reduced-motion: reduce) { .word-reveal { animation: none; opacity: 1; filter: none; } }
+
+        .landing-nav-cta-short { display: none; }
+        @media (max-width: 900px) {
+          .landing-nav-items { display: none; }
+        }
+        @media (max-width: 560px) {
+          .landing-nav-cta-full { display: none; }
+          .landing-nav-cta-short { display: inline; }
+        }
+        @media (max-width: 780px) {
+          .agent-grid { grid-template-columns: 1fr !important; }
+        }
+        @media (max-width: 680px) {
+          .footer-grid { grid-template-columns: 1fr !important; gap: 28px !important; }
+        }
       `}</style>
 
       <Nav onLaunch={launchDashboard} />
@@ -206,7 +224,7 @@ export default function LandingPage() {
       {/* ── Agent pipeline showcase ──────────────────────────────── */}
       <section style={{ padding: '0 32px 96px' }}>
         <div style={{ maxWidth: 1240, margin: '0 auto' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: 'var(--color-surface-border)', border: '1px solid var(--color-surface-border)' }}>
+          <div className="agent-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: 'var(--color-surface-border)', border: '1px solid var(--color-surface-border)' }}>
             {AGENT_CARDS.map(({ name, icon: Icon, desc }) => (
               <div key={name} style={{ background: 'var(--color-bg)', padding: '28px 24px' }}>
                 <Icon size={20} strokeWidth={1.6} color="var(--color-accent)" style={{ marginBottom: 16 }} />
