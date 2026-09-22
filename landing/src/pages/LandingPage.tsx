@@ -1,7 +1,12 @@
 import { useEffect, useCallback, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DropdownNavigation } from '@/components/ui/dropdown-navigation';
-import { Globe, BookOpen, FileText, ShieldCheck, Play, Send } from 'lucide-react';
+import HalftoneMark from '@/components/HalftoneMark';
+import ThemeToggle from '@/components/ThemeToggle';
+import IntroSplash from '@/components/IntroSplash';
+import LogoScatter from '@/components/LogoScatter';
+import { useSmoothScroll } from '@/lib/useSmoothScroll';
+import { Globe, BookOpen, FileText, ShieldCheck, Play, Send, ArrowRight } from 'lucide-react';
 
 const LANDING_NAV_ITEMS = [
   {
@@ -62,24 +67,30 @@ function LiveClock() {
 
 function Nav({ onLaunch }: { onLaunch: () => void }) {
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, borderBottom: '1px solid var(--color-surface-border)', background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(6px)' }}>
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, borderBottom: '1px solid var(--color-surface-border)', background: 'var(--color-bg)' }}>
       <nav className="landing-nav" style={{ maxWidth: 1240, margin: '0 auto', padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexShrink: 0 }}>
-          <div style={{ width: 16, height: 16, background: 'var(--color-ink)' }} />
+          <LogoScatter size={16}>
+            <div style={{ width: 16, height: 16, background: 'var(--color-ink)' }} />
+          </LogoScatter>
           <span style={{ fontFamily: 'var(--font-family-display)', fontWeight: 700, fontSize: 15, letterSpacing: '-.01em', color: 'var(--color-ink)' }}>Nexus</span>
           <LiveClock />
         </div>
         <div className="landing-nav-items" style={{ minWidth: 0, overflow: 'hidden' }}>
           <DropdownNavigation navItems={LANDING_NAV_ITEMS} />
         </div>
-        <button
-          onClick={onLaunch}
-          className="btn-sharp landing-nav-cta"
-          style={{ padding: '9px 20px', fontSize: 11, background: 'var(--color-accent)', color: 'var(--color-accent-ink)', border: 'none', flexShrink: 0, whiteSpace: 'nowrap' }}
-        >
-          <span className="landing-nav-cta-full">Explore the Dashboard</span>
-          <span className="landing-nav-cta-short">Dashboard</span>
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexShrink: 0 }}>
+          <ThemeToggle />
+          <button
+            onClick={onLaunch}
+            className="btn-sharp landing-nav-cta"
+            style={{ padding: '9px 20px', fontSize: 11, background: 'var(--color-ink)', color: 'var(--color-bg)', border: 'none', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: 8 }}
+          >
+            <span className="landing-nav-cta-full">Explore the Dashboard</span>
+            <span className="landing-nav-cta-short">Dashboard</span>
+            <ArrowRight size={12} strokeWidth={2} />
+          </button>
+        </div>
       </nav>
     </div>
   );
@@ -132,7 +143,7 @@ function Footer() {
             <div style={{ fontFamily: 'var(--font-family-label)', fontSize: 10, fontWeight: 500, letterSpacing: '.04em', textTransform: 'uppercase', color: 'var(--color-ink-faint)', marginBottom: 14 }}>Sign up to stay sharp</div>
             <div style={{ display: 'flex', border: '1px solid var(--color-surface-border)', maxWidth: 320 }}>
               <input type="email" placeholder="Enter your email" style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', padding: '10px 12px', fontSize: 12, color: 'var(--color-ink)', fontFamily: 'var(--font-family-body)' }} />
-              <button className="btn-sharp" style={{ padding: '10px 16px', fontSize: 10, background: 'var(--color-ink)', color: '#fff', border: 'none' }}>Sign Up</button>
+              <button className="btn-sharp" style={{ padding: '10px 16px', fontSize: 10, background: 'var(--color-ink)', color: 'var(--color-bg)', border: 'none' }}>Sign Up</button>
             </div>
           </div>
           <div>
@@ -161,9 +172,11 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const launchDashboard = useCallback(() => { navigate('/dashboard'); }, [navigate]);
   useEffect(() => { document.title = 'Nexus — Autonomous Product Intelligence'; }, []);
+  useSmoothScroll();
 
   return (
     <div style={{ background: 'var(--color-bg)', color: 'var(--color-ink)', minHeight: '100vh' }}>
+      <IntroSplash />
       <style>{`
         @media (max-width: 900px) { .landing-nav-items { display: none; } }
         .landing-nav-cta-short { display: none; }
@@ -173,58 +186,64 @@ export default function LandingPage() {
         }
         @media (max-width: 780px) { .agent-grid { grid-template-columns: 1fr !important; } }
         @media (max-width: 680px) { .footer-grid { grid-template-columns: 1fr !important; gap: 28px !important; } }
-        @media (max-width: 680px) { .hero-grid { grid-template-columns: 1fr !important; } }
+        @media (max-width: 680px) {
+          .hero-grid { grid-template-columns: 1fr !important; grid-template-rows: 180px 140px 140px auto !important; }
+          .hero-split { grid-template-columns: 1fr !important; }
+        }
       `}</style>
 
       <Nav onLaunch={launchDashboard} />
 
-      {/* ── Hero — 2x2 wordmark grid, matching Aspen's "Aspen / Search" layout ─ */}
+      {/* ── Hero — 2x2 grid: wordmark, halftone texture, halftone texture, black/mint split ─ */}
       <section style={{ paddingTop: 56 }}>
-        <div className="hero-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderBottom: '1px solid var(--color-surface-border)' }}>
-          <div style={{ borderRight: '1px solid var(--color-surface-border)', borderBottom: '1px solid var(--color-surface-border)', padding: '48px 32px', display: 'flex', alignItems: 'flex-end', minHeight: 220 }}>
-            <h1 style={{ fontFamily: 'var(--font-family-display)', fontWeight: 700, fontSize: 'clamp(56px,9vw,120px)', lineHeight: 0.9, letterSpacing: '-0.03em', margin: 0 }}>Nexus</h1>
+        <div className="hero-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '260px 260px', borderBottom: '1px solid var(--color-surface-border)' }}>
+          <div style={{ borderRight: '1px solid var(--color-surface-border)', borderBottom: '1px solid var(--color-surface-border)', padding: '40px 32px', display: 'flex', alignItems: 'flex-end' }}>
+            <h1 style={{ fontFamily: 'var(--font-family-display)', fontWeight: 700, fontSize: 'clamp(52px,8vw,104px)', lineHeight: 0.9, letterSpacing: '-0.03em', margin: 0 }}>Nexus</h1>
           </div>
-          <div style={{ borderBottom: '1px solid var(--color-surface-border)', padding: '48px 32px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: 220 }}>
-            <span style={{ fontFamily: 'var(--font-family-label)', fontSize: 10, letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--color-ink-faint)' }}>Autonomous Product Intelligence</span>
+          <div style={{ borderBottom: '1px solid var(--color-surface-border)', overflow: 'hidden', opacity: 0.5 }}>
+            <HalftoneMark />
           </div>
-          <div style={{ borderRight: '1px solid var(--color-surface-border)', padding: '48px 32px', display: 'flex', alignItems: 'flex-start', minHeight: 220 }}>
-            <span style={{ fontFamily: 'var(--font-family-label)', fontSize: 10, letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--color-ink-faint)' }}>6-Agent Pipeline</span>
+          <div style={{ borderRight: '1px solid var(--color-surface-border)', overflow: 'hidden', opacity: 0.5 }}>
+            <HalftoneMark flip />
           </div>
-          <div style={{ padding: '48px 32px', display: 'flex', alignItems: 'flex-start', minHeight: 220 }}>
-            <h1 style={{ fontFamily: 'var(--font-family-display)', fontWeight: 700, fontSize: 'clamp(56px,9vw,120px)', lineHeight: 0.9, letterSpacing: '-0.03em', margin: 0 }}>Intel.</h1>
-          </div>
-        </div>
-
-        {/* ── Black band — bold statement, matching Aspen's "PLACING WINNERS." band ─ */}
-        <div style={{ background: 'var(--color-ink)', color: '#fff', padding: '64px 32px' }}>
-          <div style={{ maxWidth: 1240, margin: '0 auto' }}>
-            <h2 style={{ fontFamily: 'var(--font-family-display)', fontWeight: 700, fontSize: 'clamp(36px,6vw,72px)', lineHeight: 1, letterSpacing: '-0.02em', margin: '0 0 24px' }}>
-              Structured intelligence.<br />Every run.
-            </h2>
-            <p style={{ fontSize: 14, lineHeight: 1.75, color: 'rgba(255,255,255,.6)', maxWidth: 480, margin: '0 0 32px' }}>
-              A multi-agent platform that transforms any product brief into structured intelligence — research, documentation, QA and release signals delivered in a single pipeline run.
-            </p>
-            <button onClick={launchDashboard} className="btn-sharp" style={{ padding: '13px 26px', fontSize: 12, background: '#fff', color: 'var(--color-ink)', border: 'none' }}>
-              Start a Pipeline Run
-            </button>
-          </div>
-        </div>
-
-        {/* ── Mint band — agent roster, matching Aspen's mint logo-bar section ─ */}
-        <div style={{ background: 'var(--color-accent)', padding: '56px 32px' }}>
-          <div style={{ maxWidth: 1240, margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-family-display)', fontWeight: 700, fontSize: 'clamp(20px,2.6vw,28px)', lineHeight: 1.4, color: 'var(--color-ink)', maxWidth: 640, margin: '0 0 40px' }}>
-              We don&apos;t move tickets. We move product briefs into structured, shippable intelligence.
-            </p>
-            <div className="agent-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: 'rgba(35,35,35,.15)' }}>
-              {AGENT_CARDS.map(({ name, icon: Icon, desc }) => (
-                <div key={name} style={{ background: 'var(--color-accent)', padding: '20px' }}>
-                  <Icon size={18} strokeWidth={1.8} color="var(--color-ink)" style={{ marginBottom: 12 }} />
-                  <div style={{ fontFamily: 'var(--font-family-display)', fontSize: 14, fontWeight: 700, color: 'var(--color-ink)', marginBottom: 4 }}>{name}</div>
-                  <p style={{ fontSize: 11, lineHeight: 1.5, color: 'rgba(35,35,35,.7)', margin: 0 }}>{desc}</p>
-                </div>
-              ))}
+          <div className="hero-split" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
+            <div style={{ background: 'var(--color-ink)', color: 'var(--color-bg)', padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <p style={{ fontFamily: 'var(--font-family-display)', fontWeight: 700, fontSize: 'clamp(15px,1.6vw,19px)', lineHeight: 1.35, letterSpacing: '-0.01em', margin: 0 }}>
+                Structured intelligence from any product brief — research, docs, QA and release signals, every run.
+              </p>
+              <button onClick={launchDashboard} className="btn-sharp" style={{ padding: '8px 14px', fontSize: 10, background: 'var(--color-bg)', color: 'var(--color-ink)', border: 'none', alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                Start a Pipeline Run <ArrowRight size={11} strokeWidth={2} />
+              </button>
             </div>
+            <div style={{ background: 'var(--color-accent)', padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <p style={{ fontSize: 12, lineHeight: 1.6, color: 'var(--color-ink)', margin: 0 }}>
+                We don&apos;t move tickets. We move product briefs into shippable intelligence.
+              </p>
+              <div>
+                <span style={{ fontFamily: 'var(--font-family-label)', fontSize: 9, letterSpacing: '.06em', textTransform: 'uppercase', color: 'rgba(35,35,35,.6)', display: 'block', marginBottom: 8 }}>Six agents:</span>
+                <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                  {AGENT_CARDS.map(({ name, icon: Icon }) => (
+                    <Icon key={name} size={16} strokeWidth={1.8} color="var(--color-ink)" />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Agent roster detail ─────────────────────────────────── */}
+      <section style={{ padding: '96px 32px', borderBottom: '1px solid var(--color-surface-border)' }}>
+        <div style={{ maxWidth: 1240, margin: '0 auto' }}>
+          <span style={{ fontFamily: 'var(--font-family-label)', fontSize: 10, letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--color-ink-faint)', display: 'block', marginBottom: 32 }}>The Pipeline</span>
+          <div className="agent-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: 'var(--color-surface-border)', border: '1px solid var(--color-surface-border)' }}>
+            {AGENT_CARDS.map(({ name, icon: Icon, desc }) => (
+              <div key={name} style={{ background: 'var(--color-bg)', padding: '24px' }}>
+                <Icon size={18} strokeWidth={1.8} color="var(--color-ink)" style={{ marginBottom: 14 }} />
+                <div style={{ fontFamily: 'var(--font-family-display)', fontSize: 15, fontWeight: 700, color: 'var(--color-ink)', marginBottom: 6 }}>{name}</div>
+                <p style={{ fontSize: 12, lineHeight: 1.55, color: 'var(--color-ink-dim)', margin: 0 }}>{desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>

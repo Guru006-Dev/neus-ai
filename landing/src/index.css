@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
 @import "tailwindcss";
 
@@ -11,8 +11,8 @@
   --color-primary-foreground: #232323;
   --color-accent: #A1FFCB;
   --color-accent-foreground: #232323;
-  --font-family-display: 'Inter', sans-serif;
-  --font-family-body: 'Inter', sans-serif;
+  --font-family-display: 'Schibsted Grotesk', sans-serif;
+  --font-family-body: 'Schibsted Grotesk', sans-serif;
   --font-family-label: 'IBM Plex Mono', monospace;
 }
 
@@ -30,10 +30,26 @@
   --color-success: #16A34A;
   --color-error: #DC2626;
   --color-warning: #B45309;
-  --font-display: 'Inter', sans-serif;
-  --font-body: 'Inter', sans-serif;
+  --font-display: 'Schibsted Grotesk', sans-serif;
+  --font-body: 'Schibsted Grotesk', sans-serif;
   --font-label: 'IBM Plex Mono', monospace;
 }
+
+/* ── Optional dark mode (toggle-driven, light is the primary system) ─── */
+:root[data-theme='dark'] {
+  --color-bg: #0B0B0C;
+  --color-surface: #0B0B0C;
+  --color-surface-strong: #1A1A1C;
+  --color-surface-border: #333335;
+  --color-ink: #F4F4F4;
+  --color-ink-dim: rgba(244, 244, 244, 0.62);
+  --color-ink-faint: rgba(244, 244, 244, 0.38);
+  --color-accent-dim: rgba(161, 255, 203, 0.16);
+  --color-success: #22C55E;
+  --color-error: #EF4444;
+  --color-warning: #F59E0B;
+}
+:root[data-theme='dark'] body { background-color: var(--color-bg); color: var(--color-ink); }
 
 * {
   box-sizing: border-box;
@@ -46,6 +62,7 @@ body {
   background-color: var(--color-bg);
   color: var(--color-ink);
   overflow-x: hidden;
+  transition: background-color .25s ease, color .25s ease;
 }
 
 /* ── Surface shell (outer frame) ──────────────────────────────── */

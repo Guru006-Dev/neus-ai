@@ -10,11 +10,15 @@ import { AGENTS, AGENT_INFO, fmtTime, fmtDate } from './dashboard/types';
 import type { AgentResult, RunState, HistoryEntry, AgentIconKey } from './dashboard/types';
 import { NexusLogo, StatusDot, AgentBadge, StatCard, AGENT_ICONS } from './dashboard/shared';
 import AgentOutput from './dashboard/AgentOutput';
+import ThemeToggle from '@/components/ThemeToggle';
+import LogoScatter from '@/components/LogoScatter';
+import { useSmoothScroll } from '@/lib/useSmoothScroll';
 
 const API_BASE = 'http://localhost:3000';
 
 export default function DashboardPage() {
   const navigate = useNavigate();
+  useSmoothScroll();
   const [goal, setGoal] = useState('');
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('nexus_api_key') || '');
   const [apiKeyInput, setApiKeyInput] = useState('');
@@ -176,13 +180,16 @@ export default function DashboardPage() {
 
           <div style={{ padding: '12px 18px', borderBottom: '1px solid var(--color-surface-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <NexusLogo size={20} />
+              <LogoScatter size={20}><NexusLogo size={20} /></LogoScatter>
               <span style={{ fontFamily: 'var(--font-family-label)', fontWeight: 700, fontSize: 13, letterSpacing: '.1em', color: 'var(--color-ink)' }}>NEXUS</span>
             </div>
             <DropdownNavigation navItems={dashNavItems} activeItem={activeTab} onItemClick={setActiveTab} />
-            <div style={{ display: 'flex', alignItems: 'center', gap: 7, border: '1px solid var(--color-surface-border)', padding: '3px 10px 3px 3px' }}>
-              <div style={{ width: 22, height: 22, background: 'var(--color-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: 'var(--color-accent-ink)' }}>G</div>
-              <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--color-ink-dim)' }}>Guru</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <ThemeToggle />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 7, border: '1px solid var(--color-surface-border)', padding: '3px 10px 3px 3px' }}>
+                <div style={{ width: 22, height: 22, background: 'var(--color-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: 'var(--color-accent-ink)' }}>G</div>
+                <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--color-ink-dim)' }}>Guru</span>
+              </div>
             </div>
           </div>
 

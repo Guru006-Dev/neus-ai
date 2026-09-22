@@ -1,8 +1,10 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import DashboardPage from './pages/DashboardPage';
+import { useInitTheme } from './components/ThemeToggle';
 
 export default function App() {
+  useInitTheme();
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
