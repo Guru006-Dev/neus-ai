@@ -12,17 +12,6 @@ export const AGENT_ICONS: Record<AgentIconKey, React.ReactNode> = {
   Release:   <Send     size={15} strokeWidth={1.6} />,
 };
 
-export function NexusLogo({ size = 22 }: { size?: number }) {
-  const big = Math.round(size * 0.65);
-  const sm = Math.round(size * 0.44);
-  return (
-    <div style={{ position: 'relative', width: size, height: size, flexShrink: 0 }}>
-      <div style={{ position: 'absolute', top: 0, left: 0, width: big, height: big, background: 'var(--color-ink)' }} />
-      <div style={{ position: 'absolute', bottom: 0, right: 0, width: sm, height: sm, background: 'var(--color-accent)' }} />
-    </div>
-  );
-}
-
 export function StatusDot({ status }: { status: AgentStatus }) {
   const colors: Record<AgentStatus, string> = {
     done: 'var(--color-success)', running: 'var(--color-warning)',

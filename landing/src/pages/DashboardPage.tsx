@@ -8,10 +8,11 @@ import { DropdownNavigation } from '@/components/ui/dropdown-navigation';
 import type { NavItem } from '@/components/ui/dropdown-navigation';
 import { AGENTS, AGENT_INFO, fmtTime, fmtDate } from './dashboard/types';
 import type { AgentResult, RunState, HistoryEntry, AgentIconKey } from './dashboard/types';
-import { NexusLogo, StatusDot, AgentBadge, StatCard, AGENT_ICONS } from './dashboard/shared';
+import { StatusDot, AgentBadge, StatCard, AGENT_ICONS } from './dashboard/shared';
 import AgentOutput from './dashboard/AgentOutput';
 import ThemeToggle from '@/components/ThemeToggle';
 import LogoScatter from '@/components/LogoScatter';
+import NexusLogo from '@/components/NexusLogo';
 import { useSmoothScroll } from '@/lib/useSmoothScroll';
 
 const API_BASE = 'http://localhost:3000';

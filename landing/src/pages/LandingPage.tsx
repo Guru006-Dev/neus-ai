@@ -5,6 +5,7 @@ import HalftoneMark from '@/components/HalftoneMark';
 import ThemeToggle from '@/components/ThemeToggle';
 import IntroSplash from '@/components/IntroSplash';
 import LogoScatter from '@/components/LogoScatter';
+import NexusLogo from '@/components/NexusLogo';
 import { useSmoothScroll } from '@/lib/useSmoothScroll';
 import { Globe, BookOpen, FileText, ShieldCheck, Play, Send, ArrowRight } from 'lucide-react';
 
@@ -94,8 +95,8 @@ function Nav({ onLaunch }: { onLaunch: () => void }) {
     <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, borderBottom: '1px solid var(--color-surface-border)', background: 'var(--color-bg)' }}>
       <nav className="landing-nav" style={{ maxWidth: 1240, margin: '0 auto', padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexShrink: 0 }}>
-          <LogoScatter size={16}>
-            <div style={{ width: 16, height: 16, background: 'var(--color-ink)' }} />
+          <LogoScatter size={18}>
+            <NexusLogo size={18} />
           </LogoScatter>
           <span style={{ fontFamily: 'var(--font-family-display)', fontWeight: 700, fontSize: 15, letterSpacing: '-.01em', color: 'var(--color-ink)' }}>Nexus</span>
           <LiveClock />
