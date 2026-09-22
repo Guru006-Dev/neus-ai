@@ -6,6 +6,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import IntroSplash from '@/components/IntroSplash';
 import LogoScatter from '@/components/LogoScatter';
 import NexusLogo from '@/components/NexusLogo';
+import Reveal from '@/components/Reveal';
 import { useSmoothScroll } from '@/lib/useSmoothScroll';
 import { Globe, BookOpen, FileText, ShieldCheck, Play, Send, ArrowRight } from 'lucide-react';
 
@@ -234,15 +235,15 @@ export default function LandingPage() {
             <HalftoneMark flip />
           </div>
           <div className="hero-split" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
-            <div style={{ background: 'var(--color-ink)', color: 'var(--color-bg)', padding: 20, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <Reveal delay={0.15} style={{ background: 'var(--color-ink)', color: 'var(--color-bg)', padding: 20, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
               <p style={{ fontFamily: 'var(--font-family-display)', fontWeight: 700, fontSize: 'clamp(15px,1.6vw,19px)', lineHeight: 1.35, letterSpacing: '-0.01em', margin: 0 }}>
                 Structured intelligence from any product brief — research, docs, QA and release signals, every run.
               </p>
               <button onClick={launchDashboard} className="btn-sharp" style={{ padding: '8px 14px', fontSize: 10, background: 'var(--color-bg)', color: 'var(--color-ink)', border: 'none', alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                 Start a Pipeline Run <ArrowRight size={11} strokeWidth={2} />
               </button>
-            </div>
-            <div style={{ background: 'var(--color-accent)', padding: 20, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            </Reveal>
+            <Reveal delay={0.24} style={{ background: 'var(--color-accent)', padding: 20, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
               <p style={{ fontSize: 12, lineHeight: 1.6, color: 'var(--color-ink)', margin: 0 }}>
                 We don&apos;t move tickets. We move product briefs into shippable intelligence.
               </p>
@@ -254,7 +255,7 @@ export default function LandingPage() {
                   ))}
                 </div>
               </div>
-            </div>
+            </Reveal>
           </div>
         </div>
       </section>
@@ -262,14 +263,14 @@ export default function LandingPage() {
       {/* ── Agent roster detail ─────────────────────────────────── */}
       <section style={{ padding: '96px 32px', borderBottom: '1px solid var(--color-surface-border)' }}>
         <div style={{ maxWidth: 1240, margin: '0 auto' }}>
-          <span style={{ fontFamily: 'var(--font-family-label)', fontSize: 10, letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--color-ink-faint)', display: 'block', marginBottom: 32 }}>The Pipeline</span>
+          <Reveal><span style={{ fontFamily: 'var(--font-family-label)', fontSize: 10, letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--color-ink-faint)', display: 'block', marginBottom: 32 }}>The Pipeline</span></Reveal>
           <div className="agent-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: 'var(--color-surface-border)', border: '1px solid var(--color-surface-border)' }}>
-            {AGENT_CARDS.map(({ name, icon: Icon, desc }) => (
-              <div key={name} style={{ background: 'var(--color-bg)', padding: '24px' }}>
+            {AGENT_CARDS.map(({ name, icon: Icon, desc }, i) => (
+              <Reveal key={name} delay={(i % 3) * 0.08} style={{ background: 'var(--color-bg)', padding: '24px' }}>
                 <Icon size={18} strokeWidth={1.8} color="var(--color-ink)" style={{ marginBottom: 14 }} />
                 <div style={{ fontFamily: 'var(--font-family-display)', fontSize: 15, fontWeight: 700, color: 'var(--color-ink)', marginBottom: 6 }}>{name}</div>
                 <p style={{ fontSize: 12, lineHeight: 1.55, color: 'var(--color-ink-dim)', margin: 0 }}>{desc}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -278,8 +279,8 @@ export default function LandingPage() {
       {/* ── Stats grid — matching Aspen's "Connecting top-tier talent" cell grid ─ */}
       <section style={{ borderBottom: '1px solid var(--color-surface-border)' }}>
         <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }}>
-          {STATS.map(({ value, label, tone }) => (
-            <div key={label} style={{
+          {STATS.map(({ value, label, tone }, i) => (
+            <Reveal key={label} delay={i * 0.08} y={26} style={{
               padding: 20, minHeight: 180, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
               border: '1px solid var(--color-surface-border)', marginLeft: -1, marginTop: -1,
               background: tone === 'ink' ? 'var(--color-ink)' : tone === 'accent' ? 'var(--color-accent)' : 'var(--color-surface-strong)',
@@ -287,7 +288,7 @@ export default function LandingPage() {
             }}>
               <div style={{ fontFamily: 'var(--font-family-display)', fontWeight: 700, fontSize: 'clamp(28px,4vw,52px)', letterSpacing: '-0.03em', lineHeight: 1 }}>{value}</div>
               <div style={{ fontSize: 12, marginTop: 8, opacity: 0.75 }}>{label}</div>
-            </div>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -295,13 +296,13 @@ export default function LandingPage() {
       {/* ── Benefits — replaces Aspen's Testimonials with honest product claims, not fabricated quotes ─ */}
       <section style={{ padding: '96px 32px', borderBottom: '1px solid var(--color-surface-border)' }}>
         <div style={{ maxWidth: 1240, margin: '0 auto' }}>
-          <span style={{ fontFamily: 'var(--font-family-label)', fontSize: 10, letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--color-ink-faint)', display: 'block', marginBottom: 32 }}>Why Nexus</span>
+          <Reveal><span style={{ fontFamily: 'var(--font-family-label)', fontSize: 10, letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--color-ink-faint)', display: 'block', marginBottom: 32 }}>Why Nexus</span></Reveal>
           <div className="benefits-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 40 }}>
-            {BENEFITS.map(({ title, desc }) => (
-              <div key={title}>
+            {BENEFITS.map(({ title, desc }, i) => (
+              <Reveal key={title} delay={i * 0.1}>
                 <div style={{ fontFamily: 'var(--font-family-display)', fontSize: 18, fontWeight: 700, color: 'var(--color-ink)', marginBottom: 10 }}>{title}</div>
                 <p style={{ fontSize: 13, lineHeight: 1.6, color: 'var(--color-ink-dim)', margin: 0 }}>{desc}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -309,18 +310,20 @@ export default function LandingPage() {
 
       {/* ── Final CTA — matching Aspen's "Let's Start a Conversation" band ─ */}
       <section style={{ background: 'var(--color-ink)', color: 'var(--color-bg)', padding: '80px 32px', textAlign: 'center' }}>
-        <p style={{ fontFamily: 'var(--font-family-display)', fontWeight: 700, fontSize: 'clamp(28px,4.5vw,52px)', letterSpacing: '-0.02em', margin: '0 0 28px' }}>
-          Ready to run your first analysis?
-        </p>
-        <button onClick={launchDashboard} className="btn-sharp" style={{ padding: '13px 28px', fontSize: 12, background: 'var(--color-accent)', color: 'var(--color-accent-ink)', border: 'none', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-          Explore the Dashboard <ArrowRight size={13} strokeWidth={2} />
-        </button>
+        <Reveal y={24}>
+          <p style={{ fontFamily: 'var(--font-family-display)', fontWeight: 700, fontSize: 'clamp(28px,4.5vw,52px)', letterSpacing: '-0.02em', margin: '0 0 28px' }}>
+            Ready to run your first analysis?
+          </p>
+          <button onClick={launchDashboard} className="btn-sharp" style={{ padding: '13px 28px', fontSize: 12, background: 'var(--color-accent)', color: 'var(--color-accent-ink)', border: 'none', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+            Explore the Dashboard <ArrowRight size={13} strokeWidth={2} />
+          </button>
+        </Reveal>
       </section>
 
       {/* ── About — scroll-revealed paragraph, matching Aspen's about section ─ */}
       <section style={{ padding: '120px 32px' }}>
         <div style={{ maxWidth: 1240, margin: '0 auto' }}>
-          <span style={{ fontFamily: 'var(--font-family-label)', fontSize: 10, letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--color-ink-faint)', display: 'block', marginBottom: 32 }}>About Nexus</span>
+          <Reveal><span style={{ fontFamily: 'var(--font-family-label)', fontSize: 10, letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--color-ink-faint)', display: 'block', marginBottom: 32 }}>About Nexus</span></Reveal>
           <ScrollReveal sentences={ABOUT_SENTENCES} />
         </div>
       </section>
