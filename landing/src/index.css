@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Archivo+Narrow:wght@500;600;700&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+  --color-background: #07080B;
+  --color-foreground: #F3F3F3;
+  --color-muted-foreground: rgba(243, 243, 243, 0.5);
+  --color-border: rgba(243, 243, 243, 0.1);
+  --color-primary: #0E76FF;
+  --color-primary-foreground: #F3F3F3;
+  --color-accent: rgba(14, 118, 255, 0.14);
+  --color-accent-foreground: #F3F3F3;
+  --font-family-display: 'Archivo', sans-serif;
+  --font-family-body: 'Archivo', sans-serif;
+  --font-family-label: 'Archivo Narrow', sans-serif;
+}
+
+:root {
+  --color-bg: #07080B;
+  --color-surface: rgba(243, 243, 243, 0.035);
+  --color-surface-strong: rgba(243, 243, 243, 0.07);
+  --color-surface-border: rgba(243, 243, 243, 0.1);
+  --color-ink: #F3F3F3;
+  --color-ink-dim: rgba(243, 243, 243, 0.55);
+  --color-ink-faint: rgba(243, 243, 243, 0.28);
+  --color-accent: #0E76FF;
+  --color-accent-dim: rgba(14, 118, 255, 0.14);
+  --color-success: #4ADE80;
+  --color-error: #F87171;
+  --color-warning: #FBBF24;
+  --font-display: 'Archivo', sans-serif;
+  --font-body: 'Archivo', sans-serif;
+  --font-label: 'Archivo Narrow', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+  overflow-x: hidden;
+}
+
+/* ── Surface shell (outer frame) ──────────────────────────────── */
+.surface-shell {
+  background: var(--color-surface);
+  border: 1px solid var(--color-surface-border);
+}
+
+/* ── Surface panel (cards) ────────────────────────────────────── */
+.surface-panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-surface-border);
+  border-radius: 2px;
+}
+
+/* ── Sharp button base ─────────────────────────────────────────── */
+.btn-sharp {
+  border-radius: 0;
+  font-family: var(--font-label);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity .15s ease, background-color .15s ease;
+}
+.btn-sharp:disabled { cursor: default; opacity: .4; }
+
+/* ── Animations ───────────────────────────────────────────────── */
+@keyframes fade-rise {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes blink-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.25; }
+}
+
+@keyframes dash-enter {
+  from { opacity: 0; transform: scale(.97) translateY(8px); }
+  to   { opacity: 1; transform: scale(1)   translateY(0); }
+}
+
+@keyframes tab-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.tab-content {
+  animation: tab-enter 0.22s cubic-bezier(.16,1,.3,1) both;
+}
+
+.animate-fade-rise          { animation: fade-rise 0.8s ease-out both; }
+.animate-fade-rise-delay    { animation: fade-rise 0.8s ease-out 0.2s both; }
+.animate-fade-rise-delay-2  { animation: fade-rise 0.8s ease-out 0.4s both; }
+.animate-blink-dot          { animation: blink-dot 1.4s ease-in-out infinite; }
