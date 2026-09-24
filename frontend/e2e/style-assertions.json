@@ -36,5 +36,8 @@
   { "selector": ".footer__link", "prop": "paddingTop", "expected": "8px" },
   { "selector": ".footer__bottom", "prop": "borderTopColor", "expected": "rgb(28, 30, 32)" },
   { "selector": ".footer__legal", "prop": "fontSize", "expected": "12px" },
-  { "selector": ".footer__legal", "prop": "color", "expected": "rgb(131, 138, 143)" }
+  { "selector": ".footer__legal", "prop": "color", "expected": "rgb(131, 138, 143)" },
+  { "selector": "html", "prop": "colorScheme", "expected": "dark" },
+  { "selector": ".intro .display", "prop": "textWrap", "expected": "balance" },
+  { "selector": ".footer__heading", "prop": "textWrap", "expected": "balance" }
 ]

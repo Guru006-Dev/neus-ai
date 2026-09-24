@@ -27,7 +27,6 @@
 
 .button--light:hover {
   background: var(--nx-grey-200);
-  color: var(--nx-grey-500);
 }
 
 .button--dark {
@@ -128,6 +127,7 @@
   text-transform: uppercase;
   font-weight: 500;
   color: var(--nx-text);
+  text-wrap: balance;
   margin: 0;
 }
 
@@ -467,6 +467,7 @@
   text-transform: uppercase;
   font-weight: 500;
   color: var(--nx-text);
+  text-wrap: balance;
   max-width: 500px;
   margin: 0 0 64px;
 }
@@ -502,7 +503,7 @@
 }
 
 .footer__link:hover {
-  color: var(--nx-grey-500);
+  color: var(--nx-text);
 }
 
 .footer__bottom {

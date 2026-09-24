@@ -105,3 +105,21 @@ test.describe('reduced motion', () => {
     expect(duration.split(',').every((d) => parseFloat(d) === 0)).toBe(true)
   })
 })
+
+test('hover states keep text at AA contrast', async ({ page }) => {
+  await openLanding(page)
+  for (const selector of ['.intro .button--light', '.footer__link']) {
+    const el = page.locator(selector).first()
+    await el.scrollIntoViewIfNeeded()
+    await el.hover()
+    await page.waitForTimeout(400)
+    const { fg, bg } = await el.evaluate((node) => {
+      let bgColor = 'rgba(0, 0, 0, 0)'
+      for (let n: Element | null = node; n && bgColor.endsWith(', 0)'); n = n.parentElement) {
+        bgColor = getComputedStyle(n).backgroundColor
+      }
+      return { fg: getComputedStyle(node).color, bg: bgColor.endsWith(', 0)') ? 'rgb(8, 8, 8)' : bgColor }
+    })
+    expect(contrast(fg, bg), selector).toBeGreaterThanOrEqual(4.5)
+  }
+})
