@@ -141,6 +141,64 @@
   display: block;
 }
 
+/* ── One Run (pinned 3D section) ──────────────────── */
+
+.one-run {
+  position: relative;
+  height: 1000vh;
+}
+
+.one-run__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.intro {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 151px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.intro .lede {
+  margin: 21.6px 0 43.2px;
+}
+
+.intro a,
+.finale a {
+  pointer-events: auto;
+}
+
+.finale {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12vh;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
 /* ── Caption + progress rail ──────────────────────── */
 
 .caption {
