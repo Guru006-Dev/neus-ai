@@ -30,11 +30,11 @@
   { "selector": ".caption__text", "prop": "fontSize", "expected": "18px" },
   { "selector": ".caption__text", "prop": "color", "expected": "rgb(192, 196, 198)" },
   { "selector": ".footer__heading", "prop": "fontSize", "expected": "52px" },
-  { "selector": ".footer__col-title", "prop": "color", "expected": "rgb(102, 111, 118)" },
+  { "selector": ".footer__col-title", "prop": "color", "expected": "rgb(131, 138, 143)" },
   { "selector": ".footer__col-title", "prop": "textTransform", "expected": "uppercase" },
   { "selector": ".footer__link", "prop": "color", "expected": "rgb(192, 196, 198)" },
   { "selector": ".footer__link", "prop": "paddingTop", "expected": "8px" },
   { "selector": ".footer__bottom", "prop": "borderTopColor", "expected": "rgb(28, 30, 32)" },
   { "selector": ".footer__legal", "prop": "fontSize", "expected": "12px" },
-  { "selector": ".footer__legal", "prop": "color", "expected": "rgb(58, 62, 64)" }
+  { "selector": ".footer__legal", "prop": "color", "expected": "rgb(131, 138, 143)" }
 ]

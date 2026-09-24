@@ -51,3 +51,57 @@ for (const viewport of [
     expect(layout.overlap).toBe(false)
   })
 }
+
+const luminance = (rgb: string): number => {
+  const [r, g, b] = (rgb.match(/\d+(\.\d+)?/g) ?? []).slice(0, 3).map((v) => {
+    const c = Number(v) / 255
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4
+  })
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+}
+const contrast = (fg: string, bg: string): number => {
+  const [a, b] = [luminance(fg), luminance(bg)].sort((x, y) => y - x)
+  return (a + 0.05) / (b + 0.05)
+}
+
+test('small grey labels meet WCAG AA contrast on the page background', async ({ page }) => {
+  await openLanding(page)
+  await goToProgress(page, 0.35)
+  const selectors = ['.caption__label', '.rail__item[data-status="idle"]', '.footer__col-title', '.footer__legal']
+  for (const selector of selectors) {
+    const color = await page.locator(selector).first().evaluate((el) => getComputedStyle(el).color)
+    expect(contrast(color, 'rgb(8, 8, 8)'), selector).toBeGreaterThanOrEqual(4.5)
+  }
+})
+
+for (const viewport of [
+  { width: 1920, height: 1080 },
+  { width: 1366, height: 768 },
+]) {
+  test(`agent tags never sit on the progress rail at ${viewport.width}×${viewport.height}`, async ({ page }) => {
+    await page.setViewportSize(viewport)
+    await openLanding(page)
+    for (const p of [0.25, 0.45, 0.55, 0.75, 0.85]) {
+      await goToProgress(page, p)
+      const hits = await page.evaluate(() => {
+        const r = document.querySelector('.rail')!.getBoundingClientRect()
+        return [...document.querySelectorAll<HTMLElement>('.agent-tag')]
+          .filter((el) => Number(getComputedStyle(el).opacity) > 0.05)
+          .map((el) => ({ name: el.textContent ?? '', b: el.getBoundingClientRect() }))
+          .filter(({ b }) => b.left < r.right && r.left < b.right && b.top < r.bottom && r.top < b.bottom)
+          .map(({ name }) => name)
+      })
+      expect(hits, `p=${p}`).toEqual([])
+    }
+  })
+}
+
+test.describe('reduced motion', () => {
+  test.use({ reducedMotion: 'reduce' })
+
+  test('the nav menu hides without animating', async ({ page }) => {
+    await page.goto('/')
+    const duration = await page.locator('.nav__menu').evaluate((el) => getComputedStyle(el).transitionDuration)
+    expect(duration.split(',').every((d) => parseFloat(d) === 0)).toBe(true)
+  })
+})

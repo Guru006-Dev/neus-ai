@@ -7,6 +7,7 @@ import {
   agentStatuses,
   cameraAt,
   connectionProgress,
+  ctaReveal,
   frameAt,
   localProgress,
   phaseAt,
@@ -87,5 +88,11 @@ describe('timeline', () => {
     const forward = pts.map((p) => sceneStateAt(p))
     const backward = [...pts].reverse().map((p) => sceneStateAt(p)).reverse()
     expect(backward).toEqual(forward)
+  })
+
+  it('holds the stillness briefly, then the CTA is fully readable well before the end', () => {
+    expect(ctaReveal(0.974)).toBe(0)
+    expect(ctaReveal(0.985)).toBeGreaterThan(0.7)
+    expect(ctaReveal(0.99)).toBe(1)
   })
 })

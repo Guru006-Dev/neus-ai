@@ -47,13 +47,18 @@ export function installDebugHook({
   target: () => number
 }): (() => void) | undefined {
   if (!debugEnabled()) return undefined
+  // Exact progress of the last requested scroll position. Until the trigger reports it, target() still
+  // holds the previous position, which would otherwise read as settled.
+  let requested: number | null = null
   const api: DebugApi = {
     scrollToProgress(p) {
       const el = section.current
       if (!el) return
       const top = el.getBoundingClientRect().top + window.scrollY
       const range = el.offsetHeight - window.innerHeight
-      window.scrollTo(0, Math.round(top + p * range))
+      const y = Math.round(top + p * range)
+      requested = (y - top) / range
+      window.scrollTo(0, y)
     },
     snapshot() {
       const reports = Object.fromEntries([...reporters].map(([name, fn]) => [name, fn()]))
@@ -62,6 +67,7 @@ export function installDebugHook({
     settled() {
       // OneRunSection snaps the scrubbed value to the exact scroll progress once it is within GSAP's
       // rounding, so a settled scene matches the target exactly.
+      if (requested !== null && Math.abs(target() - requested) > 1e-6) return false
       return progress.current === target()
     },
     progressPair() {

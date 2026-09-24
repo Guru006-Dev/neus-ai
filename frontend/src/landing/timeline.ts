@@ -88,7 +88,7 @@ export const networkIntensity = (p: number): number => localProgress(p, phaseRan
 export const convergeProgress = (p: number): number => localProgress(p, phaseRange('converge'))
 
 /** Stillness first; the CTA fades in over the last 60% of the still phase. */
-export const ctaReveal = (p: number): number => clamp01((localProgress(p, phaseRange('still')) - 0.4) / 0.6)
+export const ctaReveal = (p: number): number => clamp01((localProgress(p, phaseRange('still')) - 0.2) / 0.4)
 
 export interface CameraPose {
   position: Vec3
