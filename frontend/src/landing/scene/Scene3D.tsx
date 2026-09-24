@@ -1,7 +1,8 @@
 import { Canvas, useThree } from '@react-three/fiber'
-import { useEffect, type RefObject } from 'react'
+import { useEffect, useRef, type RefObject } from 'react'
 import type { ScreenFrame } from '../timeline'
 import { CameraRig } from './CameraRig'
+import { Laptop } from './Laptop'
 
 export interface SceneProps {
   progressRef: RefObject<number>
@@ -22,9 +23,12 @@ function InvalidateBridge({ invalidateRef }: Pick<SceneProps, 'invalidateRef'>) 
   return null
 }
 
-export default function Scene3D({ progressRef, invalidateRef }: SceneProps) {
+export default function Scene3D({ progressRef, invalidateRef, frame }: SceneProps) {
+  // Stable mount point for drei <Html>. Its default target (events.connected) changes after the
+  // first mount, which leaves the re-created HTML root empty.
+  const overlayRef = useRef<HTMLDivElement>(null)
   return (
-    <div className="scene" aria-hidden="true">
+    <div ref={overlayRef} className="scene" aria-hidden="true">
       <Canvas
         frameloop="demand"
         flat
@@ -37,6 +41,7 @@ export default function Scene3D({ progressRef, invalidateRef }: SceneProps) {
         <ambientLight intensity={0.35} />
         <directionalLight position={[3, 5, 4]} intensity={1.1} />
         <directionalLight position={[-2, 3, -5]} intensity={1.6} color="#c9d4dc" />
+        <Laptop progressRef={progressRef} frame={frame} portal={overlayRef} />
       </Canvas>
     </div>
   )
