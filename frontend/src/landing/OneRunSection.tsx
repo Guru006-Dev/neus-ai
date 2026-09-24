@@ -55,7 +55,10 @@ export function OneRunSection({ onSceneError }: { onSceneError: () => void }) {
         scrollTrigger: { trigger: sectionRef.current, start: 'top top', end: 'bottom bottom', scrub: 0.6 },
       })
       triggerRef.current = tween.scrollTrigger
-      apply(0)
+      // The page may already be scrolled when 3D mounts (widening past 768px, scroll restoration).
+      const start = tween.scrollTrigger?.progress ?? 0
+      tween.progress(start)
+      apply(start)
     },
     { scope: sectionRef },
   )

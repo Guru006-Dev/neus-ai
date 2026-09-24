@@ -39,3 +39,17 @@ test('crossing 768px switches cleanly between 3D and the fallback', async ({ pag
   await page.setViewportSize({ width: 1280, height: 800 })
   await expect(page.locator('canvas')).toHaveCount(1, { timeout: 30_000 })
 })
+
+test('3D mounting on an already-scrolled page shows the current state, not the start', async ({ page }) => {
+  await page.setViewportSize({ width: 700, height: 800 })
+  await page.goto('/?nexus-debug')
+  await expect(page.locator('.fallback')).toBeVisible()
+  await page.evaluate(() => window.scrollTo(0, 3000))
+  await page.setViewportSize({ width: 1366, height: 800 })
+  await page.waitForFunction(() => !!window.__nexus)
+  await page.waitForFunction(() => {
+    const [scrubbed, exact] = window.__nexus!.progressPair()
+    return exact > 0.1 && scrubbed === exact
+  }, undefined, { timeout: 10_000 })
+  await expect(page.locator('.intro')).toHaveCSS('visibility', 'hidden')
+})

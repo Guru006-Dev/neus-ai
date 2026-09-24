@@ -529,6 +529,13 @@
   margin: 0;
 }
 
+@media (max-width: 1023px) {
+  /* Too narrow for the caption and rail side by side: the caption sits above the rail. */
+  .caption {
+    bottom: 84px;
+  }
+}
+
 @media (max-width: 767px) {
   .nav {
     padding: 16px 20px 0;

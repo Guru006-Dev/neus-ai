@@ -33,6 +33,8 @@ test('captions stay quiet, the canvas is hidden from assistive tech, the rail ma
 })
 
 for (const viewport of [
+  { width: 768, height: 768 },
+  { width: 900, height: 768 },
   { width: 1366, height: 768 },
   { width: 2560, height: 1440 },
 ]) {
