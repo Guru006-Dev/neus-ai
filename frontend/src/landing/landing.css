@@ -1,0 +1,251 @@
+/* NEXUS landing: layout and chrome. Tokens live in src/index.css. */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--nx-radius-pill);
+  font-size: 16px;
+  line-height: 16px;
+  font-weight: 500;
+  letter-spacing: -0.003em;
+  padding: 18px 24px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--nx-text);
+  outline-offset: 3px;
+}
+
+.button--light {
+  background: var(--nx-text);
+  color: var(--nx-bg);
+}
+
+.button--light:hover {
+  background: var(--nx-grey-200);
+  color: var(--nx-grey-500);
+}
+
+.button--dark {
+  background: var(--nx-grey-800);
+  color: var(--nx-text);
+  padding: 16px 32px;
+  font-size: 14px;
+  line-height: 16px;
+}
+
+.button--dark:hover {
+  background: #12191c;
+  color: var(--nx-grey-300);
+}
+
+/* ── Nav ──────────────────────────────────────────── */
+
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  height: 64px;
+  box-sizing: border-box;
+  padding: 16px 32px 0;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
+
+.nav__logo {
+  justify-self: start;
+  color: var(--nx-text);
+}
+
+.nav__logo svg {
+  display: block;
+  width: 116px;
+  height: 29px;
+}
+
+.nav__logo:focus-visible,
+.nav__link:focus-visible,
+.footer__link:focus-visible {
+  outline: 2px solid var(--nx-text);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+.nav__menu {
+  display: flex;
+  gap: 24px;
+  transition: opacity 0.3s, transform 0.5s;
+}
+
+.nav[data-scrolled='true'] .nav__menu {
+  opacity: 0;
+  transform: translateY(-8px);
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s, transform 0.5s, visibility 0s 0.5s;
+}
+
+.nav__link {
+  font-size: 14px;
+  line-height: 18.2px;
+  letter-spacing: -0.003em;
+  color: var(--nx-text);
+  opacity: 0.55;
+  padding: 8px 0;
+  text-decoration: none;
+  transition: opacity 0.3s;
+}
+
+.nav__link:hover {
+  opacity: 1;
+}
+
+.nav__cta {
+  justify-self: end;
+}
+
+/* ── Shared type ──────────────────────────────────── */
+
+.display {
+  font-size: 52px;
+  line-height: 52px;
+  letter-spacing: -0.008em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--nx-text);
+  margin: 0;
+}
+
+.display--small {
+  font-size: 32px;
+  line-height: 35.2px;
+}
+
+.lede {
+  font-size: 18px;
+  line-height: 23.4px;
+  letter-spacing: -0.003em;
+  color: var(--nx-grey-300);
+  max-width: 650px;
+  margin: 0;
+}
+
+/* ── Footer ───────────────────────────────────────── */
+
+.footer {
+  position: relative;
+  z-index: 1;
+  background: var(--nx-bg);
+  padding: 186px 32px 24px;
+}
+
+.footer__top {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.footer__heading {
+  font-size: 52px;
+  line-height: 52px;
+  letter-spacing: -0.008em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--nx-text);
+  max-width: 500px;
+  margin: 0 0 64px;
+}
+
+.footer__cols {
+  display: grid;
+  grid-template-columns: repeat(2, 214.5px);
+  column-gap: 20px;
+}
+
+.footer__col-title {
+  font-size: 14px;
+  line-height: 18.2px;
+  text-transform: uppercase;
+  color: var(--nx-grey-500);
+  margin: 0 0 8px;
+}
+
+.footer__col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.footer__link {
+  display: block;
+  padding: 8px 0;
+  font-size: 14px;
+  line-height: 18.2px;
+  color: var(--nx-grey-300);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer__link:hover {
+  color: var(--nx-grey-500);
+}
+
+.footer__bottom {
+  margin-top: 280px;
+  border-top: 1px solid var(--nx-divider);
+  padding-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer__logo {
+  display: block;
+  width: 80px;
+  height: 20px;
+  color: var(--nx-grey-500);
+}
+
+.footer__legal {
+  font-size: 12px;
+  line-height: 15.6px;
+  color: var(--nx-legal);
+  margin: 0;
+}
+
+@media (max-width: 767px) {
+  .nav {
+    padding: 16px 20px 0;
+  }
+
+  .nav__menu {
+    display: none;
+  }
+
+  .display,
+  .footer__heading {
+    font-size: 36px;
+    line-height: 36px;
+  }
+
+  .footer {
+    padding: 120px 20px 24px;
+  }
+
+  .footer__cols {
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+
+  .footer__bottom {
+    margin-top: 120px;
+  }
+}
