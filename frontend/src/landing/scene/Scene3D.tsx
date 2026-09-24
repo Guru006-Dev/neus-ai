@@ -2,7 +2,9 @@ import { Canvas, useThree } from '@react-three/fiber'
 import { useEffect, useRef, type RefObject } from 'react'
 import type { ScreenFrame } from '../timeline'
 import { CameraRig } from './CameraRig'
+import { AgentNetwork } from './AgentNetwork'
 import { Laptop } from './Laptop'
+import { NexusMark } from './NexusMark'
 
 export interface SceneProps {
   progressRef: RefObject<number>
@@ -42,6 +44,8 @@ export default function Scene3D({ progressRef, invalidateRef, frame }: SceneProp
         <directionalLight position={[3, 5, 4]} intensity={1.1} />
         <directionalLight position={[-2, 3, -5]} intensity={1.6} color="#c9d4dc" />
         <Laptop progressRef={progressRef} frame={frame} portal={overlayRef} />
+        <AgentNetwork progressRef={progressRef} portal={overlayRef} />
+        <NexusMark progressRef={progressRef} />
       </Canvas>
     </div>
   )

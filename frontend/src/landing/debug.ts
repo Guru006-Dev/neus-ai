@@ -28,6 +28,10 @@ export function registerReporter(name: string, fn: Reporter): () => void {
 interface DebugApi {
   scrollToProgress(p: number): void
   snapshot(): unknown
+  /** True once the scrubbed progress has caught up with the scroll position exactly. */
+  settled(): boolean
+  /** [scrubbed progress, exact scroll progress], for diagnosing a settle that never completes. */
+  progressPair(): [number, number]
 }
 
 type DebugWindow = Window & { __nexus?: DebugApi }
@@ -35,9 +39,12 @@ type DebugWindow = Window & { __nexus?: DebugApi }
 export function installDebugHook({
   section,
   progress,
+  target,
 }: {
   section: RefObject<HTMLElement | null>
   progress: RefObject<number>
+  /** The scroll position's exact progress, before scrub smoothing. */
+  target: () => number
 }): (() => void) | undefined {
   if (!debugEnabled()) return undefined
   const api: DebugApi = {
@@ -51,6 +58,14 @@ export function installDebugHook({
     snapshot() {
       const reports = Object.fromEntries([...reporters].map(([name, fn]) => [name, fn()]))
       return roundDeep({ p: progress.current, ...reports })
+    },
+    settled() {
+      // OneRunSection snaps the scrubbed value to the exact scroll progress once it is within GSAP's
+      // rounding, so a settled scene matches the target exactly.
+      return progress.current === target()
+    },
+    progressPair() {
+      return [progress.current, target()]
     },
   }
   ;(window as DebugWindow).__nexus = api

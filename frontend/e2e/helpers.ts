@@ -4,7 +4,7 @@ export type Snapshot = Record<string, unknown> & { p: number }
 
 declare global {
   interface Window {
-    __nexus?: { scrollToProgress(p: number): void; snapshot(): Snapshot }
+    __nexus?: { scrollToProgress(p: number): void; snapshot(): Snapshot; settled(): boolean }
   }
 }
 
@@ -17,8 +17,13 @@ export async function openLanding(page: Page): Promise<void> {
   await page.waitForFunction(() => 'camera' in window.__nexus!.snapshot(), undefined, { timeout: 30_000 })
 }
 
-/** Poll until two consecutive snapshots are identical: the scrub has settled and a frame has rendered. */
+/**
+ * Wait until the scrubbed progress has exactly reached the scroll position, then until two consecutive
+ * snapshots match (a frame has rendered and async DOM has committed). Identical rounded snapshots alone
+ * are not enough: the scrub's ease-out tail moves by less than the snapshot rounding.
+ */
 export async function settle(page: Page): Promise<Snapshot> {
+  await page.waitForFunction(() => window.__nexus!.settled(), undefined, { timeout: 15_000 })
   let previous = ''
   for (let i = 0; i < 80; i++) {
     await page.waitForTimeout(150)

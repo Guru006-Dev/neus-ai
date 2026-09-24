@@ -27,11 +27,16 @@ export function OneRunSection({ onSceneError }: { onSceneError: () => void }) {
   const invalidateRef = useRef<() => void>(() => {})
   const [frame, setFrame] = useState<ScreenFrame>(() => frameAt(0))
   const keyRef = useRef(frameKey(frame))
+  const triggerRef = useRef<ScrollTrigger | undefined>(undefined)
 
   useGSAP(
     () => {
       const proxy = { p: 0 }
-      const apply = (p: number) => {
+      const apply = (scrubbed: number) => {
+        // GSAP rounds tweened values to 1e-6, so the scrub settles a hair above or below the true scroll
+        // progress depending on direction. Snap to the exact value so one scroll position = one state.
+        const exact = triggerRef.current?.progress
+        const p = exact !== undefined && Math.abs(scrubbed - exact) <= 1e-6 ? exact : scrubbed
         progressRef.current = p
         setFade(introRef.current, introVisibility(p))
         setFade(finaleRef.current, ctaReveal(p))
@@ -43,18 +48,27 @@ export function OneRunSection({ onSceneError }: { onSceneError: () => void }) {
         }
         invalidateRef.current()
       }
-      gsap.to(proxy, {
+      const tween = gsap.to(proxy, {
         p: 1,
         ease: 'none',
         onUpdate: () => apply(proxy.p),
         scrollTrigger: { trigger: sectionRef.current, start: 'top top', end: 'bottom bottom', scrub: 0.6 },
       })
+      triggerRef.current = tween.scrollTrigger
       apply(0)
     },
     { scope: sectionRef },
   )
 
-  useEffect(() => installDebugHook({ section: sectionRef, progress: progressRef }), [])
+  useEffect(
+    () =>
+      installDebugHook({
+        section: sectionRef,
+        progress: progressRef,
+        target: () => triggerRef.current?.progress ?? progressRef.current,
+      }),
+    [],
+  )
 
   useEffect(
     () =>

@@ -15,12 +15,12 @@ export const SCREEN_PX_H = 800
 export const SCREEN_DISTANCE_FACTOR = (SCREEN_W * 400) / SCREEN_PX_W
 
 export const TAG_POSITIONS: Tuple3[] = [
-  [-2.2, 1.7, -0.3],
-  [-2.6, 0.8, 0.2],
-  [-2, -0.1, 0.7],
-  [2, -0.1, 0.7],
-  [2.6, 0.8, 0.2],
-  [2.2, 1.7, -0.3],
+  [-2, 1.7, -0.3],
+  [-2.25, 0.8, 0.2],
+  [-1.85, -0.1, 0.7],
+  [1.85, -0.1, 0.7],
+  [2.25, 0.8, 0.2],
+  [2, 1.7, -0.3],
 ]
 
 /** Where each agent's line leaves the screen, as [x, y] in lid-local units. */
@@ -33,9 +33,10 @@ export const LINE_STARTS: readonly (readonly [number, number])[] = [
   [1.2, 1.6],
 ]
 
-export const MARK_CENTER: Tuple3 = [0, 1, 0.45]
-/** World units per unit of the 40×40 brand box (40 → 2.4). */
-export const MARK_SCALE = 0.06
+/** In front of the laptop (base front edge is z ≈ 1.05) so nothing intersects the mark. */
+export const MARK_CENTER: Tuple3 = [0, 1.1, 1.3]
+/** World units per unit of the 40×40 brand box (40 → 1.6): sits over the screen without crowding the frame. */
+export const MARK_SCALE = 0.04
 
 const X_AXIS = new THREE.Vector3(1, 0, 0)
 
