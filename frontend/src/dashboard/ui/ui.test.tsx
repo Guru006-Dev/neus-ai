@@ -1,9 +1,13 @@
+/// <reference types="node" />
 import { renderToStaticMarkup as html } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { STATUS_UI } from './status'
 import { StatusGlyph, StatusPill } from './StatusGlyph'
 import { Tabs } from './Tabs'
-import css from '../dashboard.css?raw'
+import { readFileSync } from 'node:fs'
+
+// vitest blanks CSS imports (even ?raw), so read the stylesheet from disk
+const css = readFileSync(new URL('../dashboard.css', import.meta.url), 'utf8')
 
 describe('status vocabulary', () => {
   it('uses the NEXUS glyphs and labels for every state', () => {
@@ -35,9 +39,11 @@ describe('status vocabulary', () => {
   })
 
   it('pulses the active glyph inside the no-preference motion block', () => {
-    const block = css.match(/@media \(prefers-reduced-motion: no-preference\) \{([\s\S]*?)\}/)
-    expect(block).not.toBeNull()
-    expect(block![1]).toMatch(/\.nx-glyph\[data-tone='active'\]\s*\{[^}]*animation:\s*nx-pulse/)
+    const start = css.indexOf('@media (prefers-reduced-motion: no-preference)')
+    const end = css.indexOf('@keyframes nx-pulse')
+    expect(start).toBeGreaterThan(-1)
+    expect(end).toBeGreaterThan(start)
+    expect(css.slice(start, end)).toMatch(/\.nx-glyph\[data-tone='active'\]\s*\{[^}]*animation:\s*nx-pulse/)
     expect(css).not.toContain("[data-state='running']")
   })
 })
