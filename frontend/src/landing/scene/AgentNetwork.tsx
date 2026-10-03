@@ -8,11 +8,13 @@ import { AGENTS, metricText } from '../nexus-story'
 import {
   agentProgress,
   agentStatus,
-  clamp01,
   connectionProgress,
-  convergeProgress,
+  convergeStages,
   networkIntensity,
+  ringState,
   smoothstep,
+  tagReveal,
+  tagScale,
 } from '../timeline'
 import { LINE_STARTS, TAG_POSITIONS, markPoint, screenPoint } from './constants'
 
@@ -79,6 +81,7 @@ interface TagCache {
   status: string
   metric: string
   fade: string
+  scale: string
 }
 
 export function AgentNetwork({
@@ -92,7 +95,7 @@ export function AgentNetwork({
   const rings = useMemo(() => AGENTS.map((_, i) => makeRing(i)), [])
   const tagRefs = useRef<(HTMLDivElement | null)[]>([])
   const morphCache = useRef(-1)
-  const tagCache = useRef<TagCache[]>(AGENTS.map(() => ({ status: '', metric: '\u0000', fade: '' })))
+  const tagCache = useRef<TagCache[]>(AGENTS.map(() => ({ status: '', metric: '\u0000', fade: '', scale: '' })))
 
   useEffect(
     () => () => {
@@ -110,10 +113,9 @@ export function AgentNetwork({
 
   useFrame((state) => {
     const p = progressRef.current
-    const c = convergeProgress(p)
-    const morph = smoothstep(c)
+    const stages = convergeStages(p)
+    const morph = stages.morph
     const net = networkIntensity(p)
-    const lineFade = 1 - clamp01((c - 0.7) / 0.3)
     const morphChanged = morph !== morphCache.current
     morphCache.current = morph
 
@@ -142,17 +144,18 @@ export function AgentNetwork({
       } else {
         l.material.dashSize = 1000
         l.material.gapSize = 0
-        l.material.opacity = (0.35 + 0.5 * net) * lineFade
+        l.material.opacity = (0.35 + 0.5 * net) * stages.lines
       }
     })
 
-    const ringFade = 1 - smoothstep(clamp01(c / 0.5))
-    for (const ring of rings) {
-      ring.geometry.setDrawRange(0, Math.round(net * RING_POINTS))
-      ;(ring.material as THREE.LineBasicMaterial).opacity = 0.18 * ringFade
-    }
+    rings.forEach((ring, k) => {
+      const { draw, opacity } = ringState(p, k)
+      ring.geometry.setDrawRange(0, Math.round(draw * RING_POINTS))
+      ;(ring.material as THREE.LineBasicMaterial).opacity = opacity
+    })
 
-    const tagFade = (1 - smoothstep(clamp01(c / 0.6))).toFixed(3)
+    const tagsOut = 1 - smoothstep(stages.tags)
+    const scale = tagScale(p, state.size.width / Math.max(1, state.size.height)).toFixed(3)
     let missing = false
     AGENTS.forEach((agent, i) => {
       const wrap = tagRefs.current[i]
@@ -172,9 +175,15 @@ export function AgentNetwork({
         ;(tag.lastElementChild as HTMLElement).textContent = metric
         cache.metric = metric
       }
-      if (tagFade !== cache.fade) {
-        wrap.style.opacity = tagFade
-        cache.fade = tagFade
+      const fade = (tagReveal(p, i) * tagsOut).toFixed(3)
+      if (fade !== cache.fade) {
+        wrap.style.opacity = fade
+        wrap.style.visibility = fade === '0.000' ? 'hidden' : 'visible'
+        cache.fade = fade
+      }
+      if (scale !== cache.scale) {
+        wrap.style.transform = `scale(${scale})`
+        cache.scale = scale
       }
     })
     if (missing) state.invalidate() // Html portals mount asynchronously; render again once they exist
@@ -189,6 +198,8 @@ export function AgentNetwork({
         draws: lines.map((l) => l.line.geometry.drawRange.count),
         lineOpacity: lines.map((l) => l.material.opacity),
         rings: rings.map((r) => r.geometry.drawRange.count),
+        ringOpacity: rings.map((r) => (r.material as THREE.LineBasicMaterial).opacity),
+        tagScale: tagRefs.current.map((w) => w?.style.transform ?? null),
       })),
     [lines, rings],
   )

@@ -9,7 +9,7 @@ export function KnowledgeView({ progress }: ViewProps) {
   return (
     <>
       <ScreenBar title="Knowledge" meta={`${RUN_ID} · mapping`} />
-      <svg className="graph" viewBox="0 0 280 140" aria-hidden="true">
+      <svg className="graph" viewBox="24 8 266 128" aria-hidden="true">
         {edges.slice(0, shownEdges).map(([a, b]) =>
           a < shownNodes && b < shownNodes ? (
             <line key={`${a}-${b}`} x1={nodes[a].x} y1={nodes[a].y} x2={nodes[b].x} y2={nodes[b].y} />
@@ -17,7 +17,7 @@ export function KnowledgeView({ progress }: ViewProps) {
         )}
         {nodes.slice(0, shownNodes).map((node) => (
           <g key={node.id}>
-            <circle cx={node.x} cy={node.y} r={3.5} />
+            <circle cx={node.x} cy={node.y} r={4} />
             <text x={node.x + 6} y={node.y + 2.5}>
               {node.label}
             </text>

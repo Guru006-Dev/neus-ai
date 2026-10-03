@@ -1,6 +1,7 @@
-import { Canvas, useThree } from '@react-three/fiber'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useRef, type RefObject } from 'react'
-import type { ScreenFrame } from '../timeline'
+import type * as THREE from 'three'
+import { convergeStages, lidOpen, type ScreenFrame } from '../timeline'
 import { CameraRig } from './CameraRig'
 import { AgentNetwork } from './AgentNetwork'
 import { Laptop } from './Laptop'
@@ -25,6 +26,32 @@ function InvalidateBridge({ invalidateRef }: Pick<SceneProps, 'invalidateRef'>) 
   return null
 }
 
+const LIGHTS = { ambient: 0.35, key: 1.1, back: 1.6, rim: 1.4 }
+
+/** Lights dim as the network converges so the N becomes the only subject; a rim light catches the closed lid. */
+function SceneLights({ progressRef }: Pick<SceneProps, 'progressRef'>) {
+  const ambient = useRef<THREE.AmbientLight>(null)
+  const key = useRef<THREE.DirectionalLight>(null)
+  const back = useRef<THREE.DirectionalLight>(null)
+  const rim = useRef<THREE.DirectionalLight>(null)
+  useFrame(() => {
+    const p = progressRef.current
+    const dim = convergeStages(p).laptop
+    if (ambient.current) ambient.current.intensity = LIGHTS.ambient * dim
+    if (key.current) key.current.intensity = LIGHTS.key * dim
+    if (back.current) back.current.intensity = LIGHTS.back * dim
+    if (rim.current) rim.current.intensity = LIGHTS.rim * (1 - lidOpen(p))
+  })
+  return (
+    <>
+      <ambientLight ref={ambient} intensity={LIGHTS.ambient} />
+      <directionalLight ref={key} position={[3, 5, 4]} intensity={LIGHTS.key} />
+      <directionalLight ref={back} position={[-2, 3, -5]} intensity={LIGHTS.back} color="#c9d4dc" />
+      <directionalLight ref={rim} position={[0, 1.2, -6]} intensity={LIGHTS.rim} color="#dfe6ea" />
+    </>
+  )
+}
+
 export default function Scene3D({ progressRef, invalidateRef, frame }: SceneProps) {
   // Stable mount point for drei <Html>. Its default target (events.connected) changes after the
   // first mount, which leaves the re-created HTML root empty.
@@ -40,9 +67,7 @@ export default function Scene3D({ progressRef, invalidateRef, frame }: SceneProp
       >
         <InvalidateBridge invalidateRef={invalidateRef} />
         <CameraRig progressRef={progressRef} />
-        <ambientLight intensity={0.35} />
-        <directionalLight position={[3, 5, 4]} intensity={1.1} />
-        <directionalLight position={[-2, 3, -5]} intensity={1.6} color="#c9d4dc" />
+        <SceneLights progressRef={progressRef} />
         <Laptop progressRef={progressRef} frame={frame} portal={overlayRef} />
         <AgentNetwork progressRef={progressRef} portal={overlayRef} />
         <NexusMark progressRef={progressRef} />

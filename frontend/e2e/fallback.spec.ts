@@ -27,7 +27,7 @@ test.describe('mobile', () => {
   })
 })
 
-test('crossing 768px switches cleanly between 3D and the fallback', async ({ page }) => {
+test('crossing the 3D threshold switches cleanly between 3D and the fallback', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 })
   await page.goto('/')
   await expect(page.locator('canvas')).toHaveCount(1, { timeout: 30_000 })

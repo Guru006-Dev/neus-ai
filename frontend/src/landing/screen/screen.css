@@ -90,7 +90,7 @@
 }
 
 .rows__meta {
-  font-size: 0.75em;
+  font-size: 0.8em;
   color: var(--nx-grey-400);
   font-variant-numeric: tabular-nums;
 }
@@ -170,14 +170,14 @@
 }
 
 .graph line {
-  stroke: var(--nx-grey-500);
-  stroke-width: 0.6;
+  stroke: var(--nx-grey-400);
+  stroke-width: 0.9;
 }
 
 .graph text {
   font-family: var(--nx-font-sans);
-  font-size: 7px;
-  fill: var(--nx-grey-400);
+  font-size: 8px;
+  fill: var(--nx-grey-300);
 }
 
 .doc {
@@ -213,33 +213,94 @@
   background: var(--nx-grey-800);
 }
 
-.preview {
+.compare {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9em;
+  padding-top: 0.4em;
+}
+
+.compare__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.9fr) repeat(3, minmax(0, 1fr));
+  align-items: center;
+  gap: 1em;
+}
+
+.compare__head {
+  font-size: 0.75em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--nx-grey-400);
+}
+
+.compare__label {
+  color: var(--nx-grey-300);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.compare__row[data-shown='false'] .compare__label {
+  color: var(--nx-grey-500);
+}
+
+.compare__cell {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  color: var(--nx-grey-400);
+  font-variant-numeric: tabular-nums;
+}
+
+.compare__bar {
   flex: 1;
-  min-height: 0;
+  height: 0.45em;
+  border-radius: var(--nx-radius-pill);
+  background: var(--nx-grey-800);
+  overflow: hidden;
+}
+
+.compare__fill {
+  display: block;
+  height: 100%;
+  background: var(--nx-grey-500);
+}
+
+.compare__value {
+  width: 1.2em;
+  text-align: right;
+}
+
+.compare__cell[data-winner='true'] {
+  color: var(--nx-text);
+}
+
+.compare__cell[data-winner='true'] .compare__fill {
+  background: var(--nx-text);
+}
+
+/* Narrow screens (the phone fallback): each metric's label sits above its three bars. */
+@container (max-width: 480px) {
+  .compare__row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 0.3em;
+  }
+
+  .compare__label {
+    grid-column: 1 / -1;
+  }
+
+  .compare__head span:first-child {
+    display: none;
+  }
+}
+
+.preview__foot {
+  margin-top: auto;
   display: flex;
   flex-direction: column;
   gap: 0.6em;
-}
-
-.preview__stage {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--nx-grey-800);
-  border-radius: 0.5em;
-}
-
-.preview__stage svg {
-  height: 100%;
-  width: auto;
-}
-
-.wire line {
-  stroke: var(--nx-text);
-  stroke-width: 1.2;
-  stroke-linecap: round;
 }
 
 .artifact {
@@ -271,4 +332,15 @@
 .bar__fill {
   height: 100%;
   background: var(--nx-text);
+}
+
+/* Crossfade between views: --mix (0 → 1) is written from scroll progress, so it stays deterministic. */
+.screen[data-role='out'] {
+  opacity: calc(1 - var(--mix, 1));
+  transform: translateY(calc(var(--mix, 1) * -0.25em));
+}
+
+.screen[data-role='in'] {
+  opacity: var(--mix, 1);
+  transform: translateY(calc((1 - var(--mix, 1)) * 0.25em));
 }

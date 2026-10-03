@@ -22,12 +22,31 @@ const VIEWS: Record<ScreenView, ComponentType<ViewProps>> = {
   release: ReleaseView,
 }
 
-/** Renders the single active view; nothing else is mounted. */
-export function ScreenContent({ view, progress }: { view: ScreenView; progress: number }) {
+/**
+ * Renders the active view. During a crossfade the outgoing view (in its finished state) is mounted
+ * behind it; the mix itself is a CSS variable set from scroll progress, not React state.
+ */
+export function ScreenContent({
+  view,
+  progress,
+  outgoing = null,
+}: {
+  view: ScreenView
+  progress: number
+  outgoing?: ScreenView | null
+}) {
   const View = VIEWS[view]
+  const Out = outgoing ? VIEWS[outgoing] : null
   return (
-    <div className="screen" data-screen={view}>
-      <View progress={progress} />
-    </div>
+    <>
+      {Out && (
+        <div className="screen" data-screen={outgoing} data-role="out">
+          <Out progress={1} />
+        </div>
+      )}
+      <div className="screen" data-screen={view} data-role={Out ? 'in' : undefined}>
+        <View progress={progress} />
+      </div>
+    </>
   )
 }

@@ -265,6 +265,8 @@
   bottom: 40px;
   z-index: 20;
   max-width: 420px;
+  /* The prompt close-up puts the keyboard behind the caption; a halo in the page colour keeps it legible. */
+  text-shadow: 0 0 4px var(--nx-bg), 0 0 18px var(--nx-bg);
   margin: 0;
   display: flex;
   flex-direction: column;
@@ -335,6 +337,28 @@
 
 .rail__item[data-status='done'] .rail__dot {
   background: var(--nx-grey-300);
+}
+
+/* Dots only; the active step shows its name under its dot. Every name stays in the accessibility tree. */
+.rail__item {
+  position: relative;
+}
+
+.rail__item:not([data-status='active']) .rail__name {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.rail__item[data-status='active'] .rail__name {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
 }
 
 /* ── 2D fallback ──────────────────────────────────── */
@@ -440,7 +464,28 @@
 
   .fallback .screen-frame {
     --screen-cols: 26;
-    aspect-ratio: 3 / 4;
+  }
+}
+
+/* The fallback screen keeps the laptop's 16:10 shape as a minimum and grows with its content. */
+.fallback .screen-frame {
+  aspect-ratio: auto;
+}
+
+.fallback .screen {
+  position: relative;
+  inset: auto;
+  min-height: 62.5cqw;
+}
+
+/* Alternate the caption side so the sequence has a rhythm rather than a repeated card. */
+@media (min-width: 768px) {
+  .fallback__step:nth-child(even):not(.fallback__finale) {
+    grid-template-columns: minmax(0, 720px) minmax(0, 360px);
+  }
+
+  .fallback__step:nth-child(even) .fallback__copy {
+    order: 2;
   }
 }
 

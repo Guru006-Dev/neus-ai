@@ -1,40 +1,41 @@
 import { DEMO, RUN_ID } from '../nexus-story'
-import type { Vec3 } from '../timeline'
 import { ScreenBar } from './ScreenBar'
-import { pct, type ViewProps } from './util'
+import { clamp01, pct, visibleCount, type ViewProps } from './util'
 
-const VERTICES: readonly Vec3[] = [
-  [-1, -1, -1], [1, -1, -1], [1, 1, -1], [-1, 1, -1],
-  [-1, -1, 1], [1, -1, 1], [1, 1, 1], [-1, 1, 1],
-]
-const EDGES: readonly (readonly [number, number])[] = [
-  [0, 1], [1, 2], [2, 3], [3, 0], [4, 5], [5, 6], [6, 7], [7, 4], [0, 4], [1, 5], [2, 6], [3, 7],
-]
-const TILT = 0.45
-
-function project([x, y, z]: Vec3, angle: number): [string, string] {
-  const rx = x * Math.cos(angle) + z * Math.sin(angle)
-  const rz = -x * Math.sin(angle) + z * Math.cos(angle)
-  const ry = y * Math.cos(TILT) - rz * Math.sin(TILT)
-  const depth = y * Math.sin(TILT) + rz * Math.cos(TILT)
-  const s = 110 / (4 + depth)
-  return [(100 + rx * s).toFixed(2), (60 - ry * s).toFixed(2)]
-}
-
+/** The Demo agent's output: a compact comparison of the three apps, built row by row. */
 export function DemoView({ progress }: ViewProps) {
-  const points = VERTICES.map((v) => project(v, progress * Math.PI * 1.5))
+  const rows = visibleCount(clamp01(progress / 0.8), DEMO.metrics.length)
   const ready = progress >= 1
   return (
     <>
       <ScreenBar title="Demo" meta={`${RUN_ID} · ${ready ? 'ready' : 'rendering'}`} />
-      <div className="preview">
-        <div className="preview__stage">
-          <svg className="wire" viewBox="0 0 200 120" aria-hidden="true">
-            {EDGES.map(([a, b]) => (
-              <line key={`${a}-${b}`} x1={points[a][0]} y1={points[a][1]} x2={points[b][0]} y2={points[b][1]} />
-            ))}
-          </svg>
+      <div className="compare">
+        <div className="compare__row compare__head">
+          <span />
+          {DEMO.apps.map((app) => (
+            <span key={app}>{app}</span>
+          ))}
         </div>
+        {DEMO.metrics.map((metric, r) => {
+          const shown = r < rows
+          const best = Math.min(...metric.values)
+          const max = Math.max(...metric.values)
+          return (
+            <div key={metric.label} className="compare__row" data-shown={shown}>
+              <span className="compare__label">{metric.label}</span>
+              {metric.values.map((value, a) => (
+                <span key={DEMO.apps[a]} className="compare__cell" data-winner={shown && value === best}>
+                  <span className="compare__bar">
+                    <span className="compare__fill" style={{ width: shown ? pct(value / max) : '0%' }} />
+                  </span>
+                  <span className="compare__value">{shown ? value : ''}</span>
+                </span>
+              ))}
+            </div>
+          )
+        })}
+      </div>
+      <div className="preview__foot">
         <div className="artifact__row">
           <span>{DEMO.title}</span>
           <span className="muted">{ready ? DEMO.done : DEMO.pending}</span>

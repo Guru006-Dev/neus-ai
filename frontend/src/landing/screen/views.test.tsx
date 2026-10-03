@@ -57,4 +57,23 @@ describe('screen views', () => {
     expect(html).toContain('data-ready="true"')
     expect(html).toContain('nexus-run-0142.zip')
   })
+
+  it('orchestrator assigns agents only after it has planned', () => {
+    expect(render('orchestrator', 0.25)).not.toContain('assigned')
+    expect(render('orchestrator', 1).match(/>assigned</g)).toHaveLength(6)
+  })
+
+  it('demo shows the three-app comparison instead of a generic shape', () => {
+    const html = render('demo', 1)
+    for (const app of ['Inkwell', 'Noteloom', 'Quillbase']) expect(html).toContain(app)
+    expect(html).not.toContain('class="wire"')
+    expect(html).toContain('data-winner="true"')
+  })
+
+  it('a crossfade mounts the outgoing view behind the incoming one', () => {
+    const html = renderToStaticMarkup(<ScreenContent view="knowledge" progress={0} outgoing="explorer" />)
+    expect(html.match(/data-screen=/g)).toHaveLength(2)
+    expect(html).toContain('data-role="out"')
+    expect(render('knowledge', 0).match(/data-screen=/g)).toHaveLength(1)
+  })
 })

@@ -7,7 +7,7 @@ import { installDebugHook, registerReporter } from './debug'
 import { CTA, FINALE, INTRO } from './nexus-story'
 import { ProgressRail } from './ProgressRail'
 import { SceneBoundary } from './SceneBoundary'
-import { ctaReveal, frameAt, frameKey, introVisibility, type ScreenFrame } from './timeline'
+import { ctaReveal, frameAt, frameKey, hudFade, introVisibility, type ScreenFrame } from './timeline'
 
 gsap.registerPlugin(ScrollTrigger, useGSAP)
 
@@ -23,6 +23,7 @@ export function OneRunSection({ onSceneError }: { onSceneError: () => void }) {
   const sectionRef = useRef<HTMLElement>(null)
   const introRef = useRef<HTMLDivElement>(null)
   const finaleRef = useRef<HTMLDivElement>(null)
+  const hudRef = useRef<HTMLDivElement>(null)
   const progressRef = useRef(0)
   const invalidateRef = useRef<() => void>(() => {})
   const [frame, setFrame] = useState<ScreenFrame>(() => frameAt(0))
@@ -40,6 +41,7 @@ export function OneRunSection({ onSceneError }: { onSceneError: () => void }) {
         progressRef.current = p
         setFade(introRef.current, introVisibility(p))
         setFade(finaleRef.current, ctaReveal(p))
+        setFade(hudRef.current, hudFade(p))
         const next = frameAt(p)
         const key = frameKey(next)
         if (key !== keyRef.current) {
@@ -83,6 +85,7 @@ export function OneRunSection({ onSceneError }: { onSceneError: () => void }) {
         screen: document.querySelector('.one-run .screen')?.outerHTML ?? '',
         intro: introRef.current?.style.opacity ?? null,
         finale: finaleRef.current?.style.opacity ?? null,
+        hud: hudRef.current?.style.opacity ?? null,
       })),
     [],
   )
@@ -110,8 +113,10 @@ export function OneRunSection({ onSceneError }: { onSceneError: () => void }) {
           </a>
         </div>
 
-        <Caption frame={frame} />
-        <ProgressRail statuses={frame.statuses} />
+        <div ref={hudRef} className="hud">
+          <Caption frame={frame} />
+          <ProgressRail statuses={frame.statuses} />
+        </div>
 
         <div ref={finaleRef} className="finale">
           <p className="display display--small">{FINALE.title}</p>

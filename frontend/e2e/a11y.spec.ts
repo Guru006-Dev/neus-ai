@@ -33,8 +33,21 @@ test('captions stay quiet, the canvas is hidden from assistive tech, the rail ma
 })
 
 for (const viewport of [
-  { width: 768, height: 768 },
+  { width: 768, height: 1024 },
   { width: 900, height: 768 },
+]) {
+  test(`${viewport.width}×${viewport.height} tells the story in 2D with no overflow`, async ({ page }) => {
+    await page.setViewportSize(viewport)
+    await page.goto('/')
+    await expect(page.locator('.fallback')).toBeVisible()
+    await expect(page.locator('canvas')).toHaveCount(0)
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)
+    expect(overflow).toBeLessThanOrEqual(0)
+  })
+}
+
+for (const viewport of [
+  { width: 1024, height: 768 },
   { width: 1366, height: 768 },
   { width: 2560, height: 1440 },
 ]) {

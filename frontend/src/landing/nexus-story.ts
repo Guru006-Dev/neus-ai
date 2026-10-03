@@ -200,6 +200,13 @@ export const QA = {
 
 export const DEMO = {
   title: 'Onboarding comparison',
+  apps: ['Inkwell', 'Noteloom', 'Quillbase'],
+  /** Lower is better on every row; the best value in each row is highlighted. */
+  metrics: [
+    { label: 'Steps to first note', values: [4, 7, 3] },
+    { label: 'Onboarding screens', values: [5, 8, 4] },
+    { label: 'Minutes to value', values: [2, 6, 3] },
+  ],
   pending: 'Rendering interactive preview',
   done: 'Preview ready',
 } as const

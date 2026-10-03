@@ -4,7 +4,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, type RefObject } from 'rea
 import * as THREE from 'three'
 import { registerReporter } from '../debug'
 import { ScreenContent } from '../screen/ScreenContent'
-import { clamp01, convergeProgress, lidOpen, screenOn, smoothstep, type ScreenFrame } from '../timeline'
+import { convergeStages, lidOpen, screenMix, screenOn, smoothstep, type ScreenFrame } from '../timeline'
 import {
   LID_CLOSED,
   LID_OPEN,
@@ -59,6 +59,7 @@ export function Laptop({
   const glow = useRef<THREE.PointLight>(null)
   const screenWrap = useRef<HTMLDivElement>(null)
   const lastOpacity = useRef('')
+  const lastMix = useRef('')
 
   const mats = useMemo(
     () => ({
@@ -74,12 +75,12 @@ export function Laptop({
   useFrame((state) => {
     const p = progressRef.current
     if (lid.current) lid.current.rotation.x = THREE.MathUtils.lerp(LID_CLOSED, LID_OPEN, smoothstep(lidOpen(p)))
-    const c = convergeProgress(p)
-    const on = screenOn(p) * (1 - 0.7 * c)
+    const stages = convergeStages(p)
+    const on = screenOn(p) * stages.screen
     if (glow.current) glow.current.intensity = 1.4 * on
     mats.screen.color.lerpColors(SCREEN_OFF, SCREEN_ON, on)
-    // The screen HTML is a DOM layer above the canvas; it must be fully gone before the N draws over it.
-    const content = screenOn(p) * (1 - smoothstep(clamp01(c / 0.5)))
+    // The screen HTML is a DOM layer above the canvas; it is gone before the lines start forming the N.
+    const content = screenOn(p) * (1 - smoothstep(stages.tags))
     const wrap = screenWrap.current
     if (!wrap) {
       state.invalidate() // the Html portal mounts asynchronously; render again once it exists
@@ -90,6 +91,11 @@ export function Laptop({
       wrap.style.opacity = opacity
       lastOpacity.current = opacity
     }
+    const mix = screenMix(p).toFixed(3)
+    if (mix !== lastMix.current) {
+      wrap.style.setProperty('--mix', mix)
+      lastMix.current = mix
+    }
   })
 
   useEffect(
@@ -98,6 +104,7 @@ export function Laptop({
         lid: lid.current?.rotation.x ?? null,
         glow: glow.current?.intensity ?? null,
         screen: screenWrap.current?.style.opacity ?? null,
+        mix: screenWrap.current?.style.getPropertyValue('--mix') ?? null,
       })),
     [],
   )
@@ -127,7 +134,7 @@ export function Laptop({
           style={{ width: SCREEN_PX_W, height: SCREEN_PX_H, pointerEvents: 'none' }}
         >
           <div ref={screenWrap} className="screen-frame" style={{ width: SCREEN_PX_W, height: SCREEN_PX_H, opacity: 0 }}>
-            <ScreenContent view={frame.view} progress={frame.progress} />
+            <ScreenContent view={frame.view} progress={frame.progress} outgoing={frame.outgoing} />
           </div>
         </Html>
       </group>

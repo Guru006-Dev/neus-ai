@@ -1,5 +1,5 @@
 import { NexusLogo } from './NexusLogo'
-import { CTA, FOOTER } from './nexus-story'
+import { FOOTER } from './nexus-story'
 
 export function Footer() {
   return (
@@ -7,9 +7,6 @@ export function Footer() {
       <div className="footer__top">
         <div className="footer__lead">
           <h2 className="footer__heading">{FOOTER.heading}</h2>
-          <a className="button button--light" href={CTA.href}>
-            {CTA.label}
-          </a>
         </div>
         <div className="footer__cols">
           {FOOTER.columns.map((col) => (

@@ -1,11 +1,12 @@
 import { AGENTS, GOAL, RUN_ID } from '../nexus-story'
 import { ScreenBar } from './ScreenBar'
-import { GLYPH, visibleCount, type ViewProps } from './util'
+import { assignedCount } from '../timeline'
+import { GLYPH, type ViewProps } from './util'
 
 const CALL_GOAL = `"${GOAL.slice(0, 36)}…"`
 
 export function OrchestratorView({ progress }: ViewProps) {
-  const assigned = visibleCount(progress, AGENTS.length)
+  const assigned = assignedCount(progress)
   const ready = assigned === AGENTS.length
   return (
     <>
