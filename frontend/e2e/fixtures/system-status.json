@@ -1,0 +1,63 @@
+{
+  "jobs_summary": {
+    "workflows": {
+      "running": 0,
+      "queued": 0,
+      "completed": 0,
+      "failed": 0,
+      "total": 0
+    },
+    "tasks": {
+      "running": 0,
+      "queued": 0,
+      "total": 0
+    }
+  },
+  "concurrency": {
+    "explorer": {
+      "active": 0,
+      "limit": 5,
+      "available": 5
+    },
+    "knowledge_graph": {
+      "active": 0,
+      "limit": 10,
+      "available": 10
+    },
+    "documentation": {
+      "active": 0,
+      "limit": 10,
+      "available": 10
+    },
+    "qa": {
+      "active": 0,
+      "limit": 4,
+      "available": 4
+    },
+    "demo": {
+      "active": 0,
+      "limit": 2,
+      "available": 2
+    },
+    "release": {
+      "active": 0,
+      "limit": 5,
+      "available": 5
+    }
+  },
+  "queues": {
+    "workflows": 0,
+    "agent_explorer": 0,
+    "agent_knowledge_graph": 0,
+    "agent_documentation": 0,
+    "agent_qa": 0,
+    "agent_demo": 0,
+    "agent_release": 0
+  },
+  "resources": {
+    "cpu_percent": 9.7,
+    "memory_percent": 81.5,
+    "available_memory_mb": 2983.2421875,
+    "is_overloaded": false
+  }
+}

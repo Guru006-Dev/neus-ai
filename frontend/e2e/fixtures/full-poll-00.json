@@ -1,0 +1,9 @@
+{
+  "workflow_id": "wf-d60283bf",
+  "user_id": "dashboard",
+  "goal": "Analyze the onboarding flows of three note-taking apps and compare them",
+  "status": "RUNNING",
+  "priority": 1,
+  "context": {},
+  "tasks": []
+}
