@@ -49,6 +49,39 @@ describe('apiFetch', () => {
     expect((f.mock.calls[0][1] as RequestInit).signal!.aborted).toBe(true)
     expect(await p).toBe('unreachable')
   })
+  it('a pre-aborted signal is aborted without calling fetch', async () => {
+    const f = vi.fn()
+    vi.stubGlobal('fetch', f)
+    const c = new AbortController()
+    c.abort()
+    expect(await kind(apiFetch('/a', { signal: c.signal }))).toBe('aborted')
+    expect(f).not.toHaveBeenCalled()
+  })
+  it('an abort while the body is being read is aborted, not bad-response', async () => {
+    const c = new AbortController()
+    const res = { ok: true, status: 200, json: () => new Promise((_r, rej) => c.signal.addEventListener('abort', () => rej(new DOMException('a', 'AbortError')))) }
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(res))
+    const p = kind(apiFetch('/a', { signal: c.signal }))
+    await Promise.resolve()
+    c.abort()
+    expect(await p).toBe('aborted')
+  })
+  it('removes the abort listener after a successful call', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(json({})))
+    const c = new AbortController()
+    const spy = vi.spyOn(c.signal, 'removeEventListener')
+    await apiFetch('/a', { signal: c.signal })
+    expect(spy).toHaveBeenCalledWith('abort', expect.any(Function))
+  })
+  it('a body that stalls past 10 s is unreachable', async () => {
+    vi.useFakeTimers()
+    let sig: AbortSignal
+    const res = { ok: true, status: 200, json: () => new Promise((_r, rej) => sig.addEventListener('abort', () => rej(new DOMException('a', 'AbortError')))) }
+    vi.stubGlobal('fetch', vi.fn((_u: string, init: RequestInit) => { sig = init.signal!; return Promise.resolve(res) }))
+    const p = kind(apiFetch('/a'))
+    await vi.advanceTimersByTimeAsync(10_000)
+    expect(await p).toBe('unreachable')
+  })
   it('prefixes VITE_API_BASE when set', async () => {
     vi.stubEnv('VITE_API_BASE', 'http://x:9/')
     vi.resetModules()

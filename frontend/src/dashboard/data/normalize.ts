@@ -56,7 +56,7 @@ function summarize(out: AgentOutput | undefined): string | null {
   }
 }
 
-export function normalizeRun(raw: unknown): Run {
+export function normalizeRun(raw: unknown, now: number = Date.now()): Run {
   const r = raw as RawRun
   const status = normalizeStatus(r.status)
   const live = isRawRunLive(raw)
@@ -73,7 +73,6 @@ export function normalizeRun(raw: unknown): Run {
     byAgent.set(id, [...(byAgent.get(id) ?? []), t])
     if (!outputs[id]) { const o = normalizeOutput(id, obj(t.output_data)?.[AGENT_CONTEXT_KEY[id]]); if (o) outputs[id] = o }
   }
-  const now = Date.now()
   const agents: AgentRun[] = AGENT_ORDER.map((id) => {
     const tasks = (byAgent.get(id) ?? []).slice().sort((a, b) => (parseBackendTime(a.created_at)?.getTime() ?? 0) - (parseBackendTime(b.created_at)?.getTime() ?? 0))
     const t = tasks[tasks.length - 1]

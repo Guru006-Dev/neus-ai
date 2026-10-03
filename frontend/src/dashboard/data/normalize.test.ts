@@ -26,7 +26,23 @@ describe('normalizeRun', () => {
   })
   it('the first poll has no running agent invented', () => {
     const first = normalizeRun(polls[0])
-    expect(first.agents.filter((a) => a.state === 'running').length).toBeLessThanOrEqual(1)
+    expect(first.agents.filter((a) => a.state === 'running').length).toBe(0)
+    expect(first.agents.every((a) => a.state === 'not-started')).toBe(true)
+  })
+  it('a mid-run QA poll with a fixed clock shows qa running with deterministic elapsed', () => {
+    const poll = qaPolls[3] as { tasks: { agent_name: string; created_at: string }[] }
+    const created = parseBackendTime(poll.tasks.find((t) => t.agent_name === 'qa')!.created_at)!.getTime()
+    const now = created + 7_000
+    const run = normalizeRun(poll, now)
+    const state = (id: string) => run.agents.find((a) => a.id === id)!.state
+    expect(run.status).toBe('running')
+    expect(state('qa')).toBe('running')
+    expect(run.activeAgent).toBe('qa')
+    expect(state('explorer')).toBe('completed')
+    expect(state('knowledge')).toBe('completed')
+    for (const id of ['documentation', 'demo', 'release']) expect(state(id)).toBe('not-started')
+    expect(run.agents.find((a) => a.id === 'qa')!.elapsedMs).toBe(7_000)
+    expect(run.elapsedMs).toBe(7_000)
   })
   it('a finished QA-flow run marks agents without tasks as not in this run', () => {
     const run = normalizeRun(qaLast)
