@@ -1,5 +1,5 @@
-import { LandingPage } from './landing/LandingPage'
+import { AppRouter } from './router'
 
 export default function App() {
-  return <LandingPage />
+  return <AppRouter />
 }
