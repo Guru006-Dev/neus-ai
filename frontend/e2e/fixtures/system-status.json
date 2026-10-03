@@ -55,9 +55,9 @@
     "agent_release": 0
   },
   "resources": {
-    "cpu_percent": 9.7,
-    "memory_percent": 81.5,
-    "available_memory_mb": 2983.2421875,
+    "cpu_percent": 10.6,
+    "memory_percent": 82.7,
+    "available_memory_mb": 2776.8359375,
     "is_overloaded": false
   }
 }

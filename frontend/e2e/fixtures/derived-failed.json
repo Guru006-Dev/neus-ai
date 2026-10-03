@@ -1,5 +1,5 @@
 {
-  "workflow_id": "wf-d60283bf",
+  "workflow_id": "wf-284658cf",
   "user_id": "dashboard",
   "goal": "Analyze the onboarding flows of three note-taking apps and compare them",
   "status": "FAILED",
@@ -224,8 +224,8 @@
   },
   "tasks": [
     {
-      "task_id": "task-2887a31d",
-      "workflow_id": "wf-d60283bf",
+      "task_id": "task-9ac4346b",
+      "workflow_id": "wf-284658cf",
       "agent_name": "explorer",
       "status": "COMPLETED",
       "priority": 1,
@@ -268,12 +268,12 @@
       },
       "error_msg": null,
       "retry_count": 0,
-      "created_at": "2026-10-03 16:04:10",
-      "updated_at": "2026-10-03 16:04:10"
+      "created_at": "2026-10-03 16:11:08",
+      "updated_at": "2026-10-03 16:11:08"
     },
     {
-      "task_id": "task-9f4e9e8f",
-      "workflow_id": "wf-d60283bf",
+      "task_id": "task-2608b5af",
+      "workflow_id": "wf-284658cf",
       "agent_name": "knowledge_graph",
       "status": "COMPLETED",
       "priority": 1,
@@ -439,12 +439,12 @@
       },
       "error_msg": null,
       "retry_count": 0,
-      "created_at": "2026-10-03 16:04:10",
-      "updated_at": "2026-10-03 16:04:10"
+      "created_at": "2026-10-03 16:11:08",
+      "updated_at": "2026-10-03 16:11:08"
     },
     {
-      "task_id": "task-ffe05b06",
-      "workflow_id": "wf-d60283bf",
+      "task_id": "task-89dbe3c8",
+      "workflow_id": "wf-284658cf",
       "agent_name": "documentation",
       "status": "COMPLETED",
       "priority": 1,
@@ -611,12 +611,12 @@
       },
       "error_msg": null,
       "retry_count": 0,
-      "created_at": "2026-10-03 16:04:10",
-      "updated_at": "2026-10-03 16:04:10"
+      "created_at": "2026-10-03 16:11:09",
+      "updated_at": "2026-10-03 16:11:09"
     },
     {
-      "task_id": "task-93016928",
-      "workflow_id": "wf-d60283bf",
+      "task_id": "task-3bb3dce4",
+      "workflow_id": "wf-284658cf",
       "agent_name": "qa",
       "status": "FAILED",
       "priority": 1,
@@ -821,12 +821,12 @@
       },
       "error_msg": "Derived failure message (not produced by the backend)",
       "retry_count": 0,
-      "created_at": "2026-10-03 16:04:10",
-      "updated_at": "2026-10-03 16:04:10"
+      "created_at": "2026-10-03 16:11:09",
+      "updated_at": "2026-10-03 16:11:09"
     },
     {
-      "task_id": "task-3cf419fa",
-      "workflow_id": "wf-d60283bf",
+      "task_id": "task-96012d11",
+      "workflow_id": "wf-284658cf",
       "agent_name": "demo",
       "status": "COMPLETED",
       "priority": 1,
@@ -1039,12 +1039,12 @@
       },
       "error_msg": null,
       "retry_count": 0,
-      "created_at": "2026-10-03 16:04:10",
-      "updated_at": "2026-10-03 16:04:10"
+      "created_at": "2026-10-03 16:11:09",
+      "updated_at": "2026-10-03 16:11:09"
     },
     {
-      "task_id": "task-806089ae",
-      "workflow_id": "wf-d60283bf",
+      "task_id": "task-31f0359f",
+      "workflow_id": "wf-284658cf",
       "agent_name": "release",
       "status": "COMPLETED",
       "priority": 1,
@@ -1273,8 +1273,8 @@
       },
       "error_msg": null,
       "retry_count": 0,
-      "created_at": "2026-10-03 16:04:10",
-      "updated_at": "2026-10-03 16:04:10"
+      "created_at": "2026-10-03 16:11:09",
+      "updated_at": "2026-10-03 16:11:09"
     }
   ]
 }
