@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { STATUS_UI } from './status'
 import { StatusGlyph, StatusPill } from './StatusGlyph'
 import { Tabs } from './Tabs'
+import css from '../dashboard.css?raw'
 
 describe('status vocabulary', () => {
   it('uses the NEXUS glyphs and labels for every state', () => {
@@ -31,5 +32,12 @@ describe('status vocabulary', () => {
     expect(out.match(/role="tab"/g)).toHaveLength(2)
     expect(out).toMatch(/aria-selected="true"[^>]*>B/)
     expect(out).toMatch(/tabindex="-1"[^>]*>A/)
+  })
+
+  it('pulses the active glyph inside the no-preference motion block', () => {
+    const block = css.match(/@media \(prefers-reduced-motion: no-preference\) \{([\s\S]*?)\}/)
+    expect(block).not.toBeNull()
+    expect(block![1]).toMatch(/\.nx-glyph\[data-tone='active'\]\s*\{[^}]*animation:\s*nx-pulse/)
+    expect(css).not.toContain("[data-state='running']")
   })
 })

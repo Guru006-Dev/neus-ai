@@ -34,7 +34,7 @@
 .nx-app .nx-tabs [aria-selected='true'] { color: var(--nx-text); border-bottom-color: var(--nx-text); }
 @media (prefers-reduced-motion: no-preference) {
   .nx-app .nx-glyph, .nx-app .nx-pill { transition: color 150ms, border-color 150ms; }
-  .nx-app [data-state='running'] .nx-glyph { animation: nx-pulse 2s ease-in-out infinite; }
+  .nx-app .nx-glyph[data-tone='active'] { animation: nx-pulse 2s ease-in-out infinite; }
 }
 @keyframes nx-pulse { 50% { opacity: 0.55; } }
 @media (max-width: 767px) {
