@@ -90,3 +90,10 @@ test('run map lists every agent and turns vertical on narrow screens', async ({ 
   await expect(page.locator('[data-orientation="vertical"]')).toHaveCount(1)
   expect(await page.locator('[aria-live="polite"]').count()).toBe(1)
 })
+
+test('a malformed location hash does not break the page', async ({ page }) => {
+  const polls = seq('full')
+  await mockBackend(page, { runSequence: [polls[polls.length - 1]] })
+  await page.goto(`/dashboard/runs/${id(polls[0])}#%`)
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+})

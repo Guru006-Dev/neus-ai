@@ -1,7 +1,8 @@
 import { agentName } from '../data/agents'
 import { isTerminal } from '../data/normalize'
-import type { AgentId, Run } from '../data/types'
-import { RawOutput } from '../outputs/RawOutput'
+import type { JSX } from 'react'
+import type { AgentId, AgentOutput, Run } from '../data/types'
+import { OUTPUT_RENDERERS } from '../outputs'
 import { EmptyState } from '../ui/EmptyState'
 import { Tabs } from '../ui/Tabs'
 import { defaultOutput, outputAgents } from './derive'
@@ -21,7 +22,7 @@ export function OutputPanel({ run, selected, onSelect }: { run: Run; selected: A
       )}
       {current && output ? (
         <div role="tabpanel" id={`panel-${current}`} aria-labelledby={`tab-${current}`} tabIndex={0} className="nx-output__body" key={current}>
-          <RawOutput raw={output.raw} />
+          <OutputBody output={output} runId={run.id} />
         </div>
       ) : (
         <div className="nx-output__body">
@@ -30,4 +31,9 @@ export function OutputPanel({ run, selected, onSelect }: { run: Run; selected: A
       )}
     </section>
   )
+}
+
+function OutputBody({ output, runId }: { output: AgentOutput; runId: string }) {
+  const Render = OUTPUT_RENDERERS[output.agent] as (p: { output: AgentOutput; runId: string }) => JSX.Element
+  return <Render output={output} runId={runId} />
 }

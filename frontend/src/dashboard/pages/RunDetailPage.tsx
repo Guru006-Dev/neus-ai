@@ -1,9 +1,8 @@
 import { useEffect, useRef } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router'
-import { AGENT_ORDER } from '../data/agents'
 import type { AgentId, Run } from '../data/types'
 import { AgentList } from '../run-detail/AgentList'
-import { announcement } from '../run-detail/derive'
+import { announcement, selectedFromHash } from '../run-detail/derive'
 import { OrchestratorBand } from '../run-detail/OrchestratorBand'
 import { OutputPanel } from '../run-detail/OutputPanel'
 import { RunHeader } from '../run-detail/RunHeader'
@@ -30,8 +29,7 @@ export default function RunDetailPage() {
 
   useBreadcrumb([{ label: 'Runs', to: '/dashboard/runs' }, { label: crumb(headerRun?.goal.trim() || runId) }])
 
-  const hash = decodeURIComponent(location.hash.slice(1))
-  const selected = (AGENT_ORDER as string[]).includes(hash) ? (hash as AgentId) : null
+  const selected = selectedFromHash(location.hash)
   const select = (id: AgentId) => void navigate({ pathname: location.pathname, search: location.search, hash: id }, { replace: true })
 
   // The live region is written directly so that polls and first load never re-render or announce.

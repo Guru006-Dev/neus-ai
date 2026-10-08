@@ -58,3 +58,9 @@ export function announcement(prev: Run, next: Run): string {
   if (!isTerminal(prev.status) && isTerminal(next.status)) msgs.push(`Run ${STATUS_UI[next.status].label.toLowerCase()}`)
   return msgs.length ? `${msgs.join('. ')}.` : ''
 }
+
+/** Agent ids need no decoding; anything else in the hash (including malformed escapes) means no selection. */
+export function selectedFromHash(hash: string): AgentId | null {
+  const raw = hash.startsWith('#') ? hash.slice(1) : hash
+  return (AGENT_ORDER as string[]).includes(raw) ? (raw as AgentId) : null
+}
