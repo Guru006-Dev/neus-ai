@@ -48,8 +48,8 @@ export function useRun(id: string): { view: RunView; retry: () => void } {
     }
     const onVisibility = () => {
       if (!alive) return
-      if (document.visibilityState === 'visible') void tick()
-      else clearTimeout(timer)
+      if (document.visibilityState !== 'visible') clearTimeout(timer)
+      else if (nextPollDelay(view, failures, false) !== null) void tick()
     }
     document.addEventListener('visibilitychange', onVisibility)
     void tick()

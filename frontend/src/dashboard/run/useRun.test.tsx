@@ -15,7 +15,7 @@ vi.mock('../data/workflows', () => ({ getRun: vi.fn() }))
 
 const live = normalizeRun(running)
 const done = normalizeRun(completed)
-interface Call { id: string; signal?: AbortSignal; resolve: (r: Run) => void; reject: (e: unknown) => void }
+interface Call { id: string; signal?: AbortSignal; settled: boolean; resolve: (r: Run) => void; reject: (e: unknown) => void }
 let calls: Call[] = []
 let latest: ReturnType<typeof useRun>
 let root: Root
@@ -25,6 +25,7 @@ function Probe({ id }: { id: string }) {
   latest = useRun(id)
   return null
 }
+const unsettled = () => calls.filter((c) => !c.settled).length
 const render = (id: string) => act(async () => { root.render(<Probe id={id} />) })
 const settle = (ms = 0) => act(async () => { await vi.advanceTimersByTimeAsync(ms) })
 const respond = (i: number, run: Run) => act(async () => { calls[i].resolve(run); await vi.advanceTimersByTimeAsync(0) })
@@ -38,7 +39,15 @@ const setHidden = (hidden: boolean) => act(async () => {
 beforeEach(() => {
   vi.useFakeTimers()
   calls = []
-  vi.mocked(getRun).mockImplementation((id, signal) => new Promise<Run>((resolve, reject) => { calls.push({ id, signal, resolve, reject }) }))
+  vi.mocked(getRun).mockImplementation((id, signal) => new Promise<Run>((resolve, reject) => {
+    const call: Call = {
+      id, signal, settled: false,
+      resolve: (r) => { call.settled = true; resolve(r) },
+      reject: (e) => { call.settled = true; reject(e) },
+    }
+    signal?.addEventListener('abort', () => call.reject(new ApiError('aborted', 'aborted')), { once: true })
+    calls.push(call)
+  }))
   container = document.createElement('div')
   root = createRoot(container)
 })
@@ -122,13 +131,36 @@ describe('useRun', () => {
   })
   it('never overlaps when visibility returns during an in-flight request', async () => {
     await render('a')
+    expect(unsettled()).toBe(1)
     await setHidden(true)
     await setHidden(false)
-    await respond(0, live)
+    expect(calls).toHaveLength(2)
+    expect(calls[0].signal?.aborted).toBe(true)
+    expect(unsettled()).toBe(1)
+    await respond(1, live)
+    expect(unsettled()).toBe(0)
+    await settle(1500)
+    expect(calls).toHaveLength(3)
+    expect(unsettled()).toBe(1)
     await settle(10_000)
-    const open = calls.filter((c, i) => i > 0 && !c.signal?.aborted).length
-    expect(open).toBeLessThanOrEqual(1)
-    expect(calls.filter((c) => !c.signal?.aborted)).toHaveLength(open)
+    expect(calls).toHaveLength(3)
+  })
+  it('does not refetch a terminal run when the tab becomes visible again', async () => {
+    await render('a')
+    await respond(0, done)
+    await setHidden(true)
+    await setHidden(false)
+    await settle(60_000)
+    expect(calls).toHaveLength(1)
+  })
+  it('does not refetch a not-found run when the tab becomes visible again', async () => {
+    await render('a')
+    await fail(0, new ApiError('not-found', 'x', 404))
+    expect(latest.view.kind).toBe('not-found')
+    await setHidden(true)
+    await setHidden(false)
+    await settle(60_000)
+    expect(calls).toHaveLength(1)
   })
   it('keeps data and backs off on errors, stops on 404, and retry restarts from loading', async () => {
     await render('a')

@@ -26,7 +26,7 @@ export function reduceRunView(prev: RunView, ev: RunEvent): RunView {
   const k = ev.error.kind
   if (k === 'aborted') return prev
   if (prev.kind === 'active') return k === 'not-found' ? { kind: 'not-found', lastRun: prev.run } : { ...prev, reconnecting: true }
-  if (k === 'not-found') return { kind: 'not-found', lastRun: null }
+  if (k === 'not-found') return prev.kind === 'not-found' ? prev : { kind: 'not-found', lastRun: null }
   if (prev.kind === 'loading' || prev.kind === 'unreachable') return { kind: 'unreachable', lastRun: null }
   return prev
 }

@@ -42,6 +42,10 @@ describe('run lifecycle', () => {
     expect(reduceRunView({ kind: 'active', run: active, reconnecting: false }, err('not-found'))).toEqual({ kind: 'not-found', lastRun: active })
     expect(reduceRunView({ kind: 'loading' }, err('not-found'))).toEqual({ kind: 'not-found', lastRun: null })
   })
+  it('keeps the last run when not-found repeats', () => {
+    const lost = { kind: 'not-found' as const, lastRun: active }
+    expect(reduceRunView(lost, err('not-found'))).toEqual(lost)
+  })
   it('goes unreachable from loading and keeps backing off', () => {
     const v = reduceRunView({ kind: 'loading' }, err('unreachable'))
     expect(v).toEqual({ kind: 'unreachable', lastRun: null })
