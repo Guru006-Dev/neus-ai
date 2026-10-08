@@ -13,6 +13,8 @@ export function Tabs({ label, items, value, onChange }: { label: string; items: 
     refs.current[next]?.focus()
     onChange(items[next].id)
   }
+  // When no tab is selected, the first one stays in the tab order so the list remains reachable
+  const focusable = items.some((t) => t.id === value) ? value : items[0]?.id
   return (
     <div className="nx-tabs" role="tablist" aria-label={label}>
       {items.map((t, i) => (
@@ -23,7 +25,7 @@ export function Tabs({ label, items, value, onChange }: { label: string; items: 
           id={`tab-${t.id}`}
           aria-controls={`panel-${t.id}`}
           aria-selected={t.id === value}
-          tabIndex={t.id === value ? 0 : -1}
+          tabIndex={t.id === focusable ? 0 : -1}
           onClick={() => onChange(t.id)}
           onKeyDown={(e) => onKey(e, i)}
         >

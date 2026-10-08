@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router'
 import './dashboard.css'
 import OverviewPage from './pages/OverviewPage'
 import NotFoundPage from './pages/NotFoundPage'
+import RunDetailPage from './pages/RunDetailPage'
 import DashboardLayout from './shell/DashboardLayout'
 import { useBreadcrumb } from './shell/breadcrumb'
 import { EmptyState } from './ui/EmptyState'
@@ -25,7 +26,7 @@ export default function NexusDashboard() {
       <Route element={<DashboardLayout />}>
         <Route index element={<OverviewPage />} />
         <Route path="runs" element={page('Runs')} />
-        <Route path="runs/:runId" element={page('Run')} />
+        <Route path="runs/:runId" element={<RunDetailPage />} />
         <Route path="agents" element={page('Agents')} />
         <Route path="knowledge" element={page('Knowledge')} />
         <Route path="documentation" element={page('Documentation')} />
