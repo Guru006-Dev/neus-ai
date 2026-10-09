@@ -17,13 +17,13 @@ export function QAOutput({ output }: { output: Extract<AgentOutput, { agent: 'qa
       {tests.length > 0 && (
         <DataRows
           caption="QA checks"
-          rows={tests}
-          rowKey={(t) => t.name}
+          rows={tests.map((t, i) => ({ t, i }))}
+          rowKey={({ t, i }) => `${i}:${t.name}`}
           columns={[
-            { key: 'name', header: 'Check', primary: true, cell: (t) => t.name },
-            { key: 'result', header: 'Result', cell: (t) => t.result },
-            { key: 'score', header: 'Score', cell: (t) => t.score ?? '' },
-            { key: 'detail', header: 'Detail', cell: (t) => t.detail ?? '' },
+            { key: 'name', header: 'Check', primary: true, cell: ({ t }) => t.name },
+            { key: 'result', header: 'Result', cell: ({ t }) => t.result },
+            { key: 'score', header: 'Score', cell: ({ t }) => t.score ?? '' },
+            { key: 'detail', header: 'Detail', cell: ({ t }) => t.detail ?? '' },
           ]}
         />
       )}

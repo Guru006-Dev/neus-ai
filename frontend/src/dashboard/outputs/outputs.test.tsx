@@ -1,7 +1,9 @@
-import type { JSX } from 'react'
+// @vitest-environment happy-dom
+import { act, type JSX } from 'react'
+import { createRoot } from 'react-dom/client'
 import { renderToStaticMarkup as html } from 'react-dom/server'
 import { MemoryRouter } from 'react-router'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { normalizeOutput, normalizeRun } from '../data/normalize'
 import { AGENT_ORDER } from '../data/agents'
 import { OUTPUT_RENDERERS } from './index'
@@ -65,5 +67,33 @@ describe('hash selection', () => {
     expect(selectedFromHash('#%')).toBeNull()
     expect(selectedFromHash('#%E0%A4%A')).toBeNull()
     expect(selectedFromHash('')).toBeNull()
+  })
+})
+
+describe('markdown termination', () => {
+  it('always terminates and returns an array', () => {
+    const inputs = ['# a\rb', '## x y', '#  ', '\r\r\r', 'a\u2028b', '# a\u2029# b', '- x\r1. y\r\r# h\r', '#\n##\n###\n####', '\u2028\u2029\r', '*\r-\r1.']
+    for (const s of inputs) expect(Array.isArray(renderMarkdown(s)), JSON.stringify(s)).toBe(true)
+  })
+  it('treats bare CR and unicode separators as line breaks', () => {
+    const out = html(<>{renderMarkdown('# a\rb')}</>)
+    expect(out).toContain('<h3')
+    expect(out).toContain('<p')
+  })
+})
+
+describe('QA row keys', () => {
+  it('renders duplicate and empty test names without key warnings', () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const out = normalizeOutput('qa', { tests_run: [{ name: 'dup', result: 'pass' }, { name: 'dup', result: 'fail' }, { name: '', result: 'pass' }] })
+    expect(out).toBeTruthy()
+    const host = document.createElement('div')
+    const root = createRoot(host)
+    ;(globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true
+    act(() => { root.render(<MemoryRouter><OUTPUT_RENDERERS.qa output={out as never} runId="wf-x" /></MemoryRouter>) })
+    expect(host.querySelectorAll('tbody tr').length).toBe(3)
+    expect(spy).not.toHaveBeenCalled()
+    act(() => root.unmount())
+    spy.mockRestore()
   })
 })

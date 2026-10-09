@@ -8,7 +8,7 @@ function inline(s: string, key: string): ReactNode[] {
 
 export function renderMarkdown(src: string): ReactNode[] {
   const out: ReactNode[] = []
-  const lines = src.replace(/\r\n/g, '\n').split('\n')
+  const lines = src.replace(/\r\n|[\r\u2028\u2029]/g, '\n').split('\n')
   let i = 0
   while (i < lines.length) {
     const line = lines[i]
@@ -23,6 +23,7 @@ export function renderMarkdown(src: string): ReactNode[] {
     }
     if (!line.trim()) { i++; continue }
     const para: string[] = []
+    para.push(lines[i++]) // always consume the current line: guarantees progress
     while (i < lines.length && lines[i].trim() && !/^(#{1,3}\s|\s*[-*]\s|\s*\d+\.\s)/.test(lines[i])) para.push(lines[i++])
     out.push(<p key={`p${i}`}>{inline(para.join(' '), `p${i}`)}</p>)
   }
