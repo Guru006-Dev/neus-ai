@@ -47,6 +47,18 @@ describe('sidebar', () => {
     expect(out).toContain('aria-label="Expand navigation"')
     expect(out).toContain('aria-label="Knowledge"')
   })
+  it('exposes the "needs backend support" cue as text, not only a hidden dot', () => {
+    const out = render('sidebar')
+    const knowledge = out.match(/<a[^>]*href="\/dashboard\/knowledge"[^>]*>(.*?)<\/a>/)?.[1] ?? ''
+    expect(knowledge).toMatch(/<span class="sr-only">\s*\(needs backend support\)<\/span>/)
+    const runs = out.match(/<a[^>]*href="\/dashboard\/runs"[^>]*>(.*?)<\/a>/)?.[1] ?? ''
+    expect(runs).not.toContain('needs backend support')
+  })
+  it('does not use a live region for the polled backend status', () => {
+    for (const s of ['connected', 'connecting', 'unreachable'] as const) {
+      expect(html(<BackendStatus status={s} />)).not.toMatch(/role="(status|alert|log)"|aria-live/)
+    }
+  })
 })
 
 describe('not found page', () => {

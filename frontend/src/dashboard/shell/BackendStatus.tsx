@@ -9,7 +9,7 @@ const VIEW: Record<BackendState, { glyph: string; label: string }> = {
 export function BackendStatus({ status, compact = false }: { status: BackendState; compact?: boolean }) {
   const v = VIEW[status]
   return (
-    <p className="nx-backend" data-status={status} role="status">
+    <p className="nx-backend" data-status={status}>
       <span className="nx-glyph" aria-hidden="true">{v.glyph}</span>
       <span className={compact ? 'sr-only' : undefined}>{v.label}</span>
     </p>

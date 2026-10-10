@@ -9,6 +9,7 @@ import { AGENT_ORDER } from '../data/agents'
 import { OUTPUT_RENDERERS } from './index'
 import { renderMarkdown } from './markdown'
 import { layoutGraph } from './graphLayout'
+import type { AgentOutput } from '../data/types'
 import { selectedFromHash } from '../run-detail/derive'
 
 const polls = Object.values(import.meta.glob('../../../e2e/fixtures/full-poll-*.json', { eager: true, import: 'default' })) as unknown[]
@@ -58,6 +59,20 @@ describe('graph layout', () => {
     const a = layoutGraph(nodes, [], 300)
     expect(layoutGraph(nodes, [], 300)).toEqual(a)
     expect(a[0]).toEqual({ x: 150, y: 150 })
+  })
+  it('keeps every graph label inside the drawing so none is clipped at any width', () => {
+    const out = wrap(<OUTPUT_RENDERERS.knowledge output={run.outputs.knowledge as Extract<AgentOutput, { agent: 'knowledge' }>} runId={run.id} />)
+    const size = Number(out.match(/viewBox="0 0 (\d+) \d+"/)![1])
+    const texts = [...out.matchAll(/<text x="([\d.]+)"[^>]*text-anchor="(\w+)"[^>]*>([^<]*)<\/text>/g)]
+    expect(texts.length).toBeGreaterThan(0)
+    for (const [, x, anchor, label] of texts) {
+      const w = label.length * 11 * 0.62 // generous average advance for 11px Geist
+      const left = anchor === 'start' ? +x : anchor === 'end' ? +x - w : +x - w / 2
+      expect(left, label).toBeGreaterThanOrEqual(0)
+      expect(left + w, label).toBeLessThanOrEqual(size)
+    }
+    // Full labels stay available: in the node list and as the node's tooltip
+    expect(out).toContain('Analyze The Onboarding Flows Of Three Note-Taking Apps And Compare Them</title>')
   })
 })
 

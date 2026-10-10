@@ -11,6 +11,12 @@ export default function DashboardLayout() {
   const { status } = useSystemStatus()
   const [crumbs, setCrumbs] = useState<BreadcrumbState>({ items: [] })
   const [drawerOpen, setDrawerOpen] = useState(false)
+  // The drawer unmounts outside drawer mode without a close event; forget it was open
+  const [drawerMode, setDrawerMode] = useState(mode)
+  if (drawerMode !== mode) {
+    setDrawerMode(mode)
+    setDrawerOpen(false)
+  }
   const triggerRef = useRef<HTMLButtonElement>(null)
   const ctx = useMemo(() => ({ state: crumbs, set: setCrumbs }), [crumbs])
   const closeDrawer = useCallback(() => {

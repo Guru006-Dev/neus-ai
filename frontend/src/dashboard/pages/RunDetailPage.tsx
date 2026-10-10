@@ -19,6 +19,11 @@ const crumb = (s: string) => (s.length > 48 ? `${s.slice(0, 47).trimEnd()}…` :
 
 export default function RunDetailPage() {
   const { runId = '' } = useParams()
+  // A new run id is a new page: its live region and transition baseline start empty
+  return <RunDetail key={runId} runId={runId} />
+}
+
+function RunDetail({ runId }: { runId: string }) {
   const { view, retry } = useRun(runId)
   const run = currentRun(view)
   const lastRun = view.kind === 'not-found' || view.kind === 'unreachable' ? view.lastRun : null

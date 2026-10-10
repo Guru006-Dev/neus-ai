@@ -23,7 +23,10 @@ function Item({ item, compact }: { item: NavItem; compact: boolean }) {
     >
       {compact ? <span aria-hidden="true">{item.label[0]}</span> : item.label}
       {item.needsBackend && !compact && (
-        <span className="nx-side__dot" title="Cross-run view needs backend support" aria-hidden="true">·</span>
+        <>
+          <span className="nx-side__dot" title="Cross-run view needs backend support" aria-hidden="true">·</span>
+          <span className="sr-only"> (needs backend support)</span>
+        </>
       )}
     </NavLink>
   )
@@ -54,6 +57,12 @@ function NavBody({ compact, status }: { compact: boolean; status: BackendState }
 export function Sidebar({ mode, status, drawerOpen = false, onDrawerClose }: Props) {
   const { pathname } = useLocation()
   const [railOpen, setRailOpen] = useState(false)
+  // Leaving rail mode collapses the overlay, so it never comes back already expanded
+  const [railMode, setRailMode] = useState(mode)
+  if (railMode !== mode) {
+    setRailMode(mode)
+    setRailOpen(false)
+  }
   const dialogRef = useRef<HTMLDialogElement>(null)
   const toggleRef = useRef<HTMLButtonElement>(null)
 

@@ -41,7 +41,7 @@
   .nx-app .nx-rows thead { display: none; }
   .nx-app .nx-rows tr { display: grid; padding: 10px 0; border-bottom: 1px solid var(--nx-line); }
   .nx-app .nx-rows td { border: 0; padding: 2px 0; }
-  .nx-app .nx-rows td:not([data-primary])::before { content: attr(data-label) ' · '; color: var(--nx-grey-500); }
+  .nx-app .nx-rows td:not([data-primary])::before { content: attr(data-label) ' · '; color: var(--nx-grey-400); }
 }
 
 /* ---- primitives: empty, skeleton, disclosure, links, icon button ---- */
@@ -100,7 +100,8 @@
 .nx-app .nx-backend[data-status='unreachable'] { color: var(--nx-err); }
 .nx-app .nx-backend[data-status='connected'] .nx-glyph { color: var(--nx-ok); }
 
-/* rail: 56px collapsed, 232px overlay when expanded */
+/* rail: 56px collapsed, 232px overlay when expanded. The overlay is absolutely positioned, so expanding
+   never reflows the page; the reveal animates clip-path only (no per-frame layout). */
 .nx-app .nx-side:has(.nx-side__toggle) { z-index: 6; }
 .nx-app .nx-side__toggle { position: absolute; top: 10px; left: 10px; z-index: 2; }
 .nx-app .nx-side:has(.nx-side__toggle) .nx-side__nav { position: absolute; top: 56px; bottom: 0; left: 0; width: 56px; height: auto; padding: 8px 8px; overflow-x: hidden; border-right: 1px solid var(--nx-line); }
@@ -120,8 +121,9 @@
 }
 @media (prefers-reduced-motion: no-preference) {
   .nx-app .nx-side__item, .nx-app .nx-topbar__crumbs a { transition: color 150ms; }
-  .nx-app .nx-side__nav { transition: width 180ms ease; }
+  .nx-app .nx-side[data-open] .nx-side__nav { animation: nx-rail-reveal 180ms ease-out; }
 }
+@keyframes nx-rail-reveal { from { clip-path: inset(0 calc(100% - 56px) 0 0); } to { clip-path: inset(0); } }
 
 /* Overview */
 .nx-app .nx-muted { color: var(--nx-grey-400); margin: 0; }
@@ -157,7 +159,7 @@
 .nx-app .nx-agent { display: grid; gap: 4px; padding: 10px 16px; border-bottom: 1px solid var(--nx-line); }
 .nx-app .nx-agent:last-child { border-bottom: 0; }
 .nx-app .nx-agent[data-selected] { box-shadow: inset 2px 0 0 var(--nx-text); }
-.nx-app .nx-agent[data-state='not-in-run'] .nx-agent__name { color: var(--nx-grey-500); }
+.nx-app .nx-agent[data-state='not-in-run'] .nx-agent__name { color: var(--nx-grey-400); }
 .nx-app .nx-agent__head { display: grid; grid-template-columns: 9.5em minmax(0, 1fr) auto; align-items: baseline; gap: 8px; width: 100%; padding: 4px 0; font: inherit; text-align: left; color: inherit; background: none; border: 0; }
 .nx-app button.nx-agent__head { cursor: pointer; }
 .nx-app button.nx-agent__head:hover .nx-agent__name { text-decoration: underline; text-underline-offset: 3px; }
