@@ -6,6 +6,20 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 
+# Root-file names that must never be served from dist: they collide with API path segments.
+RESERVED_NAMES = frozenset(
+    {"workflows", "status", "system", "api-key", "analyze", "check-veo", "dashboard", "assets", "docs", "redoc", "openapi.json"}
+)
+
+
+def _file_route(path: Path):
+    # Zero-argument handler: FastAPI must not expose the file path as a query parameter.
+    def handler() -> FileResponse:
+        return FileResponse(path)
+
+    return handler
+
+
 def mount_frontend(app: FastAPI, dist: Path) -> bool:
     index = dist / "index.html"
     if not index.is_file():
@@ -20,6 +34,6 @@ def mount_frontend(app: FastAPI, dist: Path) -> bool:
     for path in ("/", "/dashboard", "/dashboard/{path:path}"):
         app.add_api_route(path, spa, methods=["GET"], include_in_schema=False)
     for f in dist.iterdir():
-        if f.is_file() and f.name != "index.html":
-            app.add_api_route(f"/{f.name}", (lambda p=f: FileResponse(p)), methods=["GET"], include_in_schema=False)
+        if f.is_file() and f.name != "index.html" and f.name.lower() not in RESERVED_NAMES:
+            app.add_api_route(f"/{f.name}", _file_route(f), methods=["GET"], include_in_schema=False)
     return True
