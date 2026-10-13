@@ -114,6 +114,13 @@
 .nx-app .nx-drawer { margin: 0; padding: 0; width: min(280px, 85vw); height: 100svh; max-height: none; border: 0; border-right: 1px solid var(--nx-line-strong); background: var(--nx-bg); color: var(--nx-text); }
 .nx-app .nx-drawer::backdrop { background: rgba(0, 0, 0, 0.6); }
 .nx-app .nx-drawer .nx-side__nav { height: 100%; }
+/* Spec §15: the drawer slides in over 200 ms, transform only (no layout animation). @starting-style gives the
+   open dialog its first-frame offset; closing is instant because a native <dialog> leaves the top layer on
+   close(), and animating that exit needs discrete overlay/display transitions that would delay focus return. */
+@media (prefers-reduced-motion: no-preference) {
+  .nx-app .nx-drawer[open] { transform: none; transition: transform 200ms cubic-bezier(0.2, 0, 0, 1); }
+  @starting-style { .nx-app .nx-drawer[open] { transform: translateX(-100%); } }
+}
 
 @media (max-width: 767px) {
   .nx-app .nx-content { padding: 16px; }

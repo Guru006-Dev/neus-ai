@@ -117,3 +117,63 @@ test.describe('tablet rail overlay never hides focus', () => {
     await expect(page.getByRole('button', { name: 'Expand navigation' })).toHaveAttribute('aria-expanded', 'false')
   })
 })
+
+const drawerMotion = (page: Page) =>
+  page.getByRole('dialog', { name: 'Navigation' }).evaluate((el) => {
+    const s = getComputedStyle(el)
+    return {
+      property: s.transitionProperty,
+      duration: Math.max(...s.transitionDuration.split(',').map((d) => parseFloat(d) * (d.trim().endsWith('ms') ? 0.001 : 1))),
+      animation: s.animationName,
+      transform: s.transform,
+      running: el.getAnimations().map((a) => (a as CSSTransition).transitionProperty ?? (a as CSSAnimation).animationName),
+    }
+  })
+
+const openDrawer = async (page: Page) => {
+  await mockBackend(page, {})
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/dashboard')
+  await page.getByRole('button', { name: 'Open navigation' }).click()
+  await expect(page.getByRole('dialog', { name: 'Navigation' })).toBeVisible()
+}
+
+test.describe('phone drawer slide', () => {
+  test.describe('no-preference', () => {
+    test.use({ reducedMotion: 'no-preference' })
+    test('slides in with a transform transition of at most 200 ms and settles at identity', async ({ page }) => {
+      await openDrawer(page)
+      const start = await drawerMotion(page)
+      expect(start.property).toBe('transform')
+      expect(start.duration).toBeGreaterThan(0)
+      expect(start.duration).toBeLessThanOrEqual(0.2)
+      expect(start.animation).toBe('none')
+      expect(start.running).toEqual(['transform']) // the entry transition actually ran
+      await expect.poll(async () => (await drawerMotion(page)).transform).toBe('none')
+      await expect.poll(async () => (await drawerMotion(page)).running).toEqual([])
+    })
+    test('still traps focus, closes with Esc and returns focus to the trigger', async ({ page }) => {
+      await openDrawer(page)
+      for (let i = 0; i < 16; i++) {
+        await page.keyboard.press('Tab')
+        // Focus may cycle through the browser chrome (body), but never to page content behind the modal
+        const outside = await page.evaluate(() => { const a = document.activeElement; return !!a && a !== document.body && !a.closest('dialog') })
+        expect(outside, `Tab ${i + 1} left the drawer`).toBe(false)
+      }
+      await page.keyboard.press('Escape')
+      await expect(page.getByRole('dialog', { name: 'Navigation' })).toBeHidden()
+      await expect(page.getByRole('button', { name: 'Open navigation' })).toBeFocused()
+    })
+  })
+  test.describe('reduce', () => {
+    test.use({ reducedMotion: 'reduce' })
+    test('opens with no transition or animation', async ({ page }) => {
+      await openDrawer(page)
+      const m = await drawerMotion(page)
+      expect(m.duration).toBe(0)
+      expect(m.animation).toBe('none')
+      expect(m.transform).toBe('none')
+      expect(m.running).toEqual([])
+    })
+  })
+})
