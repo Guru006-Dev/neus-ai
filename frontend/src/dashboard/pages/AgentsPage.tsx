@@ -12,7 +12,12 @@ export default function AgentsPage() {
   const { status, snapshot } = useSystemStatus()
   const pool = (id: AgentId) => {
     const a = snapshot?.agents.find((x) => x.id === id)
-    if (a) return `Live worker pool · ${a.active}/${a.limit} busy · ${a.queued} queued`
+    if (a) {
+      const busy = a.active !== null && a.limit !== null ? `${a.active}/${a.limit} busy` : null
+      const queued = a.queued !== null ? `${a.queued} queued` : null
+      if (!busy && !queued) return 'Live worker pool · unavailable'
+      return `Live worker pool · ${busy ?? 'pool size unavailable'} · ${queued ?? 'queue unavailable'}`
+    }
     return status === 'unreachable' ? 'Live worker pool · unavailable while the backend is unreachable' : 'Live worker pool · checking…'
   }
   const columns: Column<AgentId>[] = [

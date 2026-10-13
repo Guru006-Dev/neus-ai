@@ -72,7 +72,7 @@ export default function OverviewPage() {
         Workflows since backend start:{' '}
         {w
           ? `${w.running} running · ${w.queued} queued · ${w.completed} complete · ${w.failed} failed`
-          : status === 'unreachable' ? 'unavailable while the backend is unreachable' : 'checking…'}
+          : status === 'unreachable' ? 'unavailable while the backend is unreachable' : snapshot ? 'unavailable' : 'checking…'}
         {' · '}<Link to="/dashboard/agents">Agents</Link>
       </p>
     </>

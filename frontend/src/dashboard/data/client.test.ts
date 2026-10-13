@@ -1,3 +1,5 @@
+/// <reference types="node" />
+import { readFileSync } from 'node:fs'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { ApiError, apiFetch } from './client'
 import { getSystemStatus } from './system'
@@ -114,5 +116,16 @@ describe('workflows', () => {
     await getSystemStatus()
     expect(f.mock.calls.length).toBe(3)
     for (const c of f.mock.calls) expect(String(c[0])).not.toContain('/status/')
+  })
+  it('getSystemStatus leaves missing pool and queue values absent instead of zero', async () => {
+    const full = JSON.parse(readFileSync(new URL('../../../e2e/fixtures/system-status.json', import.meta.url), 'utf8'))
+    const { qa: _qa, ...concurrency } = full.concurrency
+    const { agent_demo: _demo, ...queues } = full.queues
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(json({ concurrency, queues })))
+    const s = await getSystemStatus()
+    expect(s.workflows).toBeNull()
+    expect(s.agents.find((a) => a.id === 'qa')).toMatchObject({ active: null, limit: null, queued: full.queues.agent_qa })
+    expect(s.agents.find((a) => a.id === 'demo')).toMatchObject({ active: full.concurrency.demo.active, limit: full.concurrency.demo.limit, queued: null })
+    expect(s.agents.find((a) => a.id === 'explorer')).toEqual({ id: 'explorer', active: 0, limit: 5, queued: 0 })
   })
 })

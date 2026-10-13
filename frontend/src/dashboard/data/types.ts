@@ -12,4 +12,5 @@ export type AgentOutput =
   | { agent: 'demo'; status?: string; generatedBy?: string; lineCount?: number; raw: unknown }
   | { agent: 'release'; releaseId?: string; deploymentStatus?: string; components?: string[]; qaPassRate?: string; summary?: string; raw: unknown }
 export interface Run { id: string; goal: string; status: RunStatus; detail: 'live' | 'stored'; agents: AgentRun[]; outputs: Partial<Record<AgentId, AgentOutput>>; activeAgent: AgentId | null; elapsedMs: number | null }
-export interface SystemSnapshot { workflows: { running: number; queued: number; completed: number; failed: number }; agents: { id: AgentId; active: number; limit: number; queued: number }[] }
+/** A count the backend did not report is null, never a made-up 0. */
+export interface SystemSnapshot { workflows: { running: number; queued: number; completed: number; failed: number } | null; agents: { id: AgentId; active: number | null; limit: number | null; queued: number | null }[] }
