@@ -74,6 +74,32 @@ describe('graph layout', () => {
     // Full labels stay available: in the node list and as the node's tooltip
     expect(out).toContain('Analyze The Onboarding Flows Of Three Note-Taking Apps And Compare Them</title>')
   })
+  it('re-fits labels to the width the browser measures, not the estimate', () => {
+    const ADV = 9 // a font far wider than the estimate
+    const proto = Object.getPrototypeOf(document.createElementNS('http://www.w3.org/2000/svg', 'text')) as { getComputedTextLength?: () => number }
+    const had = Object.getOwnPropertyDescriptor(proto, 'getComputedTextLength')
+    proto.getComputedTextLength = function (this: Element) { return (this.textContent ?? '').length * ADV }
+    const host = document.createElement('div')
+    const root = createRoot(host)
+    try {
+      act(() => root.render(<MemoryRouter><OUTPUT_RENDERERS.knowledge output={run.outputs.knowledge as Extract<AgentOutput, { agent: 'knowledge' }>} runId={run.id} /></MemoryRouter>))
+      const svg = host.querySelector('svg.nx-graph')!
+      const size = Number(svg.getAttribute('viewBox')!.split(' ')[2])
+      const labels = [...svg.querySelectorAll('g > text')]
+      expect(labels.length).toBeGreaterThan(0)
+      expect(labels.some((t) => t.textContent!.endsWith('…'))).toBe(true)
+      for (const t of labels) {
+        const x = Number(t.getAttribute('x')), w = t.textContent!.length * ADV, anchor = t.getAttribute('text-anchor')
+        const left = anchor === 'start' ? x : anchor === 'end' ? x - w : x - w / 2
+        expect(left, t.textContent!).toBeGreaterThanOrEqual(0)
+        expect(left + w, t.textContent!).toBeLessThanOrEqual(size)
+      }
+    } finally {
+      act(() => root.unmount())
+      if (had) Object.defineProperty(proto, 'getComputedTextLength', had)
+      else delete proto.getComputedTextLength
+    }
+  })
 })
 
 describe('hash selection', () => {
