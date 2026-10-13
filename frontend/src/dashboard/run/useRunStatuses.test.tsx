@@ -93,12 +93,12 @@ describe('useRunStatuses', () => {
     expect(calls).toHaveLength(1)
   })
 
-  it('keeps polling while any one row is still active', async () => {
+  it('keeps polling while any one row is still active, without re-fetching the finished one', async () => {
     await render(['a', 'b'])
     await respond(0, 'completed')
     await respond(1, 'running')
     await settle(5000)
-    expect(calls).toHaveLength(4)
+    expect(calls.map((c) => c.id)).toEqual(['a', 'b', 'b'])
   })
 
   it('pauses while hidden and fetches immediately, then every 5 s, when visible again', async () => {
@@ -164,5 +164,49 @@ describe('useRunStatuses', () => {
     await render(['a'])
     await fail(0, new ApiError('unreachable', 'x'))
     expect(latest.a).toEqual({ kind: 'unknown' })
+  })
+
+  it('re-polls a "Status unavailable" row and recovers when the backend answers', async () => {
+    await render(['a'])
+    await fail(0, new ApiError('unreachable', 'x'))
+    expect(latest.a).toEqual({ kind: 'unknown' })
+    await settle(4999)
+    expect(calls).toHaveLength(1)
+    await settle(1)
+    expect(calls).toHaveLength(2)
+    await respond(1, 'completed')
+    expect(latest.a).toEqual({ kind: 'found', status: 'completed' })
+    await settle(60_000)
+    expect(calls).toHaveLength(2)
+  })
+
+  it('backs off 5 s → 10 s → 20 s while a row keeps failing', async () => {
+    await render(['a'])
+    await fail(0, new ApiError('unreachable', 'x'))
+    await settle(5000)
+    expect(calls).toHaveLength(2)
+    await fail(1, new ApiError('unreachable', 'x'))
+    await settle(9999)
+    expect(calls).toHaveLength(2)
+    await settle(1)
+    expect(calls).toHaveLength(3)
+    await fail(2, new ApiError('unreachable', 'x'))
+    await settle(19_999)
+    expect(calls).toHaveLength(3)
+    await settle(1)
+    expect(calls).toHaveLength(4)
+  })
+
+  it('retries only the unavailable row; terminal and missing rows are not re-polled', async () => {
+    await render(['a', 'b', 'c'])
+    await respond(0, 'completed')
+    await fail(1, new ApiError('not-found', 'x', 404))
+    await fail(2, new ApiError('unreachable', 'x'))
+    await settle(5000)
+    expect(calls.map((c) => c.id)).toEqual(['a', 'b', 'c', 'c'])
+    await respond(3, 'failed')
+    expect(latest.c).toEqual({ kind: 'found', status: 'failed' })
+    await settle(60_000)
+    expect(calls).toHaveLength(4)
   })
 })

@@ -7,12 +7,16 @@ import type { RunStatus } from '../ui/status'
 export type Lookup = { kind: 'loading' } | { kind: 'found'; status: RunStatus } | { kind: 'missing' } | { kind: 'unknown' }
 
 const POLL_MS = 5000
+const MAX_BACKOFF_MS = 60_000
 const ACTIVE: RunStatus[] = ['queued', 'waiting', 'running']
 const isActive = (l: Lookup | undefined) => l?.kind === 'found' && ACTIVE.includes(l.status)
+/** Terminal runs and 404s never change; everything else (first load, active, unavailable) is fetched. */
+const needsPoll = (l: Lookup | undefined) => !l || l.kind === 'loading' || l.kind === 'unknown' || isActive(l)
 
 /**
- * One GET /workflows/{id} per entry. Re-polls every 5 s only while some run is active;
- * paused while the tab is hidden; everything aborts on unmount.
+ * One GET /workflows/{id} per entry. Re-polls every 5 s while some run is active; rows left
+ * "Status unavailable" by an error are retried with backoff (5 s doubling to 60 s) until they
+ * resolve. Terminal and missing rows are not re-fetched. Paused while hidden; aborts on unmount.
  */
 export function useRunStatuses(entries: LocalRunEntry[]): Record<string, Lookup> {
   const [lookups, setLookups] = useState<Record<string, Lookup>>({})
@@ -24,6 +28,7 @@ export function useRunStatuses(entries: LocalRunEntry[]): Record<string, Lookup>
     let alive = true
     let timer: ReturnType<typeof setTimeout> | undefined
     let ctrl: AbortController | undefined
+    let failures = 0 // consecutive ticks that left some row unavailable
     const hidden = () => document.visibilityState === 'hidden'
     const put = (id: string, l: Lookup) => {
       latest.current = { ...latest.current, [id]: l }
@@ -31,14 +36,16 @@ export function useRunStatuses(entries: LocalRunEntry[]): Record<string, Lookup>
     }
     const schedule = () => {
       clearTimeout(timer)
-      if (alive && !hidden() && ids.some((id) => isActive(latest.current[id]))) timer = setTimeout(() => void tick(), POLL_MS)
+      if (!alive || hidden() || !ids.some((id) => needsPoll(latest.current[id]))) return
+      const delay = ids.some((id) => isActive(latest.current[id])) || failures === 0 ? POLL_MS : Math.min(MAX_BACKOFF_MS, POLL_MS * 2 ** (failures - 1))
+      timer = setTimeout(() => void tick(), delay)
     }
     const tick = async () => {
       clearTimeout(timer)
       ctrl?.abort()
       const c = new AbortController()
       ctrl = c
-      await Promise.all(ids.map(async (id) => {
+      await Promise.all(ids.filter((id) => needsPoll(latest.current[id])).map(async (id) => {
         try {
           const run = await getRun(id, c.signal)
           if (!alive || c.signal.aborted) return
@@ -49,14 +56,16 @@ export function useRunStatuses(entries: LocalRunEntry[]): Record<string, Lookup>
           else if (latest.current[id]?.kind !== 'found') put(id, { kind: 'unknown' })
         }
       }))
-      if (alive && ctrl === c && !c.signal.aborted) schedule()
+      if (!alive || ctrl !== c || c.signal.aborted) return
+      failures = ids.some((id) => latest.current[id]?.kind === 'unknown') ? failures + 1 : 0
+      schedule()
     }
     const onVisibility = () => {
       if (!alive) return
       if (hidden()) {
         clearTimeout(timer)
         ctrl?.abort()
-      } else if (ids.some((id) => !latest.current[id] || latest.current[id].kind === 'loading' || isActive(latest.current[id]))) void tick()
+      } else if (ids.some((id) => needsPoll(latest.current[id]))) void tick()
     }
     document.addEventListener('visibilitychange', onVisibility)
     void tick()
