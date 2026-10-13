@@ -65,6 +65,7 @@ export function Sidebar({ mode, status, drawerOpen = false, onDrawerClose }: Pro
   }
   const dialogRef = useRef<HTMLDialogElement>(null)
   const toggleRef = useRef<HTMLButtonElement>(null)
+  const railRef = useRef<HTMLElement>(null)
 
   // Navigating closes the overlay and the drawer
   useEffect(() => {
@@ -88,8 +89,16 @@ export function Sidebar({ mode, status, drawerOpen = false, onDrawerClose }: Pro
         toggleRef.current?.focus()
       }
     }
+    // A pointer press anywhere outside the overlay collapses it, as it would a popover
+    const onPointerDown = (e: PointerEvent) => {
+      if (!railRef.current?.contains(e.target as Node)) setRailOpen(false)
+    }
     document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
+    document.addEventListener('pointerdown', onPointerDown)
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.removeEventListener('pointerdown', onPointerDown)
+    }
   }, [railOpen])
 
   if (mode === 'drawer') {
@@ -108,7 +117,17 @@ export function Sidebar({ mode, status, drawerOpen = false, onDrawerClose }: Pro
 
   if (mode === 'rail') {
     return (
-      <aside className="nx-side" data-open={railOpen || undefined}>
+      <aside
+        ref={railRef}
+        className="nx-side"
+        data-open={railOpen || undefined}
+        // Focus moving to an element outside the rail collapses the overlay, so it never covers the focused
+        // element (WCAG 2.4.11). A null relatedTarget (window blur, focus dropped to the body) leaves it open.
+        onBlur={(e) => {
+          const next = e.relatedTarget
+          if (railOpen && next instanceof Node && !e.currentTarget.contains(next)) setRailOpen(false)
+        }}
+      >
         <button
           ref={toggleRef}
           type="button"

@@ -43,3 +43,77 @@ test.describe('knowledge graph labels fit the viewBox with real fonts', () => {
     }
   }
 })
+
+/** Whether the focused element is hit-tested at its own centre (not covered by an overlay; WCAG 2.4.11). */
+const focusedIsUnobscured = (page: Page) =>
+  page.evaluate(() => {
+    const a = document.activeElement as HTMLElement | null
+    if (!a || a === document.body) return { ok: false, what: 'nothing focused' }
+    const r = a.getBoundingClientRect()
+    const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)
+    return { ok: !!hit && (hit === a || a.contains(hit)), what: `${a.tagName} "${a.textContent?.trim().slice(0, 30)}" hit=${hit?.className}` }
+  })
+
+test.describe('tablet rail overlay never hides focus', () => {
+  for (const [w, h] of [[1024, 768], [820, 1180]] as const) {
+    test(`tabbing out of the expanded rail collapses it at ${w}×${h}`, async ({ page }) => {
+      await mockBackend(page, { runSequence: [FINAL] })
+      await page.setViewportSize({ width: w, height: h })
+      await page.goto(RUN)
+      await expect(page.locator('h1')).toHaveCount(1)
+      await page.getByRole('button', { name: 'Expand navigation' }).click()
+      const nav = page.getByRole('navigation', { name: 'Dashboard' })
+      // Let the 180 ms reveal finish: mid-animation the clip-path still exposes the content underneath
+      await nav.evaluate((el) => Promise.all(el.getAnimations().map((a) => a.finished)))
+      await nav.getByRole('link', { name: 'Settings' }).focus()
+      // Walk forward out of the sidebar, through the top bar and into main; every stop must be visible
+      const stops: string[] = []
+      for (let i = 0; i < 12; i++) {
+        await page.keyboard.press('Tab')
+        const where = await page.evaluate(() => (document.activeElement?.closest('.nx-side') ? 'side' : document.activeElement?.closest('main') ? 'main' : 'other'))
+        if (where === 'side') continue
+        const r = await focusedIsUnobscured(page)
+        if (!r.ok) stops.push(r.what)
+        if (where === 'main') break
+      }
+      expect(await page.evaluate(() => !!document.activeElement?.closest('main'))).toBe(true)
+      expect(stops, 'focused elements covered by the rail overlay').toEqual([])
+      await expect(page.getByRole('button', { name: 'Expand navigation' })).toHaveAttribute('aria-expanded', 'false')
+    })
+  }
+
+  test('pointerdown outside the expanded rail collapses it', async ({ page }) => {
+    await mockBackend(page, {})
+    await page.setViewportSize({ width: 1024, height: 768 })
+    await page.goto('/dashboard')
+    await page.getByRole('button', { name: 'Expand navigation' }).click()
+    await expect(page.getByRole('button', { name: 'Collapse navigation' })).toHaveAttribute('aria-expanded', 'true')
+    await page.mouse.click(900, 600)
+    await expect(page.getByRole('button', { name: 'Expand navigation' })).toHaveAttribute('aria-expanded', 'false')
+    expect((await page.locator('.nx-side__nav').boundingBox())!.width).toBe(56)
+  })
+
+  test('moving focus within the rail keeps it open; Esc collapses and returns focus to the toggle', async ({ page }) => {
+    await mockBackend(page, {})
+    await page.setViewportSize({ width: 1024, height: 768 })
+    await page.goto('/dashboard')
+    await page.getByRole('button', { name: 'Expand navigation' }).click()
+    await page.keyboard.press('Tab')
+    await page.keyboard.press('Tab')
+    await expect(page.getByRole('button', { name: 'Collapse navigation' })).toHaveAttribute('aria-expanded', 'true')
+    await page.keyboard.press('Escape')
+    const toggle = page.getByRole('button', { name: 'Expand navigation' })
+    await expect(toggle).toBeFocused()
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+  })
+
+  test('clicking a nav item in the expanded rail navigates and collapses', async ({ page }) => {
+    await mockBackend(page, {})
+    await page.setViewportSize({ width: 1024, height: 768 })
+    await page.goto('/dashboard')
+    await page.getByRole('button', { name: 'Expand navigation' }).click()
+    await page.getByRole('navigation', { name: 'Dashboard' }).getByRole('link', { name: 'Runs', exact: true }).click()
+    await expect(page).toHaveURL(/\/dashboard\/runs$/)
+    await expect(page.getByRole('button', { name: 'Expand navigation' })).toHaveAttribute('aria-expanded', 'false')
+  })
+})
