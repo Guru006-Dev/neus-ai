@@ -7,11 +7,13 @@ import RunsPage from './pages/RunsPage'
 import AgentsPage from './pages/AgentsPage'
 import OutputSectionPage from './pages/OutputSectionPage'
 import SettingsPage from './pages/SettingsPage'
+import ShowcasePage from './pages/ShowcasePage'
 import DashboardLayout from './shell/DashboardLayout'
 
 export default function NexusDashboard() {
   return (
     <Routes>
+      <Route path="runs/:runId/showcase/:kind" element={<ShowcasePage />} />
       <Route element={<DashboardLayout />}>
         <Route index element={<OverviewPage />} />
         <Route path="runs" element={<RunsPage />} />

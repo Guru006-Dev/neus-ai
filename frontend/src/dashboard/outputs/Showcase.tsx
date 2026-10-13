@@ -1,11 +1,11 @@
-import { API_BASE } from '../data/client'
+import { Link } from 'react-router'
+import { SHOWCASE_SANDBOX, showcasePath, showcaseSrc, type ShowcaseKind } from './showcaseUrls'
 
-export function Showcase({ runId, kind, title }: { runId: string; kind: 'explorer_html' | 'demo_html'; title: string }) {
-  const src = `${API_BASE}/workflows/${encodeURIComponent(runId)}/${kind}`
+export function Showcase({ runId, kind, title }: { runId: string; kind: ShowcaseKind; title: string }) {
   return (
     <div className="nx-showcase">
-      <iframe title={title} sandbox="allow-scripts" loading="lazy" src={src} />
-      <a href={src} target="_blank" rel="noopener">Open full screen</a>
+      <iframe title={title} sandbox={SHOWCASE_SANDBOX} loading="lazy" src={showcaseSrc(runId, kind)} />
+      <Link to={showcasePath(runId, kind)}>Open full screen</Link>
     </div>
   )
 }

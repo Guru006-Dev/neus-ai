@@ -97,3 +97,16 @@ test('a malformed location hash does not break the page', async ({ page }) => {
   await page.goto(`/dashboard/runs/${id(polls[0])}#%`)
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
 })
+
+test('"Open full screen" stays on the dashboard in an equally sandboxed iframe', async ({ page }) => {
+  const done = fixture('full-poll-07.json')
+  await mockBackend(page, { runSequence: [done] })
+  await page.goto(`/dashboard/runs/${done.workflow_id}#explorer`)
+  await page.getByRole('link', { name: /Open full screen/ }).click()
+  await expect(page).toHaveURL(new RegExp(`/dashboard/runs/${done.workflow_id}/showcase/explorer$`))
+  const frame = page.locator('iframe')
+  await expect(frame).toHaveCount(1)
+  await expect(frame).toHaveAttribute('sandbox', 'allow-scripts')
+  await expect(frame).toHaveAttribute('src', new RegExp(`/workflows/${done.workflow_id}/explorer_html$`))
+  await expect(page.getByRole('link', { name: /Back to run/ })).toHaveAttribute('href', `/dashboard/runs/${done.workflow_id}#explorer`)
+})

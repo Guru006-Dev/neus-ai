@@ -230,3 +230,9 @@
 .nx-app .nx-showcase iframe { width: 100%; aspect-ratio: 16 / 9; border: 1px solid var(--nx-line); border-radius: var(--nx-radius-panel); background: transparent; }
 .nx-app .nx-showcase a { color: var(--nx-grey-300); justify-self: start; }
 @media (max-width: 767px) { .nx-app .nx-showcase iframe { aspect-ratio: 4 / 3; } }
+.nx-app.nx-fullshowcase { display: flex; flex-direction: column; height: 100dvh; }
+.nx-app .nx-fullshowcase__bar { display: flex; align-items: center; min-height: 44px; padding: 0 16px; border-bottom: 1px solid var(--nx-line); }
+.nx-app .nx-fullshowcase__bar a { color: var(--nx-grey-300); }
+.nx-app .nx-fullshowcase__main { flex: 1; display: flex; }
+.nx-app.nx-fullshowcase iframe { flex: 1; width: 100%; border: 0; background: transparent; }
+.nx-app .nx-fullshowcase__missing { padding: 32px 16px; }

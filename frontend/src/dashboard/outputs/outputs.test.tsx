@@ -11,6 +11,7 @@ import { renderMarkdown } from './markdown'
 import { layoutGraph } from './graphLayout'
 import type { AgentOutput } from '../data/types'
 import { selectedFromHash } from '../run-detail/derive'
+import { Showcase } from './Showcase'
 
 const polls = Object.values(import.meta.glob('../../../e2e/fixtures/full-poll-*.json', { eager: true, import: 'default' })) as unknown[]
 const run = normalizeRun(polls[polls.length - 1])
@@ -40,6 +41,14 @@ describe('output renderers', () => {
   it('sandboxes showcase iframes', () => {
     const demo = run.outputs.demo
     if (demo) expect(wrap(<OUTPUT_RENDERERS.demo output={demo as never} runId={run.id} />)).toMatch(/<iframe[^>]*sandbox="allow-scripts"[^>]*title="Demo showcase"|title="Demo showcase"[^>]*sandbox="allow-scripts"/)
+  })
+  it('"Open full screen" never navigates top-level to the backend showcase HTML', () => {
+    for (const kind of ['demo', 'explorer'] as const) {
+      const out = wrap(<Showcase runId="wf-1/x" kind={`${kind}_html`} title="Showcase" />)
+      const href = /<a[^>]*href="([^"]*)"[^>]*>Open full screen/.exec(out)?.[1]
+      expect(href, kind).toBe(`/dashboard/runs/wf-1%2Fx/showcase/${kind}`)
+      expect(href, kind).not.toMatch(/_html|\/workflows\//)
+    }
   })
 })
 
