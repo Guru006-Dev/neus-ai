@@ -7,7 +7,7 @@ import { EmptyState } from '../ui/EmptyState'
 import { Skeleton } from '../ui/Skeleton'
 import { AgentList } from './AgentList'
 
-export const NOT_FOUND = "This run isn't on the backend. It may have been lost when the backend restarted; runs in progress are kept in memory."
+export const NOT_FOUND = "This run isn't on the backend. It may have been lost when the backend restarted; in-progress runs are kept in memory."
 export const DEGRADED = "Showing saved results. Step-by-step detail isn't available after a backend restart."
 export const UNREACHABLE = "Can't reach the NEXUS backend."
 

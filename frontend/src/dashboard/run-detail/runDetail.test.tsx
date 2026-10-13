@@ -121,7 +121,7 @@ describe('RunStateNotice', () => {
   it('uses the exact copy for each state', () => {
     expect(wrap(<RunStateNotice id="wf-1" view={{ kind: 'loading' }} retry={() => {}} />)).toContain('Loading run…')
     const nf = wrap(<RunStateNotice id="wf-1" view={{ kind: 'not-found', lastRun: run('full-poll-01.json') }} retry={() => {}} />)
-    expect(nf).toContain("This run isn't on the backend. It may have been lost when the backend restarted; runs in progress are kept in memory.")
+    expect(nf).toContain("This run isn't on the backend. It may have been lost when the backend restarted; in-progress runs are kept in memory.")
     expect(nf).toContain('Remove from this browser')
     expect(nf).toContain('Back to runs')
     expect(nf).toContain('Last known state')
