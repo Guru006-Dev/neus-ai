@@ -110,3 +110,15 @@ test('"Open full screen" stays on the dashboard in an equally sandboxed iframe',
   await expect(frame).toHaveAttribute('src', new RegExp(`/workflows/${done.workflow_id}/explorer_html$`))
   await expect(page.getByRole('link', { name: /Back to run/ })).toHaveAttribute('href', `/dashboard/runs/${done.workflow_id}#explorer`)
 })
+
+test('a run lost mid-step shows its last known state without a live current step', async ({ page }) => {
+  const polls = seq('qa')
+  const running = polls.find((p) => p.tasks.some((t: { status: string }) => t.status === 'RUNNING'))
+  await mockBackend(page, { runSequence: [running, null] })
+  await page.goto(`/dashboard/runs/${id(running)}`)
+  await expect(page.getByText("This run isn't on the backend.")).toBeVisible({ timeout: 10_000 })
+  const last = page.getByRole('list', { name: 'Agents' })
+  await expect(last.getByRole('listitem')).toHaveCount(6)
+  await expect(last.locator('[aria-current]')).toHaveCount(0)
+  await expect(last).not.toContainText(/running for|running…/)
+})

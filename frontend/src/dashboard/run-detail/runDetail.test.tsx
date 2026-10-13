@@ -131,6 +131,15 @@ describe('RunStateNotice', () => {
     expect(un).toContain("Can't reach the NEXUS backend.")
     expect(un).toContain('Retry')
   })
+
+  it('the last known state of a lost run marks no current step and shows no live "running for"', () => {
+    const last = run('qa-poll-03.json')
+    expect(last.agents.some((a) => a.state === 'running')).toBe(true)
+    const out = html(<MemoryRouter><RunStateNotice id="wf-1" view={{ kind: 'not-found', lastRun: last }} retry={() => {}} /></MemoryRouter>)
+    expect(text(out)).toContain('Last known state')
+    expect(out).not.toContain('aria-current')
+    expect(text(out)).not.toMatch(/running for|running…/)
+  })
 })
 
 describe('OutputPanel', () => {

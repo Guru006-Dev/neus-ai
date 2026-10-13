@@ -33,7 +33,7 @@ export function RunStateNotice({ id, view, retry }: { id: string; view: RunView;
           {view.lastRun && (
             <section className="nx-lastknown" aria-labelledby="last-known-title">
               <h2 id="last-known-title" className="nx-eyebrow">Last known state</h2>
-              <AgentList agents={view.lastRun.agents} />
+              <AgentList agents={view.lastRun.agents} live={false} />
             </section>
           )}
         </div>
