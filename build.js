@@ -25,7 +25,7 @@ try {
   if (fs.existsSync('/app/uv')) {
     execSync('/app/uv venv --python 3.11 /app/.venv || /app/uv venv /app/.venv', { stdio: 'inherit', env });
 
-    const reqs = ['orchestrator', 'explorer-mcp', 'documentation-mcp', 'qa-mcp', 'demo-mcp', 'release-mcp', 'knowledge-mcp']
+    const reqs = ['backend', 'agents/explorer', 'agents/documentation', 'agents/qa', 'agents/demo', 'agents/release', 'agents/knowledge']
       .map(f => `${f}/requirements.txt`)
       .filter(f => fs.existsSync(f))
       .map(f => `-r ${f}`)

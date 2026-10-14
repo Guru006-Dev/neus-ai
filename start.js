@@ -10,7 +10,7 @@ if (!fs.existsSync(pythonBin)) {
     try {
         execSync('uv venv /tmp/.venv || python3 -m venv /tmp/.venv || python -m venv /tmp/.venv', { stdio: 'inherit' });
         pythonBin = '/tmp/.venv/bin/python';
-        const reqs = ['orchestrator', 'explorer-mcp', 'documentation-mcp', 'qa-mcp', 'demo-mcp', 'release-mcp', 'knowledge-mcp']
+        const reqs = ['backend', 'agents/explorer', 'agents/documentation', 'agents/qa', 'agents/demo', 'agents/release', 'agents/knowledge']
             .map(f => `${f}/requirements.txt`)
             .filter(f => fs.existsSync(f))
             .map(f => `-r ${f}`)
@@ -24,7 +24,7 @@ if (!fs.existsSync(pythonBin)) {
 
 console.log(`Launching application using: ${pythonBin}`);
 const env = { ...process.env, UV_PYTHON_INSTALL_DIR: '/tmp/.uv_python' };
-const child = spawn(pythonBin, ['orchestrator/main.py'], { stdio: 'inherit', env });
+const child = spawn(pythonBin, ['backend/main.py'], { stdio: 'inherit', env });
 
 child.on('close', (code) => {
     console.log(`Orchestrator process exited with code ${code}`);
