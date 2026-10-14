@@ -6,6 +6,8 @@ import { SCENE_CHUNK, goToProgress, openLanding, settle } from './helpers'
 const PHASE_POINTS = [0, 0.03, 0.08, 0.16, 0.25, 0.35, 0.45, 0.55, 0.65, 0.75, 0.85, 0.93, 0.985]
 
 test('renders every phase (screenshots are a visual reference only)', async ({ page }, info) => {
+  // The full phase sequence with a screenshot per phase can exceed 90 s under browser-test overhead.
+  test.setTimeout(180_000)
   await openLanding(page)
   for (const p of PHASE_POINTS) {
     const snap = await goToProgress(page, p)
