@@ -38,6 +38,8 @@ test('Test A: scroll determinism — a jump lands on the same state as a direct 
 })
 
 test('Test B: reverse scroll retraces the forward states exactly', async ({ page }) => {
+  // 18 scroll-and-settle steps take ~1.2–1.5 min, right at the 90 s default.
+  test.setTimeout(180_000)
   await openLanding(page)
   for (const points of [[0.2, 0.3, 0.4, 0.5, 0.6, 0.7], [0.84, 0.93, 0.985]]) {
     const forward = []
