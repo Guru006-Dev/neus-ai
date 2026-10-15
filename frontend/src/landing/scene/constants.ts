@@ -17,8 +17,8 @@ export const SCREEN_DISTANCE_FACTOR = (SCREEN_W * 400) / SCREEN_PX_W
 export const TAG_POSITIONS: Tuple3[] = [
   [-2, 1.7, -0.3],
   [-1.95, 0.8, 0.2],
-  [-1.85, -0.1, 0.7],
-  [1.85, -0.1, 0.7],
+  [-1.85, 0.05, 0.7],
+  [1.85, 0.05, 0.7],
   [1.95, 0.8, 0.2],
   [2, 1.7, -0.3],
 ]

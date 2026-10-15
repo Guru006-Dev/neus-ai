@@ -6,16 +6,28 @@ import { CameraRig } from './CameraRig'
 import { AgentNetwork } from './AgentNetwork'
 import { Laptop } from './Laptop'
 import { NexusMark } from './NexusMark'
+import { StudyRoomEnvironment } from './room/StudyRoomEnvironment'
 
 export interface SceneProps {
   progressRef: RefObject<number>
   invalidateRef: RefObject<() => void>
+  /** Progress of the last rendered frame, for the test hook's settle check. */
+  renderedRef: RefObject<number | null>
   frame: ScreenFrame
 }
 
 /** Hands R3F's invalidate() to the scroll driver so frames render only when progress changes. */
-function InvalidateBridge({ invalidateRef }: Pick<SceneProps, 'invalidateRef'>) {
+function InvalidateBridge({ invalidateRef, renderedRef, progressRef }: Pick<SceneProps, 'invalidateRef' | 'renderedRef' | 'progressRef'>) {
   const invalidate = useThree((s) => s.invalidate)
+  useFrame(() => {
+    renderedRef.current = progressRef.current
+  })
+  useEffect(
+    () => () => {
+      renderedRef.current = null
+    },
+    [renderedRef],
+  )
   useEffect(() => {
     invalidateRef.current = () => invalidate()
     invalidate()
@@ -52,7 +64,7 @@ function SceneLights({ progressRef }: Pick<SceneProps, 'progressRef'>) {
   )
 }
 
-export default function Scene3D({ progressRef, invalidateRef, frame }: SceneProps) {
+export default function Scene3D({ progressRef, invalidateRef, renderedRef, frame }: SceneProps) {
   // Stable mount point for drei <Html>. Its default target (events.connected) changes after the
   // first mount, which leaves the re-created HTML root empty.
   const overlayRef = useRef<HTMLDivElement>(null)
@@ -65,9 +77,10 @@ export default function Scene3D({ progressRef, invalidateRef, frame }: SceneProp
         gl={{ antialias: true, alpha: true }}
         camera={{ fov: 40, near: 0.1, far: 60, position: [0, 1.6, 7.5] }}
       >
-        <InvalidateBridge invalidateRef={invalidateRef} />
+        <InvalidateBridge invalidateRef={invalidateRef} renderedRef={renderedRef} progressRef={progressRef} />
         <CameraRig progressRef={progressRef} />
         <SceneLights progressRef={progressRef} />
+        <StudyRoomEnvironment progressRef={progressRef} />
         <Laptop progressRef={progressRef} frame={frame} portal={overlayRef} />
         <AgentNetwork progressRef={progressRef} portal={overlayRef} />
         <NexusMark progressRef={progressRef} />

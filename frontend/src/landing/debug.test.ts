@@ -33,4 +33,16 @@ describe('settled', () => {
     progress.current = 0.5
     expect(api.settled()).toBe(true)
   })
+
+  it('stays false until a frame has rendered at the current progress', () => {
+    const win = { location: { search: '?nexus-debug' }, scrollY: 0, innerHeight: 1080, scrollTo: () => {} }
+    vi.stubGlobal('window', win)
+    const progress = { current: 0.5 }
+    let rendered: number | null = 0.49
+    installDebugHook({ section: { current: null }, progress, target: () => 0.5, rendered: () => rendered })
+    const api = (win as unknown as { __nexus: { settled(): boolean } }).__nexus
+    expect(api.settled()).toBe(false)
+    rendered = 0.5
+    expect(api.settled()).toBe(true)
+  })
 })

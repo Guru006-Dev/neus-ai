@@ -40,11 +40,14 @@ export function installDebugHook({
   section,
   progress,
   target,
+  rendered,
 }: {
   section: RefObject<HTMLElement | null>
   progress: RefObject<number>
   /** The scroll position's exact progress, before scrub smoothing. */
   target: () => number
+  /** Progress the scene last rendered at; null while no scene is mounted. */
+  rendered?: () => number | null
 }): (() => void) | undefined {
   if (!debugEnabled()) return undefined
   // Exact progress of the last requested scroll position. Until the trigger reports it, target() still
@@ -68,6 +71,9 @@ export function installDebugHook({
       // OneRunSection snaps the scrubbed value to the exact scroll progress once it is within GSAP's
       // rounding, so a settled scene matches the target exactly.
       if (requested !== null && Math.abs(target() - requested) > 1e-6) return false
+      // A slow frame (software rendering, a heavy scene) can lag the progress; read only after it lands.
+      const frame = rendered?.()
+      if (frame !== undefined && frame !== null && frame !== progress.current) return false
       return progress.current === target()
     },
     progressPair() {

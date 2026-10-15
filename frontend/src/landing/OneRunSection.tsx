@@ -26,6 +26,7 @@ export function OneRunSection({ onSceneError }: { onSceneError: () => void }) {
   const hudRef = useRef<HTMLDivElement>(null)
   const progressRef = useRef(0)
   const invalidateRef = useRef<() => void>(() => {})
+  const renderedRef = useRef<number | null>(null)
   const [frame, setFrame] = useState<ScreenFrame>(() => frameAt(0))
   const keyRef = useRef(frameKey(frame))
   const triggerRef = useRef<ScrollTrigger | undefined>(undefined)
@@ -71,6 +72,7 @@ export function OneRunSection({ onSceneError }: { onSceneError: () => void }) {
         section: sectionRef,
         progress: progressRef,
         target: () => triggerRef.current?.progress ?? progressRef.current,
+        rendered: () => renderedRef.current,
       }),
     [],
   )
@@ -95,7 +97,7 @@ export function OneRunSection({ onSceneError }: { onSceneError: () => void }) {
       <div className="one-run__stage">
         <SceneBoundary onError={onSceneError}>
           <Suspense fallback={null}>
-            <Scene3D progressRef={progressRef} invalidateRef={invalidateRef} frame={frame} />
+            <Scene3D progressRef={progressRef} invalidateRef={invalidateRef} renderedRef={renderedRef} frame={frame} />
           </Suspense>
         </SceneBoundary>
 

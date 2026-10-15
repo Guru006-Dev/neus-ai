@@ -169,6 +169,35 @@ export function ringState(p: number, k: number): RingState {
   return { draw, opacity: (base + (RING_NETWORK - base) * boost) * out }
 }
 
+/** How much the study room shows: present at the start, receding as NEXUS takes over, never black. */
+const ROOM_KEYS: readonly (readonly [number, number])[] = [
+  [0, 1],
+  [0.05, 0.85],
+  [0.115, 0.7],
+  [0.2, 0.55],
+  [0.3, 0.42],
+  [0.8, 0.42],
+  [0.9, 0.34],
+  [0.97, 0.2],
+  [1, 0.2],
+]
+
+export function roomPresence(p: number): number {
+  const x = clamp01(p)
+  for (let i = 1; i < ROOM_KEYS.length; i++) {
+    const [p0, v0] = ROOM_KEYS[i - 1]
+    const [p1, v1] = ROOM_KEYS[i]
+    if (x <= p1) return v0 + (v1 - v0) * smoothstep((x - p0) / (p1 - p0))
+  }
+  return ROOM_KEYS[ROOM_KEYS.length - 1][1]
+}
+
+/** The desk lamp is a practical light: it dims with the room, but stays on. */
+export const lampLevel = (p: number): number => 0.35 + 0.65 * roomPresence(p)
+
+/** Cool light the laptop throws on the desk: a hint as the lid opens, full once the screen is on. */
+export const deskSpill = (p: number): number => (0.2 * lidOpen(p) + 0.8 * screenOn(p)) * convergeStages(p).screen
+
 /** Caption and progress rail leave as the nodes land, before the stillness and the CTA. */
 export const hudFade = (p: number): number => 1 - smoothstep(span(p, 0.955, 0.97))
 
@@ -357,6 +386,7 @@ export interface SceneState {
   mix: number
   hud: number
   tagScale: number
+  room: { presence: number; lamp: number; spill: number }
 }
 
 export function sceneStateAt(p: number, aspect: number = REFERENCE_ASPECT): SceneState {
@@ -379,5 +409,6 @@ export function sceneStateAt(p: number, aspect: number = REFERENCE_ASPECT): Scen
     mix: screenMix(x),
     hud: hudFade(x),
     tagScale: tagScale(x, aspect),
+    room: { presence: roomPresence(x), lamp: lampLevel(x), spill: deskSpill(x) },
   }
 }
