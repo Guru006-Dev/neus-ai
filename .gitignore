@@ -20,3 +20,13 @@ build/
 # Environment & Secrets
 .env
 .env.local
+
+# Local agent / editor tool state
+/frontend/.claude/settings.local*
+/.serena/
+/.playwright-mcp/
+/.impeccable/hook.cache.json
+
+# Generated backend artefacts
+/backend/gemini_live_frames/
+/backend/output.txt
