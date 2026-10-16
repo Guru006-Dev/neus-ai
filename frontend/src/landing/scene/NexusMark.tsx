@@ -13,7 +13,7 @@ const STROKE_START = 0.12
 
 /** Flat, unlit material drawn over the scene: the mark reads as the 2D brand mark, never clipped. */
 function flatMaterial(color: string) {
-  return new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0, depthTest: false, depthWrite: false })
+  return new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0, depthTest: false, depthWrite: false, toneMapped: false })
 }
 
 /**

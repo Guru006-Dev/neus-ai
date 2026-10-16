@@ -17,7 +17,7 @@ export function StudyDesk({ m }: { m: RoomMaterials }) {
   const drawers = [-1.35, -3.55]
   return (
     <group>
-      <mesh position={[CX, -DESK.thickness / 2, CZ]} material={m.desk}>
+      <mesh position={[CX, -DESK.thickness / 2, CZ]} material={m.desk} receiveShadow>
         <boxGeometry args={[W, DESK.thickness, D]} />
       </mesh>
       {/* front edge band: reads as the desk's thickness from a low camera */}

@@ -60,6 +60,7 @@ function makeLine(i: number): AgentLine {
     transparent: true,
     opacity: 0,
     depthWrite: false,
+    toneMapped: false,
   })
   const line = new THREE.Line(geometry, material)
   line.computeLineDistances()
@@ -71,7 +72,7 @@ function makeRing(i: number): THREE.Line {
   const a = new THREE.Vector3(...TAG_POSITIONS[i])
   const b = new THREE.Vector3(...TAG_POSITIONS[(i + 1) % TAG_POSITIONS.length])
   const points = Array.from({ length: RING_POINTS }, (_, k) => a.clone().lerp(b, k / (RING_POINTS - 1)))
-  const material = new THREE.LineBasicMaterial({ color: LINE_COLOR, transparent: true, opacity: 0, depthWrite: false })
+  const material = new THREE.LineBasicMaterial({ color: LINE_COLOR, transparent: true, opacity: 0, depthWrite: false, toneMapped: false })
   const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), material)
   line.geometry.setDrawRange(0, 0)
   return line

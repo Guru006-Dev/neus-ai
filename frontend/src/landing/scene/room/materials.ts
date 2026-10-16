@@ -62,7 +62,7 @@ function createRoomMaterials() {
     deskDark: std('#1f1b18', 0.85),
     shelf: std('#352b23', 0.8, 0, grain),
     frame: std('#36322d', 0.7),
-    metal: std('#25282b', 0.42, 0.6),
+    metal: std('#25282b', 0.42, 0.35),
     ceramic: std('#6f6a62', 0.6),
     holder: std('#2c3035', 0.6, 0.2),
     paper: std('#827c73', 0.92),
@@ -70,7 +70,7 @@ function createRoomMaterials() {
     book: std('#b3b3b3', 0.85),
   }
   const glass = new THREE.MeshStandardMaterial({ color: '#0b1118', emissive: '#1b2734', roughness: 0.25, metalness: 0.1 })
-  const bulb = new THREE.MeshBasicMaterial({ color: '#ffdcae' })
+  const bulb = new THREE.MeshBasicMaterial({ color: '#ffdcae', toneMapped: false })
   const contact = new THREE.MeshBasicMaterial({ map: shadow, transparent: true, depthWrite: false })
   const base = Object.fromEntries(Object.entries(lit).map(([k, m]) => [k, m.color.clone()])) as Record<keyof typeof lit, THREE.Color>
   return { ...lit, glass, bulb, contact, base, textures: [plaster, grain, shadow] }

@@ -127,7 +127,7 @@ export function Laptop({
       padEdge: new THREE.MeshStandardMaterial({ color: '#25292d', metalness: 0.3, roughness: 0.6 }),
       hinge: new THREE.MeshStandardMaterial({ color: '#1c1f23', metalness: 0.5, roughness: 0.5 }),
       bezel: new THREE.MeshStandardMaterial({ color: '#050607', roughness: 0.85 }),
-      screen: new THREE.MeshBasicMaterial({ color: SCREEN_OFF.clone() }),
+      screen: new THREE.MeshBasicMaterial({ color: SCREEN_OFF.clone(), toneMapped: false }),
     }),
     [],
   )
@@ -190,7 +190,7 @@ export function Laptop({
   const flat: [number, number, number] = [-Math.PI / 2, 0, 0]
   return (
     <group>
-      <mesh geometry={geo.base} material={mats.body} />
+      <mesh geometry={geo.base} material={mats.body} castShadow />
       <group position={[0, BASE.backHeight, BASE.backZ]} rotation={[DECK_TILT, 0, 0]}>
         <mesh geometry={geo.well} material={mats.well} position={[0, 0.0004, KEYBOARD_WELL.z - BASE.backZ]} rotation={flat} />
         <Keys material={mats.keys} />
@@ -201,7 +201,7 @@ export function Laptop({
         <cylinderGeometry args={[0.042, 0.042, BASE.width * 0.8, 20]} />
       </mesh>
       <group ref={lid} position={LID_ORIGIN} rotation={[LID_CLOSED, 0, 0]}>
-        <mesh geometry={geo.lid} material={mats.body} />
+        <mesh geometry={geo.lid} material={mats.body} castShadow />
         <mesh geometry={geo.bezel} material={mats.bezel} position={[0, (LID.top + LID.bottom) / 2, 0.0008]} />
         <mesh position={[0, SCREEN_CENTER_Y, 0.002]} material={mats.screen}>
           <planeGeometry args={[SCREEN_W, SCREEN_H]} />
