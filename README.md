@@ -1,524 +1,110 @@
-<div align="center">
+# ADIP — Autonomous Product Intelligence Platform
 
-# 🤖 ADIP — Autonomous Product Intelligence Platform
+ADIP turns one written goal (for example *"Analyze the onboarding flows of three note-taking apps"*)
+into a run of six cooperating agents: **Explorer → Knowledge Graph → Documentation → QA → Demo →
+Release**. Its web frontend is **NEXUS**: a scroll-driven 3D landing page that tells the story of one
+run, and a dashboard for starting runs and following them live.
 
-**An enterprise-grade, multi-agent AI system built on the Model Context Protocol (MCP)**
+## Repository layout
 
-[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-15%25-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-Orchestrator-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![MCP](https://img.shields.io/badge/Model%20Context%20Protocol-FastMCP-FF6B6B?style=for-the-badge)](https://github.com/jlowin/fastmcp)
-[![Node.js](https://img.shields.io/badge/Node.js-Build%20%26%20Start-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
-
-> Transform any application into a fully documented, quality-tested, and demo-ready product — **autonomously**.
-
-[Quick Start](#-quick-start) · [Architecture](#-architecture) · [Agents](#-agent-descriptions) · [Configuration](#-configuration) · [API Reference](#-api-reference)
-
-</div>
-
----
-
-## 📋 Table of Contents
-
-- [Overview](#-overview)
-- [Architecture](#-architecture)
-- [Repository Structure](#-repository-structure)
-- [Agent Descriptions](#-agent-descriptions)
-- [Tech Stack](#-tech-stack)
-- [Prerequisites](#-prerequisites)
-- [Quick Start](#-quick-start)
-- [Configuration](#-configuration)
-- [API Reference](#-api-reference)
-- [democriticIntelligence Module](#-democraticintelligence-module)
-- [Contributors](#-contributors)
-
----
-
-## 🌟 Overview
-
-The **Autonomous Product Intelligence Platform (ADIP)** is an enterprise-grade, microservice-based AI pipeline that autonomously:
-
-- 🔍 **Explores** any web application via headless browser automation
-- 🧠 **Constructs** a structured knowledge graph of entities, relationships, and UI flows
-- 📄 **Generates** comprehensive user guides, admin documentation, and FAQs
-- 🧪 **Runs** automated smoke tests, regression tests, and produces test reports
-- 🎬 **Produces** professional demo videos with 3D WebGL animations, AI voiceover, and synced subtitles
-- 📦 **Tracks** version changes and auto-generates release notes and change summaries
-
-The monolithic agent system has been decomposed into **7 independent MCP microservices** governed by a **centralized FastAPI Orchestrator**, enabling horizontal scaling, overload protection, and fault isolation.
-
----
-
-## 🏗️ Architecture
-
-The ADIP pipeline is structured in four phases, orchestrated by a central coordinator that delegates work to specialized MCP servers via the **Model Context Protocol (MCP) RPC**.
-
-### System Architecture Diagram
-
-![ADIP Multi-Agent Architecture Diagram](https://raw.githubusercontent.com/ragulkiyotoka20-jpg/ADIP-agent/main/image.png)
-
-### Communication Flow
-
-```mermaid
-graph TD
-    subgraph Orchestration["Phase 1 — Orchestration"]
-        ORC["Orchestrator FastAPI Server\nPriority Queues · Concurrency Control · SQLite Persistence"]
-    end
-
-    subgraph Acquisition["Phase 2 — Knowledge Acquisition"]
-        EXP["Explorer MCP\nexplorer_record_session"]
-        KNW["Knowledge Graph MCP\ncodex_query_knowledge_graph"]
-        DOC["Documentation MCP\ndocs_publish_documentation"]
-    end
-
-    subgraph Generation["Phase 3 — Value Generation"]
-        DMO["Demo MCP\ndemo_create_video_workflow"]
-        QA["QA MCP\nqa_run_tests"]
-        REL["Release MCP\nrelease_generate_notes"]
-    end
-
-    subgraph Outputs["Phase 4 — Outputs"]
-        UG[User Guide PDF/HTML]
-        VID[Demo Videos MP4/WebM]
-        TR[Test Reports HTML/Allure]
-        RN[Release Notes MD/PDF]
-    end
-
-    ORC -->|MCP RPC| EXP
-    ORC -->|MCP RPC| KNW
-    ORC -->|MCP RPC| DOC
-    ORC -->|MCP RPC| DMO
-    ORC -->|MCP RPC| QA
-    ORC -->|MCP RPC| REL
-
-    EXP -->|Raw Exploration Data| KNW
-    KNW -->|Knowledge Graph Store| DOC
-    KNW -->|Knowledge Graph Store| DMO
-
-    DOC --> UG
-    DMO --> VID
-    QA --> TR
-    REL --> RN
-```
-
-### Orchestrator — Overload Protection Architecture
-
-The Orchestrator is engineered for production resilience:
-
-| Feature | Detail |
+| Path | What it is |
 |---|---|
-| **Priority Queue** | Unlimited depth, priority-based job scheduling |
-| **Concurrency Limits** | Explorer: 5 · Knowledge: 10 · Docs: 10 · QA: 4 · Demo: 2 · Release: 5 |
-| **Persistence** | SQLite-backed job state with auto-recovery on restart |
-| **Worker Pool** | Multi-user, non-blocking agent worker pools |
-| **Scheduler** | Continuous resource and queue management scheduler |
+| `backend/` | FastAPI server (`main.py`) and the orchestrator engine (`agents/orchestrator/`): planner, router, priority queues, per-agent concurrency limits, scheduler, worker pool, SQLite persistence and the six built-in agents. Also serves the built frontend (`frontend_serving.py`). |
+| `frontend/` | NEXUS web app: React 19, TypeScript, Vite. `src/landing/` is the 3D landing page (three.js via react-three-fiber, GSAP ScrollTrigger); `src/dashboard/` is the run dashboard. |
+| `agents/` | Six standalone MCP servers (`explorer`, `knowledge`, `documentation`, `qa`, `demo`, `release`) plus `shared/mcp_agent_server.py`. Each runs over stdio with the FastMCP server bundled in the `mcp` package. |
+| `start.js`, `build.js`, `package.json` | Linux deployment wrappers (`npm run build` / `npm start`): they prepare a Python virtual environment and launch `backend/main.py`. |
 
----
+## How a run works
 
-## 📁 Repository Structure
+1. `POST /workflows` with a goal. The router picks a plan: a goal mentioning *qa*/*test*, *doc* or
+   *demo* gets a three-step plan (Explorer, Knowledge Graph, then that agent); any other goal gets
+   all six agents.
+2. The scheduler runs the plan one step at a time on the worker pool, within each agent's
+   concurrency limit (Explorer 5, Knowledge Graph 10, Documentation 10, QA 4, Demo 2, Release 5).
+   Each agent's output is merged into the workflow context for the next one.
+3. Workflow and task state is stored in SQLite, so finished runs can still be read after a restart.
+4. If an agent raises an error, its task and the workflow are marked `FAILED`; later steps are not run.
 
-```text
-ADIP-agent/
-│
-├── build.js                   # Setup: downloads uv, creates Python venv, installs deps
-├── start.js                   # Entry point: launches FastAPI orchestrator via Node.js
-├── package.json               # Node scripts: build & start
-├── .gitignore
-│
-├── orchestrator/              # Central FastAPI server (Python)
-│   ├── main.py                # FastAPI app, /workflows endpoint, dashboard HTML
-│   ├── requirements.txt       # fastapi, uvicorn, pydantic, mcp
-│   └── agents/orchestrator/
-│       ├── agent.py           # OrchestratorAgent: router, planner, registry, job manager
-│       ├── router.py          # RequestRouter: routes goals to appropriate agents
-│       ├── planner.py         # WorkflowPlanner: decomposes goals into task graphs
-│       ├── registry.py        # AgentRegistry: tracks available MCP servers
-│       ├── job_manager.py     # JobManager: CRUD for workflow/job state
-│       ├── concurrency.py     # ConcurrencyController: per-agent semaphores
-│       ├── queues.py          # QueueManager: priority queues
-│       ├── persistence.py     # DatabaseManager: SQLite adapter
-│       ├── worker_pool.py     # AgentWorkerPool: async worker dispatch
-│       └── scheduler.py       # Continuous scheduling loop
-│
-├── explorer-mcp/              # Browser exploration MCP server
-│   ├── server.py              # FastMCP("ExplorerAgent Server")
-│   ├── tools.py               # explorer_record_session(target_url, headless)
-│   └── requirements.txt
-│
-├── knowledge-mcp/             # Knowledge graph MCP server
-│   ├── server.py              # FastMCP("KnowledgeGraphAgent Server")
-│   ├── tools.py               # codex_query_knowledge_graph(query)
-│   └── requirements.txt
-│
-├── documentation-mcp/         # Documentation generation MCP server
-│   ├── server.py              # FastMCP("DocumentationAgent Server")
-│   ├── tools.py               # docs_publish_documentation(title, category)
-│   └── requirements.txt
-│
-├── qa-mcp/                    # QA testing MCP server
-│   ├── server.py              # FastMCP("QAAgent Server")
-│   ├── tools.py               # qa_run_tests(target_app, test_types)
-│   └── requirements.txt
-│
-├── demo-mcp/                  # Demo video generation MCP server
-│   ├── server.py              # FastMCP("DemoAgent Server")
-│   ├── tools.py               # demo_create_video_workflow(title, app_name, render_3d)
-│   └── requirements.txt
-│
-├── release-mcp/               # Release intelligence MCP server
-│   ├── server.py              # FastMCP("ReleaseIntelligenceAgent Server")
-│   ├── tools.py               # release_generate_notes(version, release_type)
-│   └── requirements.txt
-│
-├── shared/                    # Unified MCP tool registry (all agents in one server)
-│   └── mcp_agent_server.py    # FastMCP server exposing all agent tools
-│
-└── democriticIntelligence/    # Standalone AI video & thumbnail generator module
-    └── README.md              # Full docs for the Universal Director system
+The built-in agents call Gemini when `GEMINI_API_KEY` is set. Without a key they return
+deterministic offline results, which is enough to run the whole pipeline and all tests locally.
+
+## Prerequisites
+
+- Python 3 with `pip` (developed and tested with Python 3.14)
+- Node.js and npm (developed and tested with Node 24)
+
+## Install
+
+```bash
+pip install -r backend/requirements.txt
+cd frontend && npm ci && cd ..
 ```
 
----
+Optional: `psutil` (CPU/memory readings used for load shedding) and `google-genai` (only for
+`GET /check-veo`). The `agents/` MCP servers need `mcp`; Explorer and Release also use the packages
+in their `agent/requirements.txt` (Playwright, pydantic-settings, loguru, networkx, tenacity) and a
+Playwright browser (`playwright install chromium`).
 
-## 🤖 Agent Descriptions
+## Run locally
 
-### 1. 🧠 Orchestrator Agent
-
-**Role:** Central command and planning hub.
-
-- Accepts workflow goals via REST API (`POST /workflows`)
-- Decomposes goals into ordered task graphs using `WorkflowPlanner`
-- Routes tasks to appropriate MCP servers via `RequestRouter`
-- Monitors progress, manages concurrency, and persists state in SQLite
-- Serves a web dashboard UI at `GET /`
-
-> **Concurrency:** Priority queue · Unlimited depth · Multi-user worker pools
-
----
-
-### 2. 🔍 Explorer Agent (`explorer-mcp`)
-
-**Role:** Captures raw exploration data from any web application.
-
-- Launches headless Playwright/Chromium browser sessions
-- Records user flows, captures screenshots, logs DOM events
-- Extracts metadata (page titles, element types, navigation paths)
-- Outputs raw exploration data: screens, logs, and events
-
-**Tool signature:**
-```python
-explorer_record_session(target_url: str, headless: bool = True) -> str
+```bash
+cd frontend && npm run build && cd ..   # produces frontend/dist
+python backend/main.py                  # http://localhost:3000
 ```
 
----
+`/` serves the landing page and `/dashboard` the dashboard. Without `frontend/dist` the API still
+runs, but `/` shows a "Dashboard Not Found" page, so build the frontend first.
 
-### 3. 🧩 Knowledge Graph Agent (`knowledge-mcp`)
+**Frontend development:** run the backend as above, then `cd frontend && npm run dev`. Vite proxies
+`/workflows`, `/system` and `/api-key` to port 3000 (`NEXUS_API_PORT` overrides the port).
 
-**Role:** Transforms raw exploration data into a structured knowledge store.
+**An agent MCP server on its own:** `cd agents/<name> && python server.py` (stdio transport).
 
-- Builds entity-relationship graphs from exploration sessions
-- Links screens, actions, and data into nodes and edges
-- Stores embeddings for semantic search and memory retrieval
-- Feeds downstream agents (Documentation, Demo) with structured context
+### Configuration
 
-**Tool signature:**
-```python
-codex_query_knowledge_graph(query: str) -> str
-```
-
----
-
-### 4. 📄 Documentation Agent (`documentation-mcp`)
-
-**Role:** Generates professional documentation from the knowledge graph.
-
-- Creates User Guides, Admin Guides, and FAQ documents
-- Outputs to PDF and HTML formats
-- Keeps documentation synchronized with application changes
-
-**Tool signature:**
-```python
-docs_publish_documentation(title: str, category: str = "guide") -> str
-```
-
----
-
-### 5. 🧪 QA Agent (`qa-mcp`)
-
-**Role:** Automated quality assurance and test execution.
-
-- Runs Playwright-powered smoke tests and regression tests
-- Generates Allure/HTML test reports with screenshots
-- Surfaces regressions and failure traces
-
-**Tool signature:**
-```python
-qa_run_tests(target_app: str, test_types: str = "smoke,regression") -> str
-```
-
----
-
-### 6. 🎬 Demo Agent (`demo-mcp`)
-
-**Role:** Produces broadcast-quality demo showcase videos.
-
-- Generates bespoke 1000+ line HTML/CSS/JS 3D WebGL animations
-- Renders at 60FPS in 1920x1080 viewport via Playwright
-- Produces AI voiceover narration (MP3) and synced `.vtt` subtitles via `edge-tts`
-- Merges audio, video, and subtitles via FFmpeg into final MP4
-
-**Tool signature:**
-```python
-demo_create_video_workflow(workflow_title: str, app_name: str = "Amazon", render_3d: bool = True) -> str
-```
-
----
-
-### 7. 📦 Release Intelligence Agent (`release-mcp`)
-
-**Role:** Tracks version changes and generates release artifacts.
-
-- Diffs versions to detect added, modified, and removed features
-- Generates structured release notes (Markdown/PDF)
-- Produces executive-level change summaries for stakeholders
-
-**Tool signature:**
-```python
-release_generate_notes(version: str, release_type: str = "minor") -> str
-```
-
----
-
-## 🛠️ Tech Stack
-
-| Layer | Technologies |
-|---|---|
-| **Orchestrator** | Python 3.11, FastAPI, Uvicorn, Pydantic, SQLite |
-| **MCP Servers** | Python 3.11, FastMCP (`mcp.server.fastmcp`) |
-| **Browser Automation** | Playwright, Chromium (headless) |
-| **Video Pipeline** | FFmpeg, edge-tts, Playwright screen recording |
-| **AI / LLM** | Web Gemini (`gemini.google.com`) via Playwright — no API key required |
-| **Animation** | Bespoke HTML/CSS/JS · 3D WebGL · Glassmorphism effects |
-| **Build System** | Node.js, `uv` (Astral Python package manager) |
-| **Languages** | Python 69% · TypeScript 15% · HTML 13% · JavaScript 3% |
-
----
-
-## 📋 Prerequisites
-
-| Tool | Version | Purpose |
+| Variable | Default | Purpose |
 |---|---|---|
-| **Node.js** | >= 18.x | Build & start scripts |
-| **Python** | >= 3.11 | All MCP servers and orchestrator |
-| **FFmpeg** | Latest | Video composition in Demo Agent |
-| **Git** | Latest | Cloning the repository |
+| `PORT` | `3000` | Backend HTTP port |
+| `DB_PATH` | `orchestrator_jobs.db` in the working directory | SQLite database (`*.db` is gitignored) |
+| `GEMINI_API_KEY` | unset | Optional. Enables Gemini for the built-in agents. The dashboard's Settings page can also set it at runtime (`POST /api-key`); it is kept in process memory only. |
+| `NEXUS_API_PORT` | `3000` | Backend port used by the Vite dev/preview proxy |
 
-> **Note:** The build script automatically downloads and sets up the `uv` Python package manager and creates a virtual environment. No manual `pip install` is required.
+## API
 
----
-
-## 🚀 Quick Start
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/ragulkiyotoka20-jpg/ADIP-agent.git
-cd ADIP-agent
-```
-
-### 2. Build (Install All Dependencies)
-
-```bash
-npm run build
-```
-
-This runs `node build.js`, which:
-- Downloads the `uv` binary (Astral) for your platform architecture
-- Creates a Python 3.11 virtual environment at `/app/.venv`
-- Installs `requirements.txt` for every MCP server and the orchestrator
-
-### 3. Start the Orchestrator
-
-```bash
-npm start
-```
-
-This runs `node start.js`, which:
-- Resolves the Python binary (`/app/.venv` or fallback at `/tmp/.venv`)
-- Launches `orchestrator/main.py` via Uvicorn
-
-### 4. Access the Dashboard
-
-```
-http://localhost:8000
-```
-
-### 5. Submit a Workflow
-
-```bash
-curl -X POST http://localhost:8000/workflows \
-  -H "Content-Type: application/json" \
-  -d '{
-    "goal": "Generate complete documentation and demo video for Amazon shopping app",
-    "user_id": "user_001",
-    "priority": 1
-  }'
-```
-
-### 6. (Optional) Run the Shared MCP Server
-
-To expose all agent tools in a single MCP server for development or testing:
-
-```bash
-python shared/mcp_agent_server.py
-```
-
----
-
-## ⚙️ Configuration
-
-### Environment Variables
-
-| Variable | Default | Description |
-|---|---|---|
-| `UVICORN_PORT` | `8000` | Port the FastAPI orchestrator listens on |
-| `ARTIFACT_DIR` | Auto-detected | Output directory for generated artifacts |
-| `DB_PATH` | `orchestrator/state.db` | SQLite database path for job persistence |
-
-### Per-Agent Concurrency Limits (Defaults)
-
-These are configured in `orchestrator/agents/orchestrator/agent.py`:
-
-| Agent | Default Concurrent Sessions |
+| Method and path | Purpose |
 |---|---|
-| Explorer Agent | 5 |
-| Knowledge Graph Agent | 10 |
-| Documentation Agent | 10 |
-| QA Agent | 4 |
-| Demo Agent | 2 |
-| Release Intelligence Agent | 5 |
+| `POST /workflows` | Start a run. Body: `{"goal": "...", "user_id": "...", "priority": 1}`; returns `{"workflow_id", "status": "SUBMITTED"}` |
+| `GET /workflows/{id}` | Run status, plan context and per-task results; `404` for an unknown id |
+| `GET /workflows/{id}/demo_html`, `/explorer_html` | HTML generated by the Demo and Explorer agents |
+| `GET /system/status` | Job summary, per-agent concurrency, queue lengths and resource readings |
+| `POST /api-key` | Set the Gemini key for this process |
+| `GET /check-veo` | Whether the configured key can see Veo video models |
 
-To override defaults, pass `custom_limits` to `OrchestratorAgent`:
+`POST /analyze` and `GET /status/{id}` are older compatibility endpoints; the NEXUS dashboard uses
+`/workflows` instead.
 
-```python
-orchestrator = OrchestratorAgent(custom_limits={"demo": 4, "qa": 8})
+## Tests
+
+```bash
+cd backend && python -m pytest tests -q   # orchestrator, endpoint and frontend-serving tests (no server needed)
+cd frontend && npm test                   # unit tests (Vitest)
+cd frontend && npm run test:e2e           # browser tests (Playwright): landing page and dashboard
+cd frontend && npm run lint               # oxlint
 ```
 
----
+The backend tests run the real orchestrator in-process against temporary databases, with no network
+access. The dashboard browser tests use recorded backend responses (`frontend/e2e/fixtures`). The
+Explorer and Release MCP packages have their own suites (`cd agents/explorer/agent && python -m pytest`).
 
-## 📖 API Reference
+## Current limitations
 
-### `POST /workflows`
-
-Submit a new workflow goal to the orchestrator.
-
-**Request Body:**
-```json
-{
-  "goal": "string",
-  "user_id": "string",
-  "priority": 1
-}
-```
-
-**Response:**
-```json
-{
-  "workflow_id": "wf_abc123",
-  "status": "QUEUED",
-  "message": "Workflow successfully queued."
-}
-```
-
----
-
-### `GET /workflows/{workflow_id}`
-
-Get the status and result of a submitted workflow.
-
-**Response:**
-```json
-{
-  "workflow_id": "wf_abc123",
-  "status": "COMPLETED",
-  "progress": 100,
-  "result": {}
-}
-```
-
----
-
-### `GET /`
-
-Serves the ADIP web dashboard (HTML interface).
-
----
-
-## 🎭 democriticIntelligence Module
-
-The `democriticIntelligence` folder contains the **Universal Director** — a fully autonomous, LLM-driven video synthesis pipeline.
-
-### Key Capabilities
-
-| Feature | Detail |
-|---|---|
-| **Zero API Key Required** | Automates `gemini.google.com` via Playwright browser sessions |
-| **Bespoke Animations** | Auto-generates 1000+ line HTML/CSS/JS with 3D glassmorphism |
-| **AI Voiceover** | Generates 130–140 word narration scripts, converts to MP3 via `edge-tts` |
-| **Synced Subtitles** | Produces `.vtt` subtitle files burned into final video via FFmpeg |
-| **1080p/60FPS Output** | Renders animations at 1920x1080 using Playwright viewport capture |
-| **AI Thumbnails** | Prompts Web Gemini to generate 16:9 cinematic hero product images |
-
-### democriticIntelligence Workflow
-
-```
-Input Topic
-     │
-     ▼
-Web Gemini → Bespoke HTML/CSS/JS Animation (1000+ lines)
-Web Gemini → 130-word Voiceover Script → edge-tts MP3
-Web Gemini → Cinematic 16:9 PNG Thumbnail
-     │
-     ▼
-Playwright (1920×1080 @ 60FPS) → Raw WebM Video
-     │
-     ▼
-FFmpeg: Merge Audio + Video + Burn Subtitles
-     │
-     ▼
-Final 1080p MP4 with Narration & Subtitles
-```
-
----
-
-## 📊 Output Artifacts
-
-| Artifact | Format | Producing Agent |
-|---|---|---|
-| User Guide | PDF / HTML | Documentation Agent |
-| Admin Guide | PDF / HTML | Documentation Agent |
-| FAQ | PDF / HTML | Documentation Agent |
-| Demo Video | MP4 / WebM | Demo Agent |
-| Test Report | HTML / Allure | QA Agent |
-| Release Notes | MD / PDF | Release Intelligence Agent |
-| Knowledge Graph | JSON (Nodes + Edges + Embeddings) | Knowledge Graph Agent |
-
----
-
-## 👥 Contributors
-
-| Contributor | GitHub |
-|---|---|
-| Guru | [@Guru006-Dev](https://github.com/Guru006-Dev) |
-| Ariya Rithvik | [@Ariya-rithvik](https://github.com/Ariya-rithvik) |
-| Ragul Kiyotoka | [@ragulkiyotoka20-jpg](https://github.com/ragulkiyotoka20-jpg) |
-| Sundar | [@SundarTharsan31](https://github.com/SundarTharsan31) |
-
----
-
-<div align="center">
-
-**Built with ❤️ by the ADIP Team**
-
-*Autonomous · Intelligent · Production-Ready*
-
-</div>
+- **Local only.** There is no verified production or cloud deployment. `npm run build` / `npm start`
+  target a Linux host with an `/app` directory and do not build the frontend; run
+  `cd frontend && npm run build` separately.
+- **Two separate agent implementations.** The backend runs its own six built-in agents
+  (`backend/agents/orchestrator/registry.py`); it does not call the MCP servers in `agents/`.
+- **Offline results are placeholders.** Without `GEMINI_API_KEY` the agents return deterministic,
+  template-based output rather than real research, and agent-reported metrics are illustrative.
+- **No automatic retries.** A failed agent fails the whole run.
+- **The 3D landing page** needs a landscape viewport at least 1024 px wide, WebGL, and no
+  reduced-motion preference; otherwise it shows a 2D version of the same story.
