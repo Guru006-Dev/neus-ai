@@ -99,18 +99,21 @@ class JobManager:
         with self._lock:
             if workflow_id in self.workflows:
                 wf = self.workflows[workflow_id]
-                wf.status = status
-                if context is not None:
-                    wf.context = context
+                new_context = context if context is not None else wf.context
+                # Persist first, then publish in memory: readers take the workflow object under this
+                # lock but read its status afterwards, so a status they can see must already be saved.
+                # If the save raises, the in-memory status is left unchanged.
                 self.db.save_workflow(
                     workflow_id=wf.workflow_id,
                     user_id=wf.user_id,
                     goal=wf.goal,
-                    status=wf.status.value,
+                    status=status.value,
                     priority=wf.priority,
                     plan=wf.plan,
-                    context=wf.context
+                    context=new_context
                 )
+                wf.context = new_context
+                wf.status = status
 
     def update_task_status(self, task_id: str, status: JobStatus, output_data: Dict[str, Any] = None, error_msg: str = None):
         with self._lock:
