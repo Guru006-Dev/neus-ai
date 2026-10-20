@@ -283,5 +283,4 @@ All screenshots are from the application running locally in offline mode (no Gem
 
 ## License
 
-No license has been chosen yet, so all rights are reserved by the authors. Add a `LICENSE` file before
-making the repository public or accepting outside contributions.
+Released under the [MIT License](LICENSE).
