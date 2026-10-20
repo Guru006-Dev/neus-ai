@@ -454,9 +454,9 @@
     "errors": []
   },
   "published_files": {
-    "master_json": "C:\\Users\\Guru\\Desktop\\ADIP\\artifacts\\release_intelligence\\release_result_2.0.0.json",
-    "customer_release_notes": "C:\\Users\\Guru\\Desktop\\ADIP\\artifacts\\release_intelligence\\customer_release_notes_2.0.0.md",
-    "engineering_release_notes": "C:\\Users\\Guru\\Desktop\\ADIP\\artifacts\\release_intelligence\\engineering_release_notes_2.0.0.md",
-    "changelog_markdown": "C:\\Users\\Guru\\Desktop\\ADIP\\artifacts\\release_intelligence\\changelog_2.0.0.md"
+    "master_json": "artifacts/release_intelligence/release_result_2.0.0.json",
+    "customer_release_notes": "artifacts/release_intelligence/customer_release_notes_2.0.0.md",
+    "engineering_release_notes": "artifacts/release_intelligence/engineering_release_notes_2.0.0.md",
+    "changelog_markdown": "artifacts/release_intelligence/changelog_2.0.0.md"
   }
 }

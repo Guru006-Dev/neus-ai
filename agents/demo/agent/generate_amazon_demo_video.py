@@ -12,7 +12,9 @@ from playwright.async_api import async_playwright
 
 async def generate_video():
     html_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "democriticIntelligence", "animation", "amazon.html"))
-    artifact_dir = r"C:\Users\Guru\.gemini\antigravity-ide\brain\1813d45c-c547-4fa0-afd2-d04575f29438"
+    # Where the recording is written; override with DEMO_VIDEO_DIR.
+    artifact_dir = os.environ.get("DEMO_VIDEO_DIR", os.path.join(os.path.dirname(os.path.abspath(__file__)), "demo_output"))
+    os.makedirs(artifact_dir, exist_ok=True)
     os.makedirs(artifact_dir, exist_ok=True)
     video_dir = os.path.join(artifact_dir, "video_temp")
     os.makedirs(video_dir, exist_ok=True)
